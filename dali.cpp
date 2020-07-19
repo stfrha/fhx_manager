@@ -56,9 +56,13 @@ bool Dali::initializeDali(void)
    return true;   
 }
 
-void Dali::setLightPower(unsigned char channel, unsigned char power)
+void Dali::setLightPower(unsigned int channel, unsigned int power)
 {
-   
+   std::stringstream stream;
+   stream << "h" << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << channel * 2;
+   stream << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << power << "\n";
+   // cout << "Send command: " << stream.str();
+   commissioningCommunication(stream.str().c_str());
 }
 
 
@@ -69,7 +73,7 @@ void Dali::communicateCommand(const char* cmd, int respN, char* resp)
    cout << "Sending command..." << endl;
    serialPuts(m_fd, cmd);
    cout << "Command sent" << endl;
-   char versionString[respN+2];
+   char versionString[12];
    for (i = 0; i<respN; i++)
    {
       versionString[i] = (char)serialGetchar(m_fd);
@@ -103,7 +107,6 @@ void Dali::communicateCommand(const char* cmd, int respN, char* resp)
 
 int Dali::commissioningCommunication(const char* cmd)
 {
-   cout << "Sending command: " << cmd;
    int i = 0;
    
    delay(10);
@@ -115,21 +118,21 @@ int Dali::commissioningCommunication(const char* cmd)
    if (c == 'N')
    {
       c = (char)serialGetchar(m_fd);
-      cout << "Found N, I consumed: " << (int)c << endl;
+      // cout << "Found N, I consumed: " << (int)c << endl;
 
       if (cmd[0] == 't')
       {
-         cout << "This was sent twice, consume second response also" << endl;
+         // cout << "This was sent twice, consume second response also" << endl;
          c = (char)serialGetchar(m_fd);
          
          if (c == 'N')
          {
             c = (char)serialGetchar(m_fd);
-            cout << "Found N again, I consumed: " << (int)c << endl;
+            // cout << "Found N again, I consumed: " << (int)c << endl;
          }
          else
          {
-            cout << "Expected N but found: " << (int)c << endl;
+            // cout << "Expected N but found: " << (int)c << endl;
          }
       }
    
@@ -162,12 +165,12 @@ int Dali::commissioningCommunication(const char* cmd)
       unsigned int ans = ansInt1 + ansInt2 * 16;
 
       c = (char)serialGetchar(m_fd);
-      cout << "Found J, I consumed: " << (int)c << endl;
+      // cout << "Found J, I consumed: " << (int)c << endl;
 
       return ans;
    }
    
-   cout << "Found nothing but this: " << (int)c << "'" << c << "'" << endl;
+   // cout << "Found nothing but this: " << (int)c << "'" << c << "'" << endl;
    return -1;
 }
 

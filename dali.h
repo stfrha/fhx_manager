@@ -16,7 +16,6 @@ private:
    bool compareSearchAddress(void);
    void queryShortAddress(void);
    void withdraw(void);
-   void commisioningProtocol(void);
    void queryChannel(int channel);
    void communicateCommand(const char* cmd, int respN, char* resp);
    int commissioningCommunication(const char* cmd);
@@ -27,8 +26,8 @@ public:
    
    bool initializeDali(void);
    void terminate(void);
-   void commisioning(void);
-   void setLightPower(unsigned char channel, unsigned char power);
+   void commisioningProtocol(void);
+   void setLightPower(unsigned int channel, unsigned int power);
    
    
 

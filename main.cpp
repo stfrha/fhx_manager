@@ -64,11 +64,15 @@ int main(int argc, char *argv[])
    
    while (true)
    {
+      dali.setLightPower(0, 0);
+      dali.setLightPower(1, 0);
       for (int i = 0; i < 100 ; i++)
       {
          ledStrip.setColor(0, 0, i);
          delay(15);
       }
+      dali.setLightPower(0, 0xfe);
+      dali.setLightPower(1, 0xfe);
       for (int i = 100; i >= 0 ; i--)
       {
          ledStrip.setColor(0, 0, i);
