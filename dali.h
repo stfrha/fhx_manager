@@ -17,8 +17,8 @@ private:
    void queryShortAddress(void);
    void withdraw(void);
    void queryChannel(int channel);
-   void communicateCommand(const char* cmd, int respN, char* resp);
-   int commissioningCommunication(const char* cmd);
+   void communicateDaliHatCommand(const char* cmd, int respN, char* resp);
+   int communicateDaliCommand(const char* cmd);
 
 
 public:   
@@ -28,6 +28,7 @@ public:
    void terminate(void);
    void commisioningProtocol(void);
    void setLightPower(unsigned int channel, unsigned int power);
+   bool isLightsOn(void);
    
    
 

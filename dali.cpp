@@ -34,13 +34,13 @@ bool Dali::initializeDali(void)
    // Test serial and DALI interface
    // write version request
    cout << "Sending version request..." << endl;
-   communicateCommand("v\n", 7, respBuf);
+   communicateDaliHatCommand("v\n", 7, respBuf);
 
    cout << "Sending power request..." << endl;
-   communicateCommand("p\n", 8, respBuf);
+   communicateDaliHatCommand("p\n", 8, respBuf);
 
    cout << "Sending power status request..." << endl;
-   communicateCommand("d\n", 3, respBuf);
+   communicateDaliHatCommand("d\n", 3, respBuf);
 
    cout << "Let's make sure the receiver buffer is empty, it takes some time..." << endl;
    int l = serialDataAvail(m_fd);
@@ -62,11 +62,11 @@ void Dali::setLightPower(unsigned int channel, unsigned int power)
    stream << "h" << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << channel * 2;
    stream << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << power << "\n";
    // cout << "Send command: " << stream.str();
-   commissioningCommunication(stream.str().c_str());
+   communicateDaliCommand(stream.str().c_str());
 }
 
 
-void Dali::communicateCommand(const char* cmd, int respN, char* resp)
+void Dali::communicateDaliHatCommand(const char* cmd, int respN, char* resp)
 {
    int i = 0;
    
@@ -105,7 +105,7 @@ void Dali::communicateCommand(const char* cmd, int respN, char* resp)
 }
 
 
-int Dali::commissioningCommunication(const char* cmd)
+int Dali::communicateDaliCommand(const char* cmd)
 {
    int i = 0;
    
@@ -185,7 +185,7 @@ void Dali::sendSearchAddressHigh(unsigned int searchAddress)
    m_rxSearchAddress = (m_rxSearchAddress & 0xffff) | (searchAddress & 0xff0000);
 
 #ifndef COMMISSIONING_TEST
-   commissioningCommunication(stream.str().c_str());
+   communicateDaliCommand(stream.str().c_str());
 #endif
 }
 
@@ -198,7 +198,7 @@ void Dali::sendSearchAddressMid(unsigned int searchAddress)
    m_rxSearchAddress = (m_rxSearchAddress & 0xff00ff) | (searchAddress & 0xff00);
 
 #ifndef COMMISSIONING_TEST
-   commissioningCommunication(stream.str().c_str());
+   communicateDaliCommand(stream.str().c_str());
 #endif
 }
 
@@ -211,7 +211,7 @@ void Dali::sendSearchAddressLow(unsigned int searchAddress)
    m_rxSearchAddress = (m_rxSearchAddress & 0xffff00) | (searchAddress & 0xff);
 
 #ifndef COMMISSIONING_TEST
-   commissioningCommunication(stream.str().c_str());
+   communicateDaliCommand(stream.str().c_str());
 #endif
 }
 
@@ -225,7 +225,7 @@ bool Dali::compareSearchAddress(void)
       ans = 0xff;
    }
 #else   
-   ans = commissioningCommunication("hA900\n");
+   ans = communicateDaliCommand("hA900\n");
    // cout << "Is there any more data in the buffer?" << endl;
    // int ic = serialGetchar(m_fd);
    // cout << "ic is: " << ic << endl;
@@ -240,7 +240,7 @@ bool Dali::compareSearchAddress(void)
 void Dali::queryShortAddress(void)
 {
 #ifndef COMMISSIONING_TEST
-   unsigned int ans = commissioningCommunication("hBB00\n");
+   unsigned int ans = communicateDaliCommand("hBB00\n");
   
    cout << "Query short address: " << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << ans << endl << std::dec;
 #endif
@@ -263,7 +263,7 @@ void Dali::withdraw(void)
       m_withdrawn2 = true;
    }
 #else
-   commissioningCommunication("hAB00\n");
+   communicateDaliCommand("hAB00\n");
             
 #endif
 
@@ -283,18 +283,18 @@ void Dali::commisioningProtocol(void)
 #ifndef COMMISSIONING_TEST
 
    cout << "Send terminate..." << endl;
-   commissioningCommunication("hA100\n");
+   communicateDaliCommand("hA100\n");
    
    delay(500);
 
 
    cout << "Broadcast reset..." << endl;
-   commissioningCommunication("t2000\n");
+   communicateDaliCommand("t2000\n");
    
    delay(500);
 
    cout << "Send all off..." << endl;
-   commissioningCommunication("hFF00\n");
+   communicateDaliCommand("hFF00\n");
    
    delay(500);
 
@@ -303,12 +303,12 @@ void Dali::commisioningProtocol(void)
    // but with A5FF I get all no after query
 
    cout << "Send initial twice..." << endl;
-   commissioningCommunication("tA500\n");
+   communicateDaliCommand("tA500\n");
 
    delay(500);
    
    cout << "Send randomize twice..." << endl;
-   commissioningCommunication("tA700\n");
+   communicateDaliCommand("tA700\n");
 
    delay(500);
 
@@ -457,7 +457,7 @@ void Dali::commisioningProtocol(void)
          stream << "hB7" << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << shortAddress << "\n";
          cout << "Program short address: " << shortAddress << " to matching device, using command: " << stream.str();
 #ifndef COMMISSIONING_TEST
-         commissioningCommunication(stream.str().c_str());
+         communicateDaliCommand(stream.str().c_str());
 #endif
          stream.clear();
          stream.str("");
@@ -491,12 +491,12 @@ void Dali::commisioningProtocol(void)
    cout << "Commisioning complete!!!" << endl;
    
    cout << "Send terminate..." << endl;
-   commissioningCommunication("hA100\n");
+   communicateDaliCommand("hA100\n");
    
    delay(500);
 
    cout << "Send on command..." << endl;
-   commissioningCommunication("hFF05\n");
+   communicateDaliCommand("hFF05\n");
    
    delay(500);
 }
@@ -541,3 +541,8 @@ void Dali::terminate(void)
    serialClose(m_fd);
 }
 
+
+bool Dali::isLightsOn(void)
+{
+   return (communicateDaliCommand("h0190\n") > -1);
+}

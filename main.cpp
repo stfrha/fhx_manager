@@ -58,26 +58,110 @@ int main(int argc, char *argv[])
       cout << "Error initializing Dali." << endl;
       return 1;
    }
-  
-   //commisioningProtocol(fd);
 
-   
+   //while (true)
+   //{
+   //   cout << "Fade all on" << endl;
+   //   ledStrip.fadeToColor(0x64, 0x64, 0x64, 4.5, EaseInQuad);
+   //   while (!ledStrip.isFadeComplete())
+   //   {
+   //      delay(500);
+   //   }
+
+   //   cout << "Fade to red" << endl;
+   //   ledStrip.fadeToColor(0x64, 0x0, 0x0, 4.5, EaseInQuad);
+   //   while (!ledStrip.isFadeComplete())
+   //   {
+   //      delay(500);
+   //   }
+
+   //   cout << "Fade to green" << endl;
+   //   ledStrip.fadeToColor(0x0, 0x64, 0x0, 4.5, EaseInQuad);
+   //   while (!ledStrip.isFadeComplete())
+   //   {
+   //      delay(500);
+   //   }
+
+   //   cout << "Fade to blue" << endl;
+   //   ledStrip.fadeToColor(0x0, 0x0, 0x64, 4.5, EaseInQuad);
+   //   while (!ledStrip.isFadeComplete())
+   //   {
+   //      delay(500);
+   //   }
+
+   //   cout << "Fade to black" << endl;
+   //   ledStrip.fadeToColor(0x0, 0x0, 0x0, 4.5, EaseInQuad);
+   //   while (!ledStrip.isFadeComplete())
+   //   {
+   //      delay(500);
+   //   }
+   //}
+
+
+
+   bool isOn = dali.isLightsOn();
+
    while (true)
    {
-      dali.setLightPower(0, 0);
-      dali.setLightPower(1, 0);
-      for (int i = 0; i < 100 ; i++)
+      if (dali.isLightsOn())
       {
-         ledStrip.setColor(0, 0, i);
-         delay(15);
+         if (!isOn)
+         {
+            cout << "Led stripe on at random color" << endl;
+
+            int colorCode = rand() % 7;
+            switch (colorCode)
+            {
+            case 0:
+               ledStrip.fadeToColor(0x64, 0x64, 0x64, 4.5, EaseInQuad);
+               break;
+            case 1:
+               ledStrip.fadeToColor(0x64, 0x0, 0x0, 4.5, EaseInQuad);
+               break;
+            case 2:
+               ledStrip.fadeToColor(0x0, 0x64, 0x00, 4.5, EaseInQuad);
+               break;
+            case 3:
+               ledStrip.fadeToColor(0x0, 0x0, 0x64, 4.5, EaseInQuad);
+               break;
+            case 4:
+               ledStrip.fadeToColor(0x64, 0x64, 0x0, 4.5, EaseInQuad);
+               break;
+            case 5:
+               ledStrip.fadeToColor(0x0, 0x64, 0x64, 4.5, EaseInQuad);
+               break;
+            case 6:
+               ledStrip.fadeToColor(0x64, 0x0, 0x64, 4.5, EaseInQuad);
+               break;
+            }
+         }
+         isOn = true;
       }
-      dali.setLightPower(0, 0xfe);
-      dali.setLightPower(1, 0xfe);
-      for (int i = 100; i >= 0 ; i--)
+      else
       {
-         ledStrip.setColor(0, 0, i);
-         delay(15);
+         if (isOn)
+         {
+            cout << "Led stripe off" << endl;
+            ledStrip.fadeToColor(0, 4.5, EaseInQuad);
+         }
+         isOn = false;
       }
+      delay(250);
+
+      //dali.setLightPower(0, 0);
+      //dali.setLightPower(1, 0);
+      //for (int i = 0; i < 100 ; i++)
+      //{
+      //   ledStrip.setColor(0, 0, i);
+      //   delay(15);
+      //}
+      //dali.setLightPower(0, 0xfe);
+      //dali.setLightPower(1, 0xfe);
+      //for (int i = 100; i >= 0 ; i--)
+      //{
+      //   ledStrip.setColor(0, 0, i);
+      //   delay(15);
+      //}
    }
 
    dali.terminate();
