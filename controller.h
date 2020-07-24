@@ -1,32 +1,40 @@
+#ifndef CONTROLLER_H
+#define CONTROLLER_H
+
 #include <iostream>
 #include <fstream>
 #include <string>
 
-#include "tempsensors.h"
-#include "relaycontrol.h"
-#include "logger.h"
-
+#include "led_strip.h"
+#include "Dali.h"
 
 class Controller
 {
 public:
    enum ControllerState
    {
-      automatic,
-      manual
+      allOn,
+      allOff,
+      preMovie,
+      movie,
+      pause,
+      endCredits
    };
   
 private:
-   TempSensors m_ts;
-   RelayControl m_rc;
-   Logger m_log;
    ControllerState m_state;
+   ControllerState m_prevState;
 
-       
-   void executeStep(void);
+   LedStrip m_ledStrip;
+   Dali m_dali;
+   bool m_lightOn;
+   bool m_stateChangePending;
+
    void prepareStatusMessage(void);
    std::string generateStatusMessage(int precision);
        
+   static void* monitorThread(void* threadId);
+
          
 public:
    Controller();
@@ -35,3 +43,5 @@ public:
 
    void executeCommand(std::string command);
 };
+
+#endif

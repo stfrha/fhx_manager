@@ -61,10 +61,54 @@ void Dali::setLightPower(unsigned int channel, unsigned int power)
    std::stringstream stream;
    stream << "h" << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << channel * 2;
    stream << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << power << "\n";
-   // cout << "Send command: " << stream.str();
+   cout << "Send command: " << stream.str();
    communicateDaliCommand(stream.str().c_str());
 }
 
+void Dali::setFadeTime(unsigned int channel, unsigned int fadeTime)
+//0 < 0.707 s
+//1   0, 707 s
+//2   1.000 s
+//3   1, 414 s
+//4   2.000 s
+//5   2, 828 s
+//6   4.000 s
+//7   5, 657 s
+//8   8.000 s
+//9   11, 314 s
+//10   16.000 s
+//11   22, 627 s
+//12   32.000 s
+//13   45, 255 s
+//14   64.000 s
+//15   90.510 s
+{
+   std::stringstream stream1;
+   stream1 << "hA3" << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << fadeTime << "\n";
+   cout << "Send command 1: " << stream1.str();
+   communicateDaliCommand(stream1.str().c_str());
+
+   std::stringstream stream2;
+   stream2 << "t" << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << channel * 2  + 1 << "2E\n";
+   cout << "Send command 2: " << stream2.str();
+   communicateDaliCommand(stream2.str().c_str());
+
+   // Now query fade time:
+   std::stringstream stream3;
+   stream3 << "h" << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << channel * 2 + 1 << "A5\n";
+   cout << "Send command 3: " << stream3.str();
+   int ret = communicateDaliCommand(stream3.str().c_str());
+
+   cout << "Result of query fade time after setting it: " << ((ret & 0xf0) / 16) << endl;
+}
+
+void Dali::broadcastLightPower(unsigned int power)
+{
+   std::stringstream stream;
+   stream << "hFE" << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << power << "\n";
+   cout << "Send command: " << stream.str();
+   communicateDaliCommand(stream.str().c_str());
+}
 
 void Dali::communicateDaliHatCommand(const char* cmd, int respN, char* resp)
 {
@@ -162,7 +206,7 @@ int Dali::communicateDaliCommand(const char* cmd)
       ss2 << ans2;
       ss2 >> std::hex >> ansInt2;
       
-      unsigned int ans = ansInt1 + ansInt2 * 16;
+      int ans = ansInt1 * 16 + ansInt2;
 
       c = (char)serialGetchar(m_fd);
       // cout << "Found J, I consumed: " << (int)c << endl;
@@ -544,5 +588,9 @@ void Dali::terminate(void)
 
 bool Dali::isLightsOn(void)
 {
-   return (communicateDaliCommand("h0190\n") > -1);
+   int ret = communicateDaliCommand("h0190\n");
+
+   // cout << "Light query command result: " << ret << endl;
+
+   return (ret > -1);
 }

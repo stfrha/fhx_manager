@@ -117,12 +117,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\comms.cpp" />
+    <ClCompile Include="..\..\..\controller.cpp" />
     <ClCompile Include="..\..\..\dali.cpp" />
     <ClCompile Include="..\..\..\easing.cpp" />
     <ClCompile Include="..\..\..\led_strip.cpp" />
     <ClCompile Include="..\..\..\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\comms.h" />
+    <ClInclude Include="..\..\..\controller.h" />
     <ClInclude Include="..\..\..\dali.h" />
     <ClInclude Include="..\..\..\easing.h" />
     <ClInclude Include="..\..\..\led_strip.h" />

@@ -28,6 +28,8 @@ public:
    void terminate(void);
    void commisioningProtocol(void);
    void setLightPower(unsigned int channel, unsigned int power);
+   void setFadeTime(unsigned int channel, unsigned int fadeTime);
+   void broadcastLightPower(unsigned int power);
    bool isLightsOn(void);
    
    
