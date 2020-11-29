@@ -14,13 +14,7 @@ using namespace std;
 
 pthread_mutex_t globalStatusMutex = PTHREAD_MUTEX_INITIALIZER;
 
-// Latest status is on the form:
-// {pool temp: 06.5},{solar temp 33.9},{filter pump on/off},{solar pump on/off},{manual/auto}
-// Example: "06.2,33.9,on,off,auto"
-
 string g_latestStatus;
-
-
 
 Controller::Controller() :
    m_state(allOn),
@@ -146,8 +140,8 @@ void* Controller::monitorThread(void* cntrlPointer)
             case preMovie:
                instance->m_dali.setFadeTime(0, 8);
                instance->m_dali.setFadeTime(1, 10);
-               instance->m_dali.setLightPower(0, 0x80);
-               instance->m_dali.setLightPower(1, 0x40);
+               instance->m_dali.setLightPower(0, 0xc0);
+               instance->m_dali.setLightPower(1, 0x80);
                instance->m_ledStrip.fadeToColor(0x64, 0x64, 0x0, 4.5, EaseInQuad);
                cout << "State is Pre Movie." << endl;
                break;
@@ -155,7 +149,7 @@ void* Controller::monitorThread(void* cntrlPointer)
                if (instance->m_prevState == preMovie)
                {
                   instance->m_dali.setFadeTime(0, 10);
-                  instance->m_dali.setFadeTime(1, 12);
+                  instance->m_dali.setFadeTime(1, 10);
                   instance->m_dali.broadcastLightPower(0x00);
                   instance->m_ledStrip.fadeToColor(0x0, 0x0, 0x0, 4.5, EaseInQuad);
                   cout << "State is Movie (from preMovie)." << endl;
@@ -166,6 +160,26 @@ void* Controller::monitorThread(void* cntrlPointer)
                   instance->m_dali.setFadeTime(1, 4);
                   instance->m_dali.broadcastLightPower(0x00);
                   instance->m_ledStrip.fadeToColor(0x0, 0x0, 0x0, 4.5, EaseInQuad);
+                  cout << "State is Movie (from preMovie)." << endl;
+               }
+               break;
+            case kidsMovie:
+               if (instance->m_prevState == preMovie)
+               {
+                  instance->m_dali.setFadeTime(0, 10);
+                  instance->m_dali.setFadeTime(1, 10);
+                  instance->m_dali.setLightPower(0, 0x80);
+                  instance->m_dali.setLightPower(1, 0x00);
+                  instance->m_ledStrip.fadeToColor(0x64, 0x64, 0x64, 4.5, EaseInQuad);
+                  cout << "State is Movie (from preMovie)." << endl;
+               }
+               else
+               {
+                  instance->m_dali.setFadeTime(0, 1);
+                  instance->m_dali.setFadeTime(1, 4);
+                  instance->m_dali.setLightPower(0, 0x80);
+                  instance->m_dali.setLightPower(1, 0x00);
+                  instance->m_ledStrip.fadeToColor(0x64, 0x64, 0x64, 4.5, EaseInQuad);
                   cout << "State is Movie (from preMovie)." << endl;
                }
                break;
@@ -201,7 +215,7 @@ void* Controller::monitorThread(void* cntrlPointer)
             instance->m_ledStrip.fadeToColor(0, 4.5, EaseInQuad);
          }
 
-         cout << "Setting m_lightOn to false" << endl;
+         // cout << "Setting m_lightOn to false" << endl;
 
          instance->m_lightOn = false;
 
@@ -216,6 +230,7 @@ ALON  - All on
 ALOF  - All off
 PRMV  - Pre Movie
 MOVI  - Movie
+KDMO  - Kids Movie (some light, but not on screen)
 PAUS  - Pause
 ENCR  - End Credits
 SREQ  - Request status string
@@ -260,6 +275,14 @@ void Controller::executeCommand(std::string command)
       m_stateChangePending = true;
 
       cout << "State is Movie." << endl;
+   }
+   else if (command == "KDMO")
+   {
+      m_prevState = m_state;
+      m_state = kidsMovie;
+      m_stateChangePending = true;
+
+      cout << "State is Kids Movie." << endl;
    }
    else if (command == "PAUS")
    {
@@ -321,6 +344,9 @@ string Controller::generateStatusMessage(int precision)
       break;
    case endCredits:
       statStream << "6";
+      break;
+   case kidsMovie:
+      statStream << "7";
       break;
    }
 

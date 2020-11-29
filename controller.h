@@ -18,7 +18,8 @@ public:
       preMovie,
       movie,
       pause,
-      endCredits
+      endCredits,
+      kidsMovie
    };
   
 private:

@@ -25,6 +25,7 @@ $allOn = "ALON";
 $allOff = "ALOF";
 $preMovie = "PRMV";
 $movie = "MOVI";
+$kidsMovie = "KDMO";
 $pause = "PAUS";
 $endCredits = "ENCR";
 $data = "";
@@ -48,6 +49,10 @@ if (isset($_GET["op"]))
    else if ($operation =="movie")
    {
       $command = $movie;
+   }
+   else if ($operation =="kids_movie")
+   {
+      $command = $kidsMovie;
    }
    else if ($operation =="pause")
    {
@@ -119,11 +124,19 @@ $connection->close_socket();
            </div>
          </div>
       </a>
-
+      
       <a href="?op=pre_movie">  
-         <div class="divBase row2SingleSplit <?php if ($lightsOn == "1") echo("enabled"); else echo("disabled");?> <?php if (($state == "3") && ($lightsOn == "1")) echo("selected"); else echo("notSelected"); ?>">
+         <div class="divBase row2DualSplit left <?php if ($lightsOn == "1") echo("enabled"); else echo("disabled");?> <?php if (($state == "3") && ($lightsOn == "1")) echo("selected"); else echo("notSelected"); ?>">
            <div class="centered">
              <h2>Before Movie</h2>
+           </div>
+         </div>
+      </a>
+
+      <a href="?op=kids_movie">  
+         <div class="divBase row2DualSplit right <?php if ($lightsOn == "1") echo("enabled"); else echo("disabled");?> <?php if (($state == "7") && ($lightsOn == "1")) echo("selected"); else echo("notSelected"); ?>">
+           <div class="centered">
+             <h2>Kids Movie</h2>
            </div>
          </div>
       </a>

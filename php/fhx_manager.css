@@ -57,11 +57,10 @@
   font-size: 4vMin;
 }
 
-.row2SingleSplit {
+.row2DualSplit {
   height: 18vh;
-  width: 90vw;
+  width: 40vw;
   top: 25vh;
-  left: 4vw; 
   font-size: 4vMin;
 }
 
@@ -75,45 +74,15 @@
 .row4DualSplit {
   height: 18vh;
   width: 40vw;
-  top: 70vh;
-  font-size: 4vMin;
-}
-/*
-.poolTempSplit {
-  height: 18vh;
-  width: 90vw;
-  top: 2vh;
-  left: 4vw; 
+  top: 71vh;
   font-size: 4vMin;
 }
 
-.solarTempSplit {
-  height: 10vh;
-  width: 90vw;
-  top: 25vh;
-  left: 4vw; 
-  font-size: 2.35vMin;
+.cpbBase {
+  box-sizing: content-box;
+  position: fixed;
+  z-index: 1;
+  overflow-x: hidden;
+  border: none;
 }
 
-.topButtonSplit {
-  height: 15vh;
-  width: 40vw;
-  top: 40vh;
-  font-size: 3vMin;
-}
-
-.bottomButtonSplit {
-  height: 15vh;
-  width: 40vw;
-  top: 60vh;
-  font-size: 3vMin;
-}
-
-.refreshSplit {
-  height: 8vh;
-  width: 40vw;
-  top: 80vh;
-  left: 4vw; 
-  font-size: 2vMin;
-}
-*/
