@@ -31,6 +31,11 @@
   right: 4vw;
 }
 
+/* Control the right side */
+.rightLeft {
+  right: 27.5vw;
+}
+
 /* If you want the content centered horizontally and vertically */
 .centered {
   text-align: center;
@@ -74,6 +79,13 @@
 .row4DualSplit {
   height: 18vh;
   width: 40vw;
+  top: 71vh;
+  font-size: 4vMin;
+}
+
+.row41DualSplit {
+  height: 18vh;
+  width: 18vw;
   top: 71vh;
   font-size: 4vMin;
 }

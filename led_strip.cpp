@@ -108,6 +108,8 @@ void LedStrip::setColor(int red, int green, int blue)
    softPwmWrite(RED_LED, 100-m_red);
    softPwmWrite(GREEN_LED, 100-m_green);
    softPwmWrite(BLUE_LED, 100-m_blue);
+   cout << "Writing color, r: " << 100 - m_red << ", g: " << 100 - m_green << ", b: " << 100 - m_blue << endl;
+   
 }
 
 void LedStrip::fadeToColor(unsigned int color, double duration, easing_functions easingFunction) // 0xRRGGBB

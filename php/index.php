@@ -21,13 +21,14 @@ $connection->open_socket(); // Connect PHP to RaspberryPi or computer.
 
 //////  Get Command from front end page
 
-$allOn = "ALON";
-$allOff = "ALOF";
-$preMovie = "PRMV";
-$movie = "MOVI";
-$kidsMovie = "KDMO";
-$pause = "PAUS";
-$endCredits = "ENCR";
+$allOn = "ALON------------";
+$allOff = "ALOF------------";
+$preMovie = "PRMV------------";
+$movie = "MOVI------------";
+$kidsMovie = "KDMO------------";
+$pause = "PAUS------------";
+$endCredits = "ENCR------------";
+$statusRequest = "SREQ------------";
 $data = "";
 
 if (isset($_GET["op"]))
@@ -64,13 +65,13 @@ if (isset($_GET["op"]))
    }
    else
    {
-      $command = "SREQ";
+      $command = $statusRequest;
    }
 }
 else
 {
    // If no command is specified we query and display status
-   $command = "SREQ";
+   $command = $statusRequest;
 }
 	
 echo 'Command: ' . $command;
@@ -166,9 +167,17 @@ $connection->close_socket();
       </a>
 
       <a href="index.php">  
-         <div class="divBase row4DualSplit right enabled notSelected">
+         <div class="divBase row41DualSplit rightLeft enabled notSelected">
            <div class="centered">
              <h2>Refresh</h2>
+           </div>
+         </div>
+      </a>
+
+      <a href="color.php">  
+         <div class="divBase row41DualSplit right enabled notSelected">
+           <div class="centered">
+             <h2>Colors</h2>
            </div>
          </div>
       </a>

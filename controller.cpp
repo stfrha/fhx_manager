@@ -20,7 +20,8 @@ Controller::Controller() :
    m_state(allOn),
    m_prevState(m_state),
    m_lightOn(true),
-   m_stateChangePending(false)
+   m_stateChangePending(false),
+   m_ledOverridePending(false)
 {
    
 }
@@ -205,7 +206,11 @@ void* Controller::monitorThread(void* cntrlPointer)
             instance->m_stateChangePending = false;
 
          }
-
+         else if (instance->m_ledOverridePending)
+         {
+            instance->m_ledStrip.setColor(instance->m_redColorOverride, instance->m_greenColorOverride, instance->m_blueColorOverride);            
+            instance->m_ledOverridePending = false;
+         }
       }
       else
       {
@@ -224,16 +229,17 @@ void* Controller::monitorThread(void* cntrlPointer)
    }
 }
 
-/* Messages are:
+/* Messages are 16 bytes:
 
-ALON  - All on
-ALOF  - All off
-PRMV  - Pre Movie
-MOVI  - Movie
-KDMO  - Kids Movie (some light, but not on screen)
-PAUS  - Pause
-ENCR  - End Credits
-SREQ  - Request status string
+ALON------------  - All on
+ALOF------------  - All off
+PRMV------------  - Pre Movie
+MOVI------------  - Movie
+KDMO------------  - Kids Movie (some light, but not on screen)
+PAUS------------  - Pause
+ENCR------------  - End Credits
+SREQ------------  - Request status string
+LCC(128,128,128)  - Led color command
 */
 
 // The following method will be called by and executed in
@@ -244,7 +250,9 @@ SREQ  - Request status string
 
 void Controller::executeCommand(std::string command)
 {
-   if (command == "ALON")
+   cout << "Received command: " << command << endl;
+   
+   if (command == "ALON------------")
    {
       m_prevState = m_state;
       m_state = allOn;
@@ -252,7 +260,7 @@ void Controller::executeCommand(std::string command)
    
       cout << "State is All On." << endl;
    }
-   else if (command == "ALOF")
+   else if (command == "ALOF------------")
    {
       m_prevState = m_state;
       m_state = allOff;
@@ -260,7 +268,7 @@ void Controller::executeCommand(std::string command)
 
       cout << "State is All Off." << endl;
    }
-   else if (command == "PRMV")
+   else if (command == "PRMV------------")
    {
       m_prevState = m_state;
       m_state = preMovie;
@@ -268,7 +276,7 @@ void Controller::executeCommand(std::string command)
 
       cout << "State is Pre Movie." << endl;
    }
-   else if (command == "MOVI")
+   else if (command == "MOVI------------")
    {
       m_prevState = m_state;
       m_state = movie;
@@ -276,7 +284,7 @@ void Controller::executeCommand(std::string command)
 
       cout << "State is Movie." << endl;
    }
-   else if (command == "KDMO")
+   else if (command == "KDMO------------")
    {
       m_prevState = m_state;
       m_state = kidsMovie;
@@ -284,7 +292,7 @@ void Controller::executeCommand(std::string command)
 
       cout << "State is Kids Movie." << endl;
    }
-   else if (command == "PAUS")
+   else if (command == "PAUS------------")
    {
       m_prevState = m_state;
       m_state = pause;
@@ -292,7 +300,7 @@ void Controller::executeCommand(std::string command)
 
       cout << "State is Pause." << endl;
    }
-   else if (command == "ENCR")
+   else if (command == "ENCR------------")
    {
       m_prevState = m_state;
       m_state = endCredits;
@@ -302,7 +310,30 @@ void Controller::executeCommand(std::string command)
    }
    else
    {
-      cout << "In future, will execute command: " << command << endl;
+      // Check if it is LCC
+      std::string stumpCommand = command.substr(0, 3);
+      
+      if (stumpCommand == "LCC")
+      {
+         // Decode color values and scale them to max
+         // being 100. pwm = (color * 100) / 255
+         
+         // Command is LCC(128,128,128)
+
+         std::string redStr = command.substr(4, 3);
+         std::string greenStr = command.substr(8, 3);
+         std::string blueStr = command.substr(12, 3);
+     
+         m_redColorOverride = (stoi(redStr) * 100) / 255;
+         m_greenColorOverride = (stoi(greenStr) * 100) / 255;
+         m_blueColorOverride = (stoi(blueStr) * 100) / 255;
+         
+         m_ledOverridePending = true;        
+      }
+      else
+      {
+         cout << "In future, will execute command: " << command << endl;
+      }
    }
 
    prepareStatusMessage();

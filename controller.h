@@ -30,6 +30,11 @@ private:
    Dali m_dali;
    bool m_lightOn;
    bool m_stateChangePending;
+   bool m_ledOverridePending;
+   unsigned int m_redColorOverride;
+   unsigned int m_greenColorOverride;
+   unsigned int m_blueColorOverride;
+
 
    void prepareStatusMessage(void);
    std::string generateStatusMessage(int precision);

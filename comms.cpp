@@ -75,20 +75,23 @@ void Comms::handleMessage(Controller* cntrl, int socketFd, char* buffer, int len
    int n;
 
    // Check if the buffer contains broken messages
-   // it is assumed that all messages are four characters.
-   if ((length % 4) != 0)
+   // it is assumed that all messages are 16 characters.
+   if ((length % 16) != 0)
    {
       // At least one broken message, discard the whole buffer
+      cout << "At least one broken message, discard the whole buffer" << endl;
+      cout << "-- Length is: " << length << endl;
+      cout << "-- Message data is: " << buffer << endl;
       return;
    }
 
-   int numOfMessages = length / 4;
+   int numOfMessages = length / 16;
 
    string strBuffer = buffer;
 
    for (int i = 0; i < numOfMessages; i++)
    {
-      string message = strBuffer.substr(i * 4, 4);
+      string message = strBuffer.substr(i * 16, 16);
       cntrl->executeCommand(message);
 
       n = write(socketFd, g_latestStatus.c_str(), g_latestStatus.length());
@@ -219,6 +222,7 @@ void* Comms::serverThread(void* cntrlPointer)
          printf("New connection , socket fd is %d , ip is : %s , port : %d\n", newSockfd, inet_ntoa(cli_addr.sin_addr), ntohs(cli_addr.sin_port));
 
          bzero(buffer, 256);
+         // shouldn't below be 256?
          n = read(newSockfd, buffer, 255);
          if (n < 0)
          {
