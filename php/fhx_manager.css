@@ -31,6 +31,11 @@
   right: 4vw;
 }
 
+/* Control the middle */
+.middle {
+  left: 36vw;
+}
+
 /* Control the right side */
 .rightLeft {
   right: 27.5vw;
@@ -41,7 +46,7 @@
   text-align: center;
 }
 
-
+/*
 .divBase {
   box-sizing: content-box;
   position: fixed;
@@ -53,41 +58,66 @@
   font-family: helvetica;
   font-weight: bold;
 }
+*/
 
+.divBase {
+   position: fixed;
+   z-index: 1;
+   overflow-x: hidden;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+
+.turnOffButton { 
+  height: 18vh;
+  width: 68vw;
+  top: 2vh;
+  left: 4vw;
+}
+
+.volumeUpButton { 
+  height: 8vh;
+  width: 22vw;
+  top: 2vh;
+  right: 4vw;
+}
+.volumeDownButton { 
+  height: 8vh;
+  width: 22vw;
+  top: 12vh;
+  right: 4vw;
+}
 
 .row1DualSplit { 
   height: 18vh;
-  width: 40vw;
-  top: 2vh;
-  font-size: 4vMin;
+  width: 45vw;
+  top: 22vh;
 }
 
 .row2DualSplit {
   height: 18vh;
-  width: 40vw;
-  top: 25vh;
-  font-size: 4vMin;
+  width: 45vw;
+  top: 42vh;
 }
 
 .row3DualSplit {
   height: 18vh;
-  width: 40vw;
-  top: 48vh;
-  font-size: 4vMin;
+  width: 45vw;
+  top: 62vh;
 }
 
-.row4DualSplit {
-  height: 18vh;
-  width: 40vw;
-  top: 71vh;
-  font-size: 4vMin;
+.row1TrippleSplit { 
+  height: 16vh;
+  width: 28vw;
+  top: 22vh;
 }
 
-.row41DualSplit {
-  height: 18vh;
-  width: 18vw;
-  top: 71vh;
-  font-size: 4vMin;
+.row2TrippleSplit { 
+  height: 16vh;
+  width: 28vw;
+  top: 40vh;
 }
 
 .cpbBase {
@@ -96,5 +126,9 @@
   z-index: 1;
   overflow-x: hidden;
   border: none;
+}
+
+.imgButton {
+   background-size: 100% 100%;
 }
 

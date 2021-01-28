@@ -34,38 +34,47 @@ $data = "";
 if (isset($_GET["op"]))
 {
    $operation = $_GET["op"];
-
-   if ($operation =="all_on")
+   
+   if ($operation[0] == '(')
    {
-      $command = $allOn;  
-   }
-   else if ($operation =="all_off")
-   {
-      $command = $allOff;
-   }
-   else if ($operation =="pre_movie")
-   {
-      $command = $preMovie;
-   }
-   else if ($operation =="movie")
-   {
-      $command = $movie;
-   }
-   else if ($operation =="kids_movie")
-   {
-      $command = $kidsMovie;
-   }
-   else if ($operation =="pause")
-   {
-      $command = $pause;
-   }
-   else if ($operation =="end_cred")
-   {
-      $command = $endCredits;
+      $command = "LCC" . $operation;
+         
+      echo 'Command: ' . $command;
    }
    else
    {
-      $command = $statusRequest;
+      if ($operation =="all_on")
+      {
+         $command = $allOn;  
+      }
+      else if ($operation =="all_off")
+      {
+         $command = $allOff;
+      }
+      else if ($operation =="pre_movie")
+      {
+         $command = $preMovie;
+      }
+      else if ($operation =="movie")
+      {
+         $command = $movie;
+      }
+      else if ($operation =="kids_movie")
+      {
+         $command = $kidsMovie;
+      }
+      else if ($operation =="pause")
+      {
+         $command = $pause;
+      }
+      else if ($operation =="end_cred")
+      {
+         $command = $endCredits;
+      }
+      else
+      {
+         $command = $statusRequest;
+      }
    }
 }
 else
@@ -117,46 +126,103 @@ $connection->close_socket();
          </div>
       </a>
 -->
-      <a href="?op=all_on">  
-         <div class="imgButton divBase turnOffButton" style="background-image:url('turn_off_button.png')">
+      <a href="index.php">  
+         <div class="imgButton divBase turnOffButton" style="background-image:url('back_button.png')">
          </div>
       </a>
 
-      <a href="?op=dummy">  
+      <a href="light.php?op=dummy">  
          <div class="imgButton divBase volumeUpButton" style="background-image:url('vol_up_button.png')">
          </div>
       </a>
 
-      <a href="?op=dummy">  
+      <a href="light.php?op=dummy">  
          <div class="imgButton divBase volumeDownButton" style="background-image:url('vol_down_button.png')">
          </div>
       </a>
 
-      <a href="?op=dummy">  
-         <div class="imgButton divBase row1DualSplit left" style="background-image:url('ps_button.png')">
+      <a href="light.php?op=all_on">  
+         <div class="imgButton divBase row1TrippleSplit left" style="background-image:url('light_all_on_button.png')">
          </div>
       </a>
 
-      <a href="?op=dummy">  
-         <div class="imgButton divBase row1DualSplit right" style="background-image:url('cc_button.png')">
+      <a href="light.php?op=all_off">  
+         <div class="imgButton divBase row1TrippleSplit middle" style="background-image:url('light_all_off_button.png')">
          </div>
       </a>
 
-      <a href="?op=dummy">  
-         <div class="imgButton divBase row2DualSplit left" style="background-image:url('tv_button.png')">
+      <a href="light.php?op=kids_movie">  
+         <div class="imgButton divBase row1TrippleSplit right" style="background-image:url('light_kids_movie_button.png')">
          </div>
       </a>
 
-      <a href="?op=dummy">  
-         <div class="imgButton divBase row2DualSplit right" style="background-image:url('other_button.png')">
+      <a href="light.php?op=pre_movie">  
+         <div class="imgButton divBase row2TrippleSplit left" style="background-image:url('light_before_button.png')">
          </div>
       </a>
 
-      <a href="light.php">  
-         <div class="imgButton divBase row3DualSplit left" style="background-image:url('light_button.png')">
+      <a href="light.php?op=movie">  
+         <div class="imgButton divBase row2TrippleSplit middle" style="background-image:url('light_movie_button.png')">
          </div>
       </a>
 
+      <a href="light.php?op=end_cred">  
+         <div class="imgButton divBase row2TrippleSplit right" style="background-image:url('light_end_button.png')">
+         </div>
+      </a>
+
+   <?php 
+   
+      $reds = array (
+         array( 51,  51,  51,  25,   0,   0,   0,   0,   0,  25,  51,  51,   0),
+         array(102, 102, 102,  51,   0,   0,   0,   0,   0,  51, 102, 102,  32),
+         array(153, 153, 153,  76,   0,   0,   0,   0,   0,  76, 153, 153,  64),
+         array(204, 204, 204, 102,   0,   0,   0,   0,   0, 102, 204, 204,  96),
+         array(255, 255, 255, 128,   0,   0,   0,   0,   0, 128, 255, 255, 128),
+         array(255, 255, 255, 153,  51,  51,  51,  51,  51, 153, 255, 255, 160),
+         array(255, 255, 255, 178, 102, 102, 102, 102, 102, 178, 255, 255, 192),
+         array(255, 255, 255, 204, 153, 153, 153, 153, 153, 204, 255, 255, 224),
+         array(255, 255, 255, 229, 204, 204, 204, 204, 204, 229, 255, 255, 255)
+      );
+
+      $greens = array (
+         array(  0,  25,  51,  51,  51,  51,  51,  25,   0,   0,   0,   0,   0),
+         array(  0,  51, 102, 102, 102, 102, 102,  51,   0,   0,   0,   0,  32),
+         array(  0,  76, 153, 153, 153, 153, 153,  76,   0,   0,   0,   0,  64),
+         array(  0, 102, 204, 204, 204, 204, 204, 102,   0,   0,   0,   0,  96),
+         array(  0, 128, 255, 255, 255, 255, 255, 128,   0,   0,   0,   0, 128),
+         array( 51, 153, 255, 255, 255, 255, 255, 153,  51,  51,  51,  51, 160),
+         array(102, 178, 255, 255, 255, 255, 255, 178, 102, 102, 102, 102, 192),
+         array(153, 204, 255, 255, 255, 255, 255, 204, 153, 153, 153, 153, 224),
+         array(204, 229, 255, 255, 255, 255, 255, 229, 204, 204, 204, 204, 255)
+      );
+
+      $blues = array (
+         array(  0,   0,   0,   0,  0,  25,  51,  51,  51,  51,  51,  25,   0),
+         array(  0,   0,   0,   0,  0,  51, 102, 102, 102, 102, 102,  51,  32),
+         array(  0,   0,   0,   0,  0,  76, 153, 153, 153, 153, 153,  76,  64),
+         array(  0,   0,   0,   0,  0, 102, 204, 204, 204, 204, 204, 102,  96),
+         array(  0,   0,   0,   0,  0, 128, 255, 255, 255, 255, 255, 128, 128),
+         array( 51,  51,  51,  51, 51, 153, 255, 255, 255, 255, 255, 153, 160),
+         array(102, 102, 102, 102,102, 178, 255, 255, 255, 255, 255, 178, 192),
+         array(153, 153, 153, 153,153, 204, 255, 255, 255, 255, 255, 204, 224),
+         array(204, 204, 204, 204,204, 229, 255, 255, 255, 255, 255, 229, 255)
+      );
+   
+      for ($x = 0; $x < 13; $x++)
+         for ($y = 0; $y < 9; $y++)
+         {
+            // Build color string of type "(129,054,255)"
+            // I.e. pad so all decimal numbers are three characters
+            $c = '(' .  str_pad($reds[$y][$x], 3, '0', STR_PAD_LEFT) . ',' . str_pad($greens[$y][$x], 3, '0', STR_PAD_LEFT) . ',' . str_pad($blues[$y][$x] , 3, '0', STR_PAD_LEFT) . ')';
+            echo '   <a href="?op=' . $c . '">';
+            echo "\r\n";
+
+            echo '      <div class="cpbBase" style="border:none; background-color:rgb' . $c . '; width:7vw; height:3vh; left:' . (0.64 + $x * 7.64) . 'vw; top:' . (($y * 3.64) + 58)  . 'vh;"></div>';
+            echo "\r\n";
+            echo '   </a>';
+         }
+   ?>
 
 <!--
       <a href="?op=all_off">  
