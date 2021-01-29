@@ -10,6 +10,7 @@ private:
    Controller * m_cntrl;
 
 
+
    static void* serverThread(void* threadId);
    static void handleMessage(Controller* cntrl, int socketFd, char* buffer, int length);
 
@@ -19,7 +20,9 @@ public:
    void initializeComms(Controller* cntrl);
 
    // Should probably have a destructor that stops all sockets
-
+   
+   
+   void yamahaClientComm(void);
 
 };
 

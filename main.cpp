@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
    cout << "Welcome to FHX-manager!" << endl;
 
    Comms comms;
-   Controller cntrl;
+   Controller cntrl(&comms);
 
    cntrl.initializeController();
    comms.initializeComms(&cntrl);

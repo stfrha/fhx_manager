@@ -59,13 +59,12 @@ Comms::Comms()
 void Comms::initializeComms(Controller* cntrl)
 {
    m_cntrl = cntrl;
-
    pthread_t threadId;
 
    int result = pthread_create(&threadId, NULL, serverThread, (void*)cntrl);
    if (result)
    {
-      cout << "Server Thread could not be created, " << result << endl;
+      cout << "Server thread could not be created, " << result << endl;
       exit(1);
    }
 }
@@ -105,7 +104,6 @@ void Comms::handleMessage(Controller* cntrl, int socketFd, char* buffer, int len
 void* Comms::serverThread(void* cntrlPointer)
 {
    Controller* cntrl = (Controller*)cntrlPointer;
-
 
    int masterSockfd;
    int newSockfd;
@@ -278,3 +276,49 @@ void* Comms::serverThread(void* cntrlPointer)
    }
 }
 
+void Comms::yamahaClientComm(void)
+{
+   cout << "Running yamaha comm test" << endl;
+   
+   int socket_desc = 0;
+   struct sockaddr_in server;
+   char yamaha_reply[200];
+   
+   socket_desc = socket(AF_INET, SOCK_STREAM, 0);
+   if (socket_desc == -1)
+   {
+      cout << "Could not create Yamaha client socket" << endl;
+   }
+   
+   server.sin_addr.s_addr = inet_addr("192.168.0.113");
+   server.sin_family = AF_INET;
+   server.sin_port = htons(50000);
+   
+   if (connect(socket_desc, (struct sockaddr *)&server, sizeof(server)) < 0)
+   {
+      cout << "Yamaha client connection error" << endl;     
+   }
+   
+   char message[] = "@MAIN:PWR=?\r\n";
+
+   cout << "Sending data..." << endl;
+   
+   if (send(socket_desc, message, strlen(message), 0) < 0)
+   {
+      cout << "Yamaha client send error" << endl;     
+   }
+
+   cout << "Receiving data..." << endl;
+   
+   int len = recv(socket_desc, yamaha_reply, 200, 0);
+   if (len < 0 )
+   {
+      cout << "Yamaha client receive error" << endl;     
+   }
+
+   cout << "Received " << len << " bytes." << endl;
+   
+   cout << "Got reply: " << yamaha_reply << endl;
+ 
+   close(socket_desc);
+}

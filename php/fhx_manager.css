@@ -91,31 +91,31 @@
 }
 
 .row1DualSplit { 
-  height: 18vh;
+  height: 10vh;
   width: 45vw;
-  top: 22vh;
+  top: 32vh;
 }
 
 .row2DualSplit {
-  height: 18vh;
+  height: 10vh;
   width: 45vw;
-  top: 42vh;
+  top: 52vh;
 }
 
 .row3DualSplit {
-  height: 18vh;
+  height: 10vh;
   width: 45vw;
-  top: 62vh;
+  top: 72vh;
 }
 
 .row1TrippleSplit { 
-  height: 16vh;
+  height: 12vh;
   width: 28vw;
-  top: 22vh;
+  top: 25vh;
 }
 
 .row2TrippleSplit { 
-  height: 16vh;
+  height: 12vh;
   width: 28vw;
   top: 40vh;
 }

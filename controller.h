@@ -8,6 +8,8 @@
 #include "led_strip.h"
 #include "Dali.h"
 
+class Comms;
+
 class Controller
 {
 public:
@@ -28,6 +30,7 @@ private:
 
    LedStrip m_ledStrip;
    Dali m_dali;
+   Comms* m_comms;
    bool m_lightOn;
    bool m_stateChangePending;
    bool m_ledOverridePending;
@@ -43,7 +46,7 @@ private:
 
          
 public:
-   Controller();
+   Controller(Comms* comms);
    
    void initializeController(void);
 

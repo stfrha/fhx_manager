@@ -9,6 +9,7 @@
 #include <pthread.h>
 
 #include "controller.h"
+#include "comms.h"
 
 using namespace std;
 
@@ -16,7 +17,8 @@ pthread_mutex_t globalStatusMutex = PTHREAD_MUTEX_INITIALIZER;
 
 string g_latestStatus;
 
-Controller::Controller() :
+Controller::Controller(Comms* comms) :
+   m_comms(comms),
    m_state(allOn),
    m_prevState(m_state),
    m_lightOn(true),
@@ -308,6 +310,15 @@ void Controller::executeCommand(std::string command)
 
       cout << "State is End credits." << endl;
    }
+   else if (command == "TESTYAMAHACOMM--")
+   {
+      cout << "Command for Yamaha comm test." << endl;
+      m_comms->yamahaClientComm();      
+      cout << "Command for Yamaha comm test finished." << endl;
+   }
+   
+   
+   
    else
    {
       // Check if it is LCC

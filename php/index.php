@@ -28,6 +28,7 @@ $movie = "MOVI------------";
 $kidsMovie = "KDMO------------";
 $pause = "PAUS------------";
 $endCredits = "ENCR------------";
+$testYamahaComm = "TESTYAMAHACOMM--";
 $statusRequest = "SREQ------------";
 $data = "";
 
@@ -62,6 +63,10 @@ if (isset($_GET["op"]))
    else if ($operation =="end_cred")
    {
       $command = $endCredits;
+   }
+   else if ($operation =="test_yamaha")
+   {
+      $command = $testYamahaComm;
    }
    else
    {
@@ -117,7 +122,7 @@ $connection->close_socket();
          </div>
       </a>
 -->
-      <a href="?op=all_on">  
+      <a href="?op=test_yamaha">  
          <div class="imgButton divBase turnOffButton" style="background-image:url('turn_off_button.png')">
          </div>
       </a>
