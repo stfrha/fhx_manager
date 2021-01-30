@@ -276,10 +276,8 @@ void* Comms::serverThread(void* cntrlPointer)
    }
 }
 
-void Comms::yamahaClientComm(void)
+int Comms::getYamahaSocket(void)
 {
-   cout << "Running yamaha comm test" << endl;
-   
    int socket_desc = 0;
    struct sockaddr_in server;
    char yamaha_reply[200];
@@ -298,6 +296,17 @@ void Comms::yamahaClientComm(void)
    {
       cout << "Yamaha client connection error" << endl;     
    }
+   
+   return socket_desc;
+}
+
+void Comms::yamahaClientComm(void)
+{
+   char yamaha_reply[200];
+
+   cout << "Running yamaha comm test" << endl;
+   
+   int socket_desc = getYamahaSocket();
    
    char message[] = "@MAIN:PWR=?\r\n";
 
@@ -322,3 +331,29 @@ void Comms::yamahaClientComm(void)
  
    close(socket_desc);
 }
+
+int Comms::yamahaComm(const char* request, char* reply, int replyMaxLen)
+{
+   int socket_desc = getYamahaSocket();
+   if (send(socket_desc, request, strlen(request), 0) < 0)
+   {
+      cout << "Yamaha client send error" << endl;     
+   }
+   
+   int len = recv(socket_desc, reply, replyMaxLen, 0);
+   if (len < 0 )
+   {
+      cout << "Yamaha client receive error" << endl;     
+   }
+
+   cout << "Received " << len << " bytes." << endl;
+   
+   cout << "Got reply: " << reply << endl;
+ 
+   close(socket_desc);
+   
+   return len;
+}
+
+
+

@@ -10,6 +10,7 @@
 
 #include "controller.h"
 #include "comms.h"
+#include "ynca.h"
 
 using namespace std;
 
@@ -17,8 +18,9 @@ pthread_mutex_t globalStatusMutex = PTHREAD_MUTEX_INITIALIZER;
 
 string g_latestStatus;
 
-Controller::Controller(Comms* comms) :
+Controller::Controller(Comms* comms, Ynca* ynca) :
    m_comms(comms),
+   m_ynca(ynca),
    m_state(allOn),
    m_prevState(m_state),
    m_lightOn(true),
@@ -316,9 +318,30 @@ void Controller::executeCommand(std::string command)
       m_comms->yamahaClientComm();      
       cout << "Command for Yamaha comm test finished." << endl;
    }
-   
-   
-   
+   else if (command == "SYSTEMOFF-------")
+   {
+      m_ynca->turnOff();
+   }
+   else if (command == "VOLUMEUP--------")
+   {
+      m_ynca->volUp();
+   }
+   else if (command == "VOLUMEDOWN------")
+   {
+      m_ynca->volDown();
+   }
+   else if (command == "SOURCEPS--------")
+   {
+      m_ynca->startSource(playStation);
+   }
+   else if (command == "SOURCECC--------")
+   {
+      m_ynca->startSource(chromecast);
+   }
+   else if (command == "SOURCETV--------")
+   {
+      m_ynca->startSource(television);
+   }
    else
    {
       // Check if it is LCC

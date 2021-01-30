@@ -9,6 +9,7 @@
 #include "Dali.h"
 
 class Comms;
+class Ynca;
 
 class Controller
 {
@@ -31,6 +32,7 @@ private:
    LedStrip m_ledStrip;
    Dali m_dali;
    Comms* m_comms;
+   Ynca* m_ynca;
    bool m_lightOn;
    bool m_stateChangePending;
    bool m_ledOverridePending;
@@ -46,7 +48,7 @@ private:
 
          
 public:
-   Controller(Comms* comms);
+   Controller(Comms* comms, Ynca* ynca);
    
    void initializeController(void);
 

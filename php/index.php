@@ -29,6 +29,17 @@ $kidsMovie = "KDMO------------";
 $pause = "PAUS------------";
 $endCredits = "ENCR------------";
 $testYamahaComm = "TESTYAMAHACOMM--";
+$systemOff = "SYSTEMOFF-------";
+$volumeUp = "VOLUMEUP--------";
+$volumeDown = "VOLUMEDOWN------";
+$sourcePlaystation = "SOURCEPS--------";
+$sourceChromeCast = "SOURCECC--------";
+$sourceTelevision = "SOURCETV--------";
+$sourceSpotify = "SOURCESPOTIFY---";
+$sourcePhono = "SOURCEPHONO-----";
+$sourceTuner = "SOURCETUNER-----";
+$sourceAux = "SOURCEAUX-------";
+$sourceUsb = "SOURCEUSB-------";
 $statusRequest = "SREQ------------";
 $data = "";
 
@@ -67,6 +78,30 @@ if (isset($_GET["op"]))
    else if ($operation =="test_yamaha")
    {
       $command = $testYamahaComm;
+   }
+   else if ($operation =="system_off")
+   {
+      $command = $systemOff;
+   }
+   else if ($operation =="vol_up")
+   {
+      $command = $volumeUp;
+   }
+   else if ($operation =="vol_down")
+   {
+      $command = $volumeDown;
+   }
+   else if ($operation =="sourcePs")
+   {
+      $command = $sourcePlaystation;
+   }
+   else if ($operation =="sourceCc")
+   {
+      $command = $sourceChromeCast;
+   }
+   else if ($operation =="sourceTv")
+   {
+      $command = $sourceTelevision;
    }
    else
    {
@@ -114,40 +149,32 @@ $connection->close_socket();
        }
    </style>
    <body>
-
-<!--   
-      <a href="?op=all_on">  
-         <div class="divBase row1DualSplit left <?php if ($lightsOn == "1") echo("enabled"); else echo("disabled");?> <?php if (($state == "1") && ($lightsOn == "1")) echo("selected"); else echo("notSelected"); ?>">
-            <img src="turn_off_button.png" />
-         </div>
-      </a>
--->
-      <a href="?op=test_yamaha">  
+      <a href="?op=system_off">
          <div class="imgButton divBase turnOffButton" style="background-image:url('turn_off_button.png')">
          </div>
       </a>
 
-      <a href="?op=dummy">  
+      <a href="?op=vol_up">  
          <div class="imgButton divBase volumeUpButton" style="background-image:url('vol_up_button.png')">
          </div>
       </a>
 
-      <a href="?op=dummy">  
+      <a href="?op=vol_down">  
          <div class="imgButton divBase volumeDownButton" style="background-image:url('vol_down_button.png')">
          </div>
       </a>
 
-      <a href="?op=dummy">  
+      <a href="?op=sourcePs">  
          <div class="imgButton divBase row1DualSplit left" style="background-image:url('ps_button.png')">
          </div>
       </a>
 
-      <a href="?op=dummy">  
+      <a href="?op=sourceCc">  
          <div class="imgButton divBase row1DualSplit right" style="background-image:url('cc_button.png')">
          </div>
       </a>
 
-      <a href="?op=dummy">  
+      <a href="?op=sourceTv">  
          <div class="imgButton divBase row2DualSplit left" style="background-image:url('tv_button.png')">
          </div>
       </a>
@@ -161,75 +188,6 @@ $connection->close_socket();
          <div class="imgButton divBase row3DualSplit left" style="background-image:url('light_button.png')">
          </div>
       </a>
-
-
-<!--
-      <a href="?op=all_off">  
-         <div class="divBase row1DualSplit right <?php if ($lightsOn == "1") echo("enabled"); else echo("disabled");?> <?php if (($state == "2") && ($lightsOn == "1")) echo("selected"); else echo("notSelected"); ?>">
-           <div class="centered">
-             <h2>Main Off</h2>
-           </div>
-         </div>
-      </a>
-
-      <a href="?op=pre_movie">  
-         <div class="divBase row2DualSplit left <?php if ($lightsOn == "1") echo("enabled"); else echo("disabled");?> <?php if (($state == "3") && ($lightsOn == "1")) echo("selected"); else echo("notSelected"); ?>">
-           <div class="centered">
-             <h2>Before Movie</h2>
-           </div>
-         </div>
-      </a>
-
-      <a href="?op=kids_movie">  
-         <div class="divBase row2DualSplit right <?php if ($lightsOn == "1") echo("enabled"); else echo("disabled");?> <?php if (($state == "7") && ($lightsOn == "1")) echo("selected"); else echo("notSelected"); ?>">
-           <div class="centered">
-             <h2>Kids Movie</h2>
-           </div>
-         </div>
-      </a>
-
-      <a href="?op=movie">  
-         <div class="divBase row3DualSplit left <?php if ($lightsOn == "1") echo("enabled"); else echo("disabled");?> <?php if (($state == "4") && ($lightsOn == "1")) echo("selected"); else echo("notSelected"); ?>">
-           <div class="centered">
-             <h2>Movie</h2>
-           </div>
-         </div>
-      </a>
-
-      <a href="?op=pause">  
-         <div class="divBase row3DualSplit right <?php if ($lightsOn == "1") echo("enabled"); else echo("disabled");?> <?php if (($state == "5") && ($lightsOn == "1")) echo("selected"); else echo("notSelected"); ?>">
-           <div class="centered">
-             <h2>Pause</h2>
-           </div>
-         </div>
-      </a>
-
-      <a href="?op=end_cred">  
-         <div class="divBase row4DualSplit left <?php if ($lightsOn == "1") echo("enabled"); else echo("disabled");?> <?php if (($state == "6") && ($lightsOn == "1")) echo("selected"); else echo("notSelected"); ?>">
-           <div class="centered">
-             <h2>End Credits</h2>
-           </div>
-         </div>
-      </a>
-
-      <a href="index.php">  
-         <div class="divBase row41DualSplit rightLeft enabled notSelected">
-           <div class="centered">
-             <h2>Refresh</h2>
-           </div>
-         </div>
-      </a>
-
-      <a href="color.php">  
-         <div class="divBase row41DualSplit right enabled notSelected">
-           <div class="centered">
-             <h2>Colors</h2>
-           </div>
-         </div>
-      </a>
--->      
-      
-      
    </body>
 </html>
 

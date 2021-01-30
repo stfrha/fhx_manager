@@ -14,6 +14,8 @@ private:
    static void* serverThread(void* threadId);
    static void handleMessage(Controller* cntrl, int socketFd, char* buffer, int length);
 
+   int getYamahaSocket(void);
+
 public:
    Comms();
 
@@ -21,8 +23,8 @@ public:
 
    // Should probably have a destructor that stops all sockets
    
-   
    void yamahaClientComm(void);
+   int yamahaComm(const char* request, char* reply, int replyMaxLen);
 
 };
 

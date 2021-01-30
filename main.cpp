@@ -7,6 +7,7 @@
 
 #include "comms.h"
 #include "controller.h"
+#include "ynca.h"
 
 using namespace std;
 
@@ -23,7 +24,8 @@ int main(int argc, char *argv[])
    cout << "Welcome to FHX-manager!" << endl;
 
    Comms comms;
-   Controller cntrl(&comms);
+   Ynca ynca(&comms);
+   Controller cntrl(&comms, &ynca);
 
    cntrl.initializeController();
    comms.initializeComms(&cntrl);
