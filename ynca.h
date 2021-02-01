@@ -18,7 +18,7 @@ class Ynca
 {
 private:
    Comms* m_comms;
-   char m_reply[200];
+   char m_reply[2000];
    static const char* const sourceStrings[];
    
    bool isYamahaOn(void);

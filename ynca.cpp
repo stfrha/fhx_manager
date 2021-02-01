@@ -41,68 +41,99 @@ bool Ynca::isYamahaOn(void)
    char message[] = "@MAIN:PWR=?\r\n";
    char gotValidAnswer = false;
    char ans = false;
-   int tries = 0;
-   
-   while (!gotValidAnswer && (tries < 4))
+
+   if (m_comms->yamahaComm(message, m_reply, 2000) > 0)
    {
-      if (m_comms->yamahaComm(message, m_reply, 200) > 0)
+      string rep(m_reply);
+      
+      if (rep == "@MAIN:PWR=Standby\r\n")
       {
-         string rep(m_reply);
-         
-         if (rep == "@MAIN:PWR=Standby\r\n")
-         {
-            ans = false;
-            gotValidAnswer = true;
-         }
-         else if (rep == "@MAIN:PWR=On\r\n")
-         {
-            ans = true;
-            gotValidAnswer = true;
-         }
+         ans = false;
+         gotValidAnswer = true;
       }
-      tries++;
+      else if (rep == "@MAIN:PWR=On\r\n")
+      {
+         ans = true;
+         gotValidAnswer = true;
+      }
    }
-   
-   if (tries >= 5)
-   {
-      cout << "Did not get a response from yamaha, even after " << tries << " tries." << endl;
-   }
+
+
+
+//   int tries = 0;
+//   
+//   while (!gotValidAnswer && (tries < 4))
+//   {
+//      if (m_comms->yamahaComm(message, m_reply, 2000) > 0)
+//      {
+//         string rep(m_reply);
+//         
+//         if (rep == "@MAIN:PWR=Standby\r\n")
+//         {
+//            ans = false;
+//            gotValidAnswer = true;
+//         }
+//         else if (rep == "@MAIN:PWR=On\r\n")
+//         {
+//            ans = true;
+//            gotValidAnswer = true;
+//         }
+//      }
+//      tries++;
+//   }
+//   
+//   if (tries >= 5)
+//   {
+//      cout << "Did not get a response from yamaha, even after " << tries << " tries." << endl;
+//   }
    
    return ans;
 }
 
 void Ynca::turnOn(void)
 {
-   int tries = 0;
-
-   while (!isYamahaOn() && (tries < 4))
+   if (!isYamahaOn())
    {
       char message[] = "@MAIN:PWR=On\r\n";
-
-      m_comms->yamahaComm(message, m_reply, 200);
+      m_comms->yamahaComm(message, m_reply, 2000);
    }
-
-   if (tries >= 5)
-   {
-      cout << "Was not able to turn on yamaha, even after " << tries << " tries." << endl;
-   }
+   
+   
+//   int tries = 0;
+//   while (!isYamahaOn() && (tries < 4))
+//   {
+//      char message[] = "@MAIN:PWR=On\r\n";
+//
+//      m_comms->yamahaComm(message, m_reply, 200);
+//   }
+//
+//   if (tries >= 5)
+//   {
+//      cout << "Was not able to turn on yamaha, even after " << tries << " tries." << endl;
+//   }
 }
 
 void Ynca::turnOff(void)
 {
-   int tries = 0;
-
-   while (isYamahaOn() && (tries < 4))
+   if (isYamahaOn())
    {
       char message[] = "@MAIN:PWR=Standby\r\n";
-
-      m_comms->yamahaComm(message, m_reply, 200);
+      m_comms->yamahaComm(message, m_reply, 2000);
    }
 
-   if (tries >= 5)
-   {
-      cout << "Was not able to turn off yamaha, even after " << tries << " tries." << endl;
-   }
+//   int tries = 0;
+//
+//   while (isYamahaOn() && (tries < 4))
+//   {
+//      char message[] = "@MAIN:PWR=Standby\r\n";
+//
+//      m_comms->yamahaComm(message, m_reply, 200);
+//   }
+//
+//   if (tries >= 5)
+//   {
+//      cout << "Was not able to turn off yamaha, even after " << tries << " tries." << endl;
+//   }
 }
 
 void Ynca::startSource(YamahaSourcesEnum source)
@@ -115,26 +146,27 @@ void Ynca::startSource(YamahaSourcesEnum source)
    }
 
    turnOn();
+   m_comms->yamahaComm(sourceStrings[source], m_reply, 2000);
    
-   do
-   {
-      m_comms->yamahaComm(sourceStrings[source], m_reply, 200);
-   } while ((string(m_reply) != sourceStrings[source]) && (tries < 5));
-      
-   if (tries >= 5)
-   {
-      cout << "Was not able to change source, even after " << tries << " tries." << endl;
-   }
+//   do
+//   {
+//      m_comms->yamahaComm(sourceStrings[source], m_reply, 200);
+//   } while ((string(m_reply) != sourceStrings[source]) && (tries < 5));
+//      
+//   if (tries >= 5)
+//   {
+//      cout << "Was not able to change source, even after " << tries << " tries." << endl;
+//   }
 }
 
 void Ynca::volUp(void)
 {
-   m_comms->yamahaComm("@MAIN:VOL=Up 1 dB\r\n", m_reply, 200);
+   m_comms->yamahaComm("@MAIN:VOL=Up 1 dB\r\n", m_reply, 2000);
 }
 
 void Ynca::volDown(void)
 {
-   m_comms->yamahaComm("@MAIN:VOL=Down 1 dB\r\n", m_reply, 200);
+   m_comms->yamahaComm("@MAIN:VOL=Down 1 dB\r\n", m_reply, 2000);
 }
 
 

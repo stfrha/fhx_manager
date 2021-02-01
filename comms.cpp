@@ -347,6 +347,8 @@ int Comms::yamahaComm(const char* request, char* reply, int replyMaxLen)
    }
 
    cout << "Received " << len << " bytes." << endl;
+
+   reply[len] = 0;
    
    cout << "Got reply: " << reply << endl;
  

@@ -6,7 +6,8 @@
 #include <string>
 
 #include "led_strip.h"
-#include "Dali.h"
+#include "dali.h"
+#include "benq.h"
 
 class Comms;
 class Ynca;
@@ -31,6 +32,7 @@ private:
 
    LedStrip m_ledStrip;
    Dali m_dali;
+   Benq m_benq;
    Comms* m_comms;
    Ynca* m_ynca;
    bool m_lightOn;

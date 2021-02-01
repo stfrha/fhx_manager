@@ -48,7 +48,11 @@ void Controller::initializeController(void)
       cout << "Monitor thread could not be created, " << result << endl;
       exit(1);
    }
-
+   
+   if (!m_benq.initializeBenq())
+   {
+      cout << "Error initializing Benq." << endl;
+   }
 }
 
 void* Controller::monitorThread(void* cntrlPointer)
@@ -321,6 +325,7 @@ void Controller::executeCommand(std::string command)
    else if (command == "SYSTEMOFF-------")
    {
       m_ynca->turnOff();
+      m_benq.turnOff();
    }
    else if (command == "VOLUMEUP--------")
    {
@@ -332,14 +337,17 @@ void Controller::executeCommand(std::string command)
    }
    else if (command == "SOURCEPS--------")
    {
+      m_benq.turnOn();
       m_ynca->startSource(playStation);
    }
    else if (command == "SOURCECC--------")
    {
+      m_benq.turnOn();
       m_ynca->startSource(chromecast);
    }
    else if (command == "SOURCETV--------")
    {
+      m_benq.turnOn();
       m_ynca->startSource(television);
    }
    else
