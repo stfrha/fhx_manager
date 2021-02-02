@@ -23,6 +23,8 @@ Controller::Controller(Comms* comms, Ynca* ynca) :
    m_ynca(ynca),
    m_state(allOn),
    m_prevState(m_state),
+   m_yamahaOn(false),
+   m_benqOn(false),
    m_lightOn(true),
    m_stateChangePending(false),
    m_ledOverridePending(false)
@@ -53,6 +55,10 @@ void Controller::initializeController(void)
    {
       cout << "Error initializing Benq." << endl;
    }
+   
+   // Yamaha is ok to communicate with even before comms has been initialized
+   m_yamahaOn = m_ynca->isYamahaOn();
+   m_benqOn = m_benq.isBenqOn();
 }
 
 void* Controller::monitorThread(void* cntrlPointer)
@@ -227,9 +233,13 @@ void* Controller::monitorThread(void* cntrlPointer)
             cout << "Led stripe off" << endl;
             instance->m_ledStrip.fadeToColor(0, 4.5, EaseInQuad);
          }
+         else if (instance->m_ledOverridePending)
+         {
+            instance->m_ledStrip.setColor(instance->m_redColorOverride, instance->m_greenColorOverride, instance->m_blueColorOverride);            
+            instance->m_ledOverridePending = false;
+         }
 
          // cout << "Setting m_lightOn to false" << endl;
-
          instance->m_lightOn = false;
 
       }
@@ -247,6 +257,12 @@ KDMO------------  - Kids Movie (some light, but not on screen)
 PAUS------------  - Pause
 ENCR------------  - End Credits
 SREQ------------  - Request status string
+SYSTEMOFF-------  - Turn system off
+VOLUMEUP--------  - Volume up
+VOLUMEDOWN------  - Volume down
+SOURCEPS--------  - Start source PS
+SOURCECC--------  - Start source CC
+SOURCETV--------  - Start source TV
 LCC(128,128,128)  - Led color command
 */
 
@@ -326,6 +342,8 @@ void Controller::executeCommand(std::string command)
    {
       m_ynca->turnOff();
       m_benq.turnOff();
+      m_yamahaOn = false;
+      m_benqOn = false;
    }
    else if (command == "VOLUMEUP--------")
    {
@@ -339,16 +357,61 @@ void Controller::executeCommand(std::string command)
    {
       m_benq.turnOn();
       m_ynca->startSource(playStation);
+      m_yamahaOn = true;
+      m_benqOn = true;
+
    }
    else if (command == "SOURCECC--------")
    {
       m_benq.turnOn();
       m_ynca->startSource(chromecast);
+      m_yamahaOn = true;
+      m_benqOn = true;
    }
    else if (command == "SOURCETV--------")
    {
       m_benq.turnOn();
       m_ynca->startSource(television);
+      m_yamahaOn = true;
+      m_benqOn = true;
+   }
+   else if (command == "SOURCESPOTIFY---")
+   {
+      m_benq.turnOn();
+      m_ynca->startSource(spotify);
+      m_yamahaOn = true;
+   }
+   else if (command == "SOURCEVINYL-----")
+   {
+      m_benq.turnOn();
+      m_ynca->startSource(vinyl);
+      m_yamahaOn = true;
+   }
+   else if (command == "SOURCETUNER-----")
+   {
+      m_benq.turnOn();
+      m_ynca->startSource(tuner);
+      m_yamahaOn = true;
+   }
+   else if (command == "SOURCERPI-------")
+   {
+      m_benq.turnOn();
+      m_ynca->startSource(raspberryPi);
+      m_yamahaOn = true;
+      m_benqOn = true;
+   }
+   else if (command == "SOURCEAUX-------")
+   {
+      m_benq.turnOn();
+      m_ynca->startSource(aux);
+      m_yamahaOn = true;
+   }
+   else if (command == "SOURCEBR--------")
+   {
+      m_benq.turnOn();
+      m_ynca->startSource(bluRay);
+      m_yamahaOn = true;
+      m_benqOn = true;
    }
    else
    {
@@ -385,8 +448,8 @@ void Controller::executeCommand(std::string command)
 string Controller::generateStatusMessage(int precision)
 {
    // Latest status is on the form:
-   // {pool temp: 06.5};{solar temp 33.9};{filter pump on/off};{solar pump on/off};{manual/auto};{date};{time}
-   // Example: "06.2;33.9;on;off;auto;2019-07-14;23:37:45"
+   // {Light power on=1 or off=2};{Light state};{Yamaha power, 1=On, 2=Standby};{Benq power, 1=On, 2=Off}
+   // Example: "2;4;2;2" Light power on, Movie state, Yamaha on, Benq On
 
    ostringstream statStream;
 
@@ -401,26 +464,42 @@ string Controller::generateStatusMessage(int precision)
    switch (m_state)
    {
    case allOn:
-      statStream << "1";
+      statStream << "1;";
       break;
    case allOff:
-      statStream << "2";
+      statStream << "2;";
       break;
    case preMovie:
-      statStream << "3";
+      statStream << "3;";
       break;
    case movie:
-      statStream << "4";
+      statStream << "4;";
       break;
    case pause:
-      statStream << "5";
+      statStream << "5;";
       break;
    case endCredits:
-      statStream << "6";
+      statStream << "6;";
       break;
    case kidsMovie:
-      statStream << "7";
+      statStream << "7;";
       break;
+   }
+   if (m_yamahaOn)
+   {
+      statStream << "1;";
+   }
+   else
+   {
+      statStream << "2;";
+   }
+   if (m_benqOn)
+   {
+      statStream << "1";
+   }
+   else
+   {
+      statStream << "2";
    }
 
    return statStream.str();

@@ -15,7 +15,7 @@ class Ynca;
 class Controller
 {
 public:
-   enum ControllerState
+   enum LightControllerState
    {
       allOn,
       allOff,
@@ -27,14 +27,16 @@ public:
    };
   
 private:
-   ControllerState m_state;
-   ControllerState m_prevState;
+   LightControllerState m_state;
+   LightControllerState m_prevState;
 
    LedStrip m_ledStrip;
    Dali m_dali;
    Benq m_benq;
    Comms* m_comms;
    Ynca* m_ynca;
+   bool m_yamahaOn;
+   bool m_benqOn;
    bool m_lightOn;
    bool m_stateChangePending;
    bool m_ledOverridePending;

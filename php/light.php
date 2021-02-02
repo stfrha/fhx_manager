@@ -1,106 +1,7 @@
 <?php
-echo 'Current PHP version: ' . phpversion();
-
 ini_set("display_errors",1);
 error_reporting(E_ALL);
-
-include './socket.php';
-
-$RaspberryPiIP = "127.0.0.1"; // Change by your RaspberryPi/PC IP 
-
-// Read port number from file: /home/pi/therminal/socket_config.txt
-$myfile = fopen("/home/pi/fhx_manager/socket_config.txt", "r") or die("Unable to open file!");
-$portString = fgets($myfile);
-fclose($myfile);
-
-$RaspberryPiPORT = (int)$portString; // Change by your RaspberryPi / PC Port Number ..
-$connection = new Socket($RaspberryPiIP,$RaspberryPiPORT); // Create a new socet Connection object. 
-$connection->init();
-
-$connection->open_socket(); // Connect PHP to RaspberryPi or computer.
-
-//////  Get Command from front end page
-
-$allOn = "ALON------------";
-$allOff = "ALOF------------";
-$preMovie = "PRMV------------";
-$movie = "MOVI------------";
-$kidsMovie = "KDMO------------";
-$pause = "PAUS------------";
-$endCredits = "ENCR------------";
-$statusRequest = "SREQ------------";
-$data = "";
-
-if (isset($_GET["op"]))
-{
-   $operation = $_GET["op"];
-   
-   if ($operation[0] == '(')
-   {
-      $command = "LCC" . $operation;
-         
-      echo 'Command: ' . $command;
-   }
-   else
-   {
-      if ($operation =="all_on")
-      {
-         $command = $allOn;  
-      }
-      else if ($operation =="all_off")
-      {
-         $command = $allOff;
-      }
-      else if ($operation =="pre_movie")
-      {
-         $command = $preMovie;
-      }
-      else if ($operation =="movie")
-      {
-         $command = $movie;
-      }
-      else if ($operation =="kids_movie")
-      {
-         $command = $kidsMovie;
-      }
-      else if ($operation =="pause")
-      {
-         $command = $pause;
-      }
-      else if ($operation =="end_cred")
-      {
-         $command = $endCredits;
-      }
-      else
-      {
-         $command = $statusRequest;
-      }
-   }
-}
-else
-{
-   // If no command is specified we query and display status
-   $command = $statusRequest;
-}
-	
-echo 'Command: ' . $command;
-   
-$connection->send_data($command); //Send command String
-
-$fhxManagerStatus = $connection->read_data();
-
-// Latest status is on the form:
-// {lights on},{state} where lights on: 1=on, 2=off, and status: 1=all on, 2=all off, 3=pre movie, 4=movie, 5=pause, 6=end credits
-// Example "1,4"
-
-echo 'status: ' . $fhxManagerStatus;
-
-$statusArray = explode(";", $fhxManagerStatus);
-$lightsOn = $statusArray[0];
-$state  = $statusArray[1];
-
-$connection->close_socket(); 
-
+include './comms.php';
 ?>
 <html>
    <head>
@@ -141,6 +42,10 @@ $connection->close_socket();
          </div>
       </a>
 
+<?php 
+if ($lightsOn == "1")
+{
+   echo <<<ECHOEND
       <a href="light.php?op=all_on">  
          <div class="imgButton divBase row1TrippleSplit left" style="background-image:url('light_all_on_button.png')">
          </div>
@@ -170,6 +75,16 @@ $connection->close_socket();
          <div class="imgButton divBase row2TrippleSplit right" style="background-image:url('light_end_button.png')">
          </div>
       </a>
+ECHOEND;
+}
+else
+{
+   echo <<<ECHOEND
+      <div class="imgButton divBase lightButtonsOverlay" style="background-image:url('light_switch_off.png')">
+      </div>
+ECHOEND;
+}
+?>
 
    <?php 
    

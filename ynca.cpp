@@ -6,24 +6,29 @@
 using namespace std;
 
 // Maintain this order:
-//   playStation,
-//   chromecast,
-//   television,
-//   turnTable,
-//   spotify,
-//   tuner,
-//   aux,
-//   usb,
+// playStation,
+// chromecast,
+// television,
+// vinyl,
+// spotify,
+// tuner,
+// aux,
+// usb,
+// bluRay,
+// raspberryPi,
+
 
 const char* const Ynca::sourceStrings[] = {
   "@MAIN:INP=AV1\r\n",        //   playStation
   "@MAIN:INP=AV2\r\n",        //   chromecast,
   "@MAIN:INP=AV3\r\n",        //   television,
-  "@MAIN:INP=Phono\r\n",      //   turnTable,
+  "@MAIN:INP=Phono\r\n",      //   vinyl,
   "@MAIN:INP=Spotify\r\n",    //   spotify,
-  "@MAIN:INP=Tuner\r\n"       //   tuner
-  "@MAIN:INP=AV5\r\n"         //   aux
-  "@MAIN:INP=USB\r\n"         //   usb
+  "@MAIN:INP=Tuner\r\n",      //   tuner
+  "@MAIN:INP=AV5\r\n",        //   aux
+  "@MAIN:INP=USB\r\n",        //   usb
+  "@MAIN:INP=AV5\r\n",        //   blu-ray
+  "@MAIN:INP=AV4\r\n"         //   raspberryPi
 };
 
 Ynca::Ynca(Comms* comms) :

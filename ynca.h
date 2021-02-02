@@ -6,11 +6,13 @@ enum YamahaSourcesEnum
    playStation,
    chromecast,
    television,
-   turnTable,
+   vinyl,
    spotify,
    tuner,
    aux,
    usb,
+   bluRay,
+   raspberryPi,
    lastSource
 };
 
@@ -21,13 +23,13 @@ private:
    char m_reply[2000];
    static const char* const sourceStrings[];
    
-   bool isYamahaOn(void);
    void turnOn(void);
    
 public:   
    Ynca(Comms* comms);
 
    void initialize(void);
+   bool isYamahaOn(void);
    void turnOff(void);
    void startSource(YamahaSourcesEnum source);
    void volUp(void);
