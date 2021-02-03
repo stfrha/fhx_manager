@@ -32,8 +32,6 @@ public:
    bool isYamahaOn(void);
    void turnOff(void);
    void startSource(YamahaSourcesEnum source);
-   std::string getVolume(void);
-   void setVolume(std::string vol);
    void volUp(void);
    void volDown(void);
 };

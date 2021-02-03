@@ -260,6 +260,7 @@ SREQ------------  - Request status string
 SYSTEMOFF-------  - Turn system off
 VOLUMEUP--------  - Volume up
 VOLUMEDOWN------  - Volume down
+VOLUMEVAL(-45.5)  - Volume down Could also be VOLUMEVAL(2)----
 SOURCEPS--------  - Start source PS
 SOURCECC--------  - Start source CC
 SOURCETV--------  - Start source TV
@@ -377,19 +378,16 @@ void Controller::executeCommand(std::string command)
    }
    else if (command == "SOURCESPOTIFY---")
    {
-      m_benq.turnOn();
       m_ynca->startSource(spotify);
       m_yamahaOn = true;
    }
    else if (command == "SOURCEVINYL-----")
    {
-      m_benq.turnOn();
       m_ynca->startSource(vinyl);
       m_yamahaOn = true;
    }
    else if (command == "SOURCETUNER-----")
    {
-      m_benq.turnOn();
       m_ynca->startSource(tuner);
       m_yamahaOn = true;
    }
@@ -402,7 +400,6 @@ void Controller::executeCommand(std::string command)
    }
    else if (command == "SOURCEAUX-------")
    {
-      m_benq.turnOn();
       m_ynca->startSource(aux);
       m_yamahaOn = true;
    }
@@ -412,6 +409,21 @@ void Controller::executeCommand(std::string command)
       m_ynca->startSource(bluRay);
       m_yamahaOn = true;
       m_benqOn = true;
+   }
+   else if (command.substr(0, 9) == "VOLUMEVAL")
+   {
+      std::string volValStr = command.substr(10);
+      volValStr = volValStr.substr(0, volValStr.find(")"));
+      
+      // Check so that first decimal place is there
+      if (volValStr.find(".") == string::npos)
+      {
+         volValStr += ".0";
+      }
+      
+      cout << "Setting volume: " << volValStr << endl;
+      
+      m_ynca->setVolume(volValStr);
    }
    else
    {
@@ -448,8 +460,8 @@ void Controller::executeCommand(std::string command)
 string Controller::generateStatusMessage(int precision)
 {
    // Latest status is on the form:
-   // {Light power on=1 or off=2};{Light state};{Yamaha power, 1=On, 2=Standby};{Benq power, 1=On, 2=Off}
-   // Example: "2;4;2;2" Light power on, Movie state, Yamaha on, Benq On
+   // {Light power on=1 or off=2};{Light state};{Yamaha power, 1=On, 2=Standby};{Benq power, 1=On, 2=Off};{Volume -23.5}
+   // Example: "2;4;2;2;-23.5" Light power on, Movie state, Yamaha on, Benq On, Volume -23.5 dB
 
    ostringstream statStream;
 
@@ -495,12 +507,14 @@ string Controller::generateStatusMessage(int precision)
    }
    if (m_benqOn)
    {
-      statStream << "1";
+      statStream << "1;";
    }
    else
    {
-      statStream << "2";
+      statStream << "2;";
    }
+   
+   statStream << m_ynca->getVolume();
 
    return statStream.str();
 }

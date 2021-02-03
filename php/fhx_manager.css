@@ -90,6 +90,20 @@
   right: 4vw;
 }
 
+.row1NoSplit { 
+  height: 12vh;
+  width: 60vw;
+  top: 34vh;
+  left: 20vw;
+}
+
+.row2NoSplit { 
+  height: 12vh;
+  width: 60vw;
+  top: 54vh;
+  left: 20vw;
+}
+
 .row1DualSplit { 
   height: 9vh;
   width: 45vw;
@@ -143,6 +157,13 @@
   width: 70vw;
   top: 27vh;
   left: 15vw;
+}
+
+.curtainsOverlay { 
+  height: 57vh;
+  width: 80vw;
+  top: 20vh;
+  left: 10vw;
 }
 
 .cpbBase {

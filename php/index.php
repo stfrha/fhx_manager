@@ -19,62 +19,62 @@ include './comms.php';
        }
    </style>
    <body>
-      <a href="?op=system_off">
-         <div class="imgButton divBase turnOffButton" style="background-image:url('<?php if ($yamahaPower == "1") echo("turn_off_button.png"); else echo("system_is_off_button.png");?>')">
+      <a href="confirm_system_off.php">
+         <div class="imgButton divBase turnOffButton" style="background-image:url('turn_off_button.png')">
          </div>
       </a>
 
-      <a href="?op=vol_up">  
-         <div class="imgButton divBase volumeUpButton" style="background-image:url('vol_up_button.png')">
+      <a href="index.php">  
+         <div class="imgButton divBase volumeUpButton" style="background-image:url('refresh_button.png')">
          </div>
       </a>
 
-      <a href="?op=vol_down">  
-         <div class="imgButton divBase volumeDownButton" style="background-image:url('vol_down_button.png')">
+      <a href="volume.php?op=<?php echo($volume)?>">  
+         <div class="imgButton divBase volumeDownButton" style="background-image:url('vol_button.png')">
          </div>
       </a>
 
-      <a href="?op=sourcePs">  
+      <a href="confirm_system_on.php?op=sourcePs">  
          <div class="imgButton divBase row1DualSplit left" style="background-image:url('ps_button.png')">
          </div>
       </a>
 
-      <a href="?op=sourceCc">  
+      <a href="confirm_system_on.php?op=sourceCc">  
          <div class="imgButton divBase row1DualSplit right" style="background-image:url('cc_button.png')">
          </div>
       </a>
 
-      <a href="?op=sourceTv">  
+      <a href="confirm_system_on.php?op=sourceTv">  
          <div class="imgButton divBase row2DualSplit left" style="background-image:url('tv_button.png')">
          </div>
       </a>
 
-      <a href="?op=sourceBr">  
+      <a href="confirm_system_on.php?op=sourceBr">  
          <div class="imgButton divBase row2DualSplit right" style="background-image:url('blu_ray_button.png')">
          </div>
       </a>
 
-      <a href="?op=sourceRpi">  
+      <a href="confirm_system_on.php?op=sourceRpi">  
          <div class="imgButton divBase row3DualSplit left" style="background-image:url('rpi_button.png')">
          </div>
       </a>
 
-      <a href="?op=sourceSpotify">  
+      <a href="confirm_system_on.php?op=sourceSpotify">  
          <div class="imgButton divBase row4DualSplit left" style="background-image:url('spotify_button.png')">
          </div>
       </a>
 
-      <a href="?op=sourceVinyl">  
+      <a href="confirm_system_on.php?op=sourceVinyl">  
          <div class="imgButton divBase row4DualSplit right" style="background-image:url('vinyl_button.png')">
          </div>
       </a>
 
-      <a href="?op=sourceAux">  
+      <a href="confirm_system_on.php?op=sourceAux">  
          <div class="imgButton divBase row5DualSplit left" style="background-image:url('aux_button.png')">
          </div>
       </a>
 
-      <a href="?op=sourceTuner">  
+      <a href="confirm_system_on.php?op=sourceTuner">  
          <div class="imgButton divBase row5DualSplit right" style="background-image:url('tuner_button.png')">
          </div>
       </a>

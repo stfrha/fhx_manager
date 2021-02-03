@@ -30,6 +30,10 @@ $testYamahaComm = "TESTYAMAHACOMM--";
 $systemOff = "SYSTEMOFF-------";
 $volumeUp = "VOLUMEUP--------";
 $volumeDown = "VOLUMEDOWN------";
+
+// VOLUMEVAL(-45.5)  - Volume, could also be VOLUMEVAL(2)----
+$volumeValue = "VOLUMEVAL-------";
+
 $sourcePlaystation = "SOURCEPS--------";
 $sourceChromeCast = "SOURCECC--------";
 $sourceTelevision = "SOURCETV--------";
@@ -55,8 +59,12 @@ if (isset($_GET["op"]))
    }
    else
    {
-
-      if ($operation =="all_on")
+      if (substr($operation, 0, 3) == "vol")
+      {
+         $command = "VOLUMEVAL(" .  substr($operation, 3) . ")------";
+         $command = substr($command, 0, 16);
+      }
+      else if ($operation =="all_on")
       {
          $command = $allOn;  
       }
@@ -165,6 +173,7 @@ $lightsOn = $statusArray[0];
 $state  = $statusArray[1];
 $yamahaPower = $statusArray[2];
 $benqPower = $statusArray[3];
+$volume = $statusArray[4];
 
 $connection->close_socket(); 
 

@@ -22,9 +22,9 @@ const char* const Ynca::sourceStrings[] = {
   "@MAIN:INP=AV1\r\n",        //   playStation
   "@MAIN:INP=AV2\r\n",        //   chromecast,
   "@MAIN:INP=AV3\r\n",        //   television,
-  "@MAIN:INP=PHONO\r\n",      //   vinyl,
+  "@MAIN:INP=Phono\r\n",      //   vinyl,
   "@MAIN:INP=Spotify\r\n",    //   spotify,
-  "@MAIN:INP=TUNER\r\n",      //   tuner
+  "@MAIN:INP=Tuner\r\n",      //   tuner
   "@MAIN:INP=AV5\r\n",        //   aux
   "@MAIN:INP=USB\r\n",        //   usb
   "@MAIN:INP=AV5\r\n",        //   blu-ray
@@ -174,29 +174,4 @@ void Ynca::volDown(void)
    m_comms->yamahaComm("@MAIN:VOL=Down 1 dB\r\n", m_reply, 2000);
 }
 
-string Ynca::getVolume(void)
-{
-   char message[] = "@MAIN:VOL=?\r\n";
 
-   if (m_comms->yamahaComm(message, m_reply, 2000) > 0)
-   {
-      string rep(m_reply);
-      
-      rep = rep.substr(rep.find("=") + 1);
-      rep = rep.substr(0, rep.size() - 2);
-      
-      cout << "Yamaha volume: " << rep << endl;
-
-      return rep;
-   }
-   return "-80.0";
-}
-
-void Ynca::setVolume(string vol)
-{
-   string msg = "@MAIN:VOL=" + vol + "\r\n";
-
-   cout << "Setting volume: " << vol << endl;
-
-   m_comms->yamahaComm(msg.c_str(), m_reply, 2000);
-}
