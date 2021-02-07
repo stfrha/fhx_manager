@@ -29,7 +29,7 @@ include './comms.php';
          </div>
       </a>
 
-      <a href="volume.php?op=<?php echo($volume)?>">  
+      <a href="volume.php?op=<?php echo("is" . $volume)?>">  
          <div class="imgButton divBase volumeDownButton" style="background-image:url('vol_button.png')">
          </div>
       </a>

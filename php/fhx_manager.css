@@ -152,6 +152,26 @@
   top: 40vh;
 }
 
+.row1Vol { 
+  height: 12vh;
+  width: 60vw;
+  top: 38vh;
+  left: 20vw;
+}
+
+.row2Vol { 
+  height: 8vh;
+  width: 28vw;
+  top: 59vh;
+}
+
+.row3Vol { 
+  height: 12vh;
+  width: 28vw;
+  top: 72vh;
+}
+
+
 .lightButtonsOverlay { 
   height: 28vh;
   width: 70vw;

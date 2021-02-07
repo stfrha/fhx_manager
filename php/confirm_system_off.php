@@ -18,9 +18,6 @@ error_reporting(E_ALL);
        }
    </style>
    <body>
-      <div class="imgButton divBase curtainsOverlay" style="background-image:url('open_curtains.png')">
-      </div>
-
       <a href="index.php?op=system_off">
          <div class="imgButton divBase row1NoSplit" style="background-image:url('turn_off_button.png')">
          </div>

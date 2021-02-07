@@ -70,9 +70,6 @@ else
        }
    </style>
    <body>
-      <div class="imgButton divBase curtainsOverlay" style="background-image:url('open_curtains.png')">
-      </div>
-
       <a href="index.php?op=<?php echo($operation); ?>">
          <div class="imgButton divBase row1NoSplit" style="background-image:url('<?php echo($image); ?>')">
          </div>

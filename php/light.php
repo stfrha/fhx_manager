@@ -20,25 +20,18 @@ include './comms.php';
    </style>
    <body>
 
-<!--   
-      <a href="?op=all_on">  
-         <div class="divBase row1DualSplit left <?php if ($lightsOn == "1") echo("enabled"); else echo("disabled");?> <?php if (($state == "1") && ($lightsOn == "1")) echo("selected"); else echo("notSelected"); ?>">
-            <img src="turn_off_button.png" />
-         </div>
-      </a>
--->
-      <a href="index.php">  
-         <div class="imgButton divBase turnOffButton" style="background-image:url('back_button.png')">
+      <a href="confirm_system_off.php">
+         <div class="imgButton divBase turnOffButton" style="background-image:url('turn_off_button.png')">
          </div>
       </a>
 
-      <a href="light.php?op=dummy">  
-         <div class="imgButton divBase volumeUpButton" style="background-image:url('vol_up_button.png')">
+      <a href="light.php">  
+         <div class="imgButton divBase volumeUpButton" style="background-image:url('refresh_button.png')">
          </div>
       </a>
 
-      <a href="light.php?op=dummy">  
-         <div class="imgButton divBase volumeDownButton" style="background-image:url('vol_down_button.png')">
+      <a href="volume.php?op=<?php echo($volume)?>">  
+         <div class="imgButton divBase volumeDownButton" style="background-image:url('vol_button.png')">
          </div>
       </a>
 
