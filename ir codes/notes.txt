@@ -1,0 +1,10 @@
+Lirc version: 0.9.4c-9
+
+in=23
+out=24
+
+/dev/lirc0 is ?
+/dev/lirc1 is receiver
+
+
+
