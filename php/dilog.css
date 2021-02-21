@@ -1,0 +1,178 @@
+
+/* Split the screen in half */
+.disabled {
+  background-color: Red;
+  color: DimGray;
+  opacity: 0.75;
+}
+
+.enabled {
+  background-color: DeepPink;
+  color: Black;
+  opacity: 1;
+}
+
+.selected {
+  border-color: LightPink;
+}
+
+.notSelected {
+  border-color: DarkRed;
+}
+
+
+/* Control the left side */
+.left {
+  left: 4vw;
+}
+
+/* Control the right side */
+.right {
+  right: 4vw;
+}
+
+/* Control the middle of a normal size button*/
+.middle {
+  left: 40vw;
+}
+
+.fourSplitCol2 {
+  left: 28vw;
+}
+
+.fourSplitCol3 {
+  right: 28vw;
+}
+
+/* If you want the content centered horizontally and vertically */
+.centered {
+  text-align: center;
+}
+
+.divBase {
+   position: fixed;
+   z-index: 1;
+   overflow-x: hidden;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+
+.turnOffButton { 
+  height: 18vh;
+  width: 68vw;
+  top: 2vh;
+  left: 4vw;
+}
+
+.volumeUpButton { 
+  height: 8vh;
+  width: 22vw;
+  top: 2vh;
+  right: 4vw;
+}
+.volumeDownButton { 
+  height: 8vh;
+  width: 22vw;
+  top: 12vh;
+  right: 4vw;
+}
+
+.buttonSize { 
+  height: 6vh;
+  width: 20vw;
+}
+
+.tButtonSize { 
+  height: 14vh;
+  width: 12vw;
+}
+
+.upDwnButtonSize { 
+  height: 6vh;
+  width: 24vw;
+}
+
+.okButtonSize { 
+   height: 10vh; 
+   width: 28vw; 
+}
+
+.colorButtonSize { 
+  height: 5vh;
+  width: 18vw;
+}
+
+
+.row1Page1 { 
+  top: 22vh;
+}
+
+.row2Page1 { 
+  top: 29vh;
+}
+
+.row3Page1 { 
+  top: 36vh;
+}
+
+.row4Page1 { 
+  top: 43vh;
+}
+
+.row5 { 
+  top: 53vh;
+}
+
+.row7 { 
+  top: 75vh;
+}
+
+.row8 { 
+  top: 85vh;
+}
+
+.row1Page2 { 
+  top: 22vh;
+}
+
+.row2Page2 { 
+  top: 31vh;
+}
+
+.row3Page2 { 
+  top: 40vh;
+}
+
+.okButtonPos { 
+   top: 62vh; 
+   left: 36vw; 
+}
+
+.upDwnButtonPos {
+   left: 38vw;
+}
+
+.leftButtonPos { 
+   top: 60vh; 
+   left: 12vw; 
+}
+
+.rightButtonPos { 
+   top: 60vh; 
+   right: 12vw; 
+}
+
+.cpbBase {
+  box-sizing: content-box;
+  position: fixed;
+  z-index: 1;
+  overflow-x: hidden;
+  border: none;
+}
+
+.imgButton {
+   background-size: 100% 100%;
+}
+

@@ -44,10 +44,26 @@ include './comms.php';
          </div>
       </a>
 
+<?php 
+if (($yamahaPower == "1") && ($source == "2")) 
+{
+   echo <<<ECHODILOG
+      <a href="dilog_page1.php">  
+         <div class="imgButton divBase row2DualSplit left" style="background-image:url('tv_button.png')">
+         </div>
+      </a>
+ECHODILOG;
+}
+else
+{
+  echo <<<ECHOCONFIRM
       <a href="confirm_system_on.php?op=sourceTv">  
          <div class="imgButton divBase row2DualSplit left" style="background-image:url('tv_button.png')">
          </div>
       </a>
+ECHOCONFIRM;
+}   
+?>
 
       <a href="confirm_system_on.php?op=sourceBr">  
          <div class="imgButton divBase row2DualSplit right" style="background-image:url('blu_ray_button.png')">

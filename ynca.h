@@ -36,4 +36,5 @@ public:
    void setVolume(std::string vol);
    void volUp(void);
    void volDown(void);
+   YamahaSourcesEnum getCurrentSource(void);
 };

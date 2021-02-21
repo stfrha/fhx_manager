@@ -200,3 +200,56 @@ void Ynca::setVolume(string vol)
 
    m_comms->yamahaComm(msg.c_str(), m_reply, 2000);
 }
+
+YamahaSourcesEnum Ynca::getCurrentSource(void)
+{
+   char message[] = "@MAIN:INP=?\r\n";
+
+   if (m_comms->yamahaComm(message, m_reply, 2000) > 0)
+   {
+      string rep(m_reply);
+      
+      if (rep == "@MAIN:INP=AV1\r\n")
+      {
+         return playStation;
+      }
+      else if (rep == "@MAIN:INP=AV2\r\n")
+      {
+         return chromecast;
+      }
+      else if (rep == "@MAIN:INP=AV3\r\n")
+      {
+         return television;
+      }
+      else if (rep == "@MAIN:INP=PHONO\r\n")
+      {
+         return vinyl;
+      }
+      else if (rep == "@MAIN:INP=Spotify\r\n")
+      {
+         return spotify;
+      }
+      else if (rep == "@MAIN:INP=TUNER\r\n")
+      {
+         return tuner;
+      }
+      else if (rep == "@MAIN:INP=AV5\r\n")
+      {
+         return aux;
+      }
+      else if (rep == "@MAIN:INP=USB\r\n")
+      {
+         return usb;
+      }
+      else if (rep == "@MAIN:INP=AV5\r\n")
+      {
+         return bluRay;
+      }
+      else if (rep == "@MAIN:INP=AV4\r\n")
+      {
+         return raspberryPi;
+      }
+   }
+
+}
+

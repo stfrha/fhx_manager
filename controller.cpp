@@ -514,7 +514,9 @@ string Controller::generateStatusMessage(int precision)
       statStream << "2;";
    }
    
-   statStream << m_ynca->getVolume();
+   statStream << m_ynca->getVolume() << ";";
+   
+   statStream << (int)m_ynca->getCurrentSource();
 
    return statStream.str();
 }

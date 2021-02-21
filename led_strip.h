@@ -11,8 +11,8 @@
 #include "..\easing-functions\src\easing.h"
 
 #define BLUE_LED 25
-#define RED_LED 28
-#define GREEN_LED 29
+#define RED_LED 29
+#define GREEN_LED 28
 
 #define SEC_CLOCK_TICK 0.015
 #define MS_CLOCK_TICK SEC_CLOCK_TICK * 1000

@@ -174,6 +174,7 @@ $state  = $statusArray[1];
 $yamahaPower = $statusArray[2];
 $benqPower = $statusArray[3];
 $volume = $statusArray[4];
+$source = $statusArray[5];
 
 $connection->close_socket(); 
 
