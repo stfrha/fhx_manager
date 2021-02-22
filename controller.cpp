@@ -530,7 +530,7 @@ void Controller::prepareStatusMessage(void)
    // The global status needs thus be protected
    // by mutex.
    pthread_mutex_lock(&globalStatusMutex);
-   g_latestStatus = generateStatusMessage(3);
+   g_latestStatus = stat;
    pthread_mutex_unlock(&globalStatusMutex);
 }
 

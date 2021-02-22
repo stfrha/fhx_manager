@@ -4,14 +4,19 @@
 class Comms
 {
 private:
-   int getYamahaSocket(void);
+   int m_socket_desc;
+
+   static void* receiverThread(void* threadId);
+
 
 public:
    Comms();
    // Should probably have a destructor that stops all sockets
    
-   void yamahaClientComm(void);
-   int yamahaComm(const char* request, char* reply, int replyMaxLen);
+   int getYamahaSocket(void);
+   void closeSocket(void);
+   int yamahaComm(int socket_desc, const char* request);
+   int yamahaReceive(int socket_desc);
 };
 
 #endif

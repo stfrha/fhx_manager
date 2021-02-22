@@ -332,27 +332,44 @@ void Comms::yamahaClientComm(void)
    close(socket_desc);
 }
 
-int Comms::yamahaComm(const char* request, char* reply, int replyMaxLen)
+int Comms::yamahaComm(const char* request, char* reply, int replyMaxLen, bool purge)
 {
+   cout << "Starting Yamaha comm!" << endl;
+
+   cout << "Sending message: '" << request << "'" << endl;
+   
    int socket_desc = getYamahaSocket();
    if (send(socket_desc, request, strlen(request), 0) < 0)
    {
       cout << "Yamaha client send error" << endl;     
    }
+
+   cout << "Calling recv!" << endl;
    
    int len = recv(socket_desc, reply, replyMaxLen, 0);
    if (len < 0 )
    {
       cout << "Yamaha client receive error" << endl;     
    }
+   else
+   {
+      cout << "Received " << len << " bytes." << endl;
 
-   cout << "Received " << len << " bytes." << endl;
-
-   reply[len] = 0;
+      reply[len] = 0;
+      
+      cout << "Got reply: " << reply << endl;
+   }
    
-   cout << "Got reply: " << reply << endl;
+   if (purge)
+   {
+      delay(500);
+      len = recv(socket_desc, reply, replyMaxLen, 0);
+      cout << "Purged: " << len << " characters." << endl;
+   }
  
    close(socket_desc);
+
+   cout << "Yamaha comm finished" << endl;
    
    return len;
 }

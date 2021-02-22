@@ -14,10 +14,11 @@ if (isset($_GET["op"]))
    {
       $image = "cc_button.png";  
    }
-   else if ($operation =="sourceTv")
-   {
-      $image = "tv_button.png";  
-   }
+   // Handled below
+   // else if ($operation =="sourceTv")
+   // {
+   //    $image = "tv_button.png";  
+   // }
    else if ($operation =="sourceBr")
    {
       $image = "blu_ray_button.png";  
@@ -70,11 +71,26 @@ else
        }
    </style>
    <body>
-      <a href="index.php?op=<?php echo($operation); ?>">
-         <div class="imgButton divBase row1NoSplit" style="background-image:url('<?php echo($image); ?>')">
+   
+<?php
+if ($operation =="sourceTv")
+{
+   echo <<<TVSOURCE
+      <a href="dilog_page1.php?op=sourceTv">
+         <div class="imgButton divBase row1NoSplit" style="background-image:url('tv_button.png')">
          </div>
       </a>
-
+TVSOURCE;
+}
+else
+{
+   echo("      <a href=\"index.php?op=" . $operation . "\">\r\n");
+   echo("         <div class=\"imgButton divBase row1NoSplit\" style=\"background-image:url('" . $image . "')\">\r\n");
+   echo("         </div>\r\n");
+   echo("      </a>\r\n");
+   echo("\r\n");
+}
+?>   
       <a href="index.php">
          <div class="imgButton divBase row2NoSplit" style="background-image:url('back_button.png')">
          </div>

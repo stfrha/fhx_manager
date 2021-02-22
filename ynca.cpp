@@ -62,35 +62,6 @@ bool Ynca::isYamahaOn(void)
          gotValidAnswer = true;
       }
    }
-
-
-
-//   int tries = 0;
-//   
-//   while (!gotValidAnswer && (tries < 4))
-//   {
-//      if (m_comms->yamahaComm(message, m_reply, 2000) > 0)
-//      {
-//         string rep(m_reply);
-//         
-//         if (rep == "@MAIN:PWR=Standby\r\n")
-//         {
-//            ans = false;
-//            gotValidAnswer = true;
-//         }
-//         else if (rep == "@MAIN:PWR=On\r\n")
-//         {
-//            ans = true;
-//            gotValidAnswer = true;
-//         }
-//      }
-//      tries++;
-//   }
-//   
-//   if (tries >= 5)
-//   {
-//      cout << "Did not get a response from yamaha, even after " << tries << " tries." << endl;
-//   }
    
    return ans;
 }
@@ -100,22 +71,14 @@ void Ynca::turnOn(void)
    if (!isYamahaOn())
    {
       char message[] = "@MAIN:PWR=On\r\n";
-      m_comms->yamahaComm(message, m_reply, 2000);
+      m_comms->yamahaComm(message, m_reply, 2000, true);
+      
+      // Here additional data flows from Yamaha
+      // We need to eat that data before we move on
+      
+      
+      
    }
-   
-   
-//   int tries = 0;
-//   while (!isYamahaOn() && (tries < 4))
-//   {
-//      char message[] = "@MAIN:PWR=On\r\n";
-//
-//      m_comms->yamahaComm(message, m_reply, 200);
-//   }
-//
-//   if (tries >= 5)
-//   {
-//      cout << "Was not able to turn on yamaha, even after " << tries << " tries." << endl;
-//   }
 }
 
 void Ynca::turnOff(void)
@@ -125,43 +88,25 @@ void Ynca::turnOff(void)
       char message[] = "@MAIN:PWR=Standby\r\n";
       m_comms->yamahaComm(message, m_reply, 2000);
    }
-
-//   int tries = 0;
-//
-//   while (isYamahaOn() && (tries < 4))
-//   {
-//      char message[] = "@MAIN:PWR=Standby\r\n";
-//
-//      m_comms->yamahaComm(message, m_reply, 200);
-//   }
-//
-//   if (tries >= 5)
-//   {
-//      cout << "Was not able to turn off yamaha, even after " << tries << " tries." << endl;
-//   }
 }
 
 void Ynca::startSource(YamahaSourcesEnum source)
 {
-   int tries = 0;
-
    if ((source < 0) || (source >= lastSource))
    {
       return;
    }
 
    turnOn();
-   m_comms->yamahaComm(sourceStrings[source], m_reply, 2000);
    
-//   do
-//   {
-//      m_comms->yamahaComm(sourceStrings[source], m_reply, 200);
-//   } while ((string(m_reply) != sourceStrings[source]) && (tries < 5));
-//      
-//   if (tries >= 5)
-//   {
-//      cout << "Was not able to change source, even after " << tries << " tries." << endl;
-//   }
+   // If we set the current source again, there is no reply from 
+   // Yamaha, and comm fails. So, only change if we are at
+   // a different source
+   if (getCurrentSource() != source)
+   {
+      m_comms->yamahaComm(sourceStrings[source], m_reply, 2000, true);
+   }
+  
 }
 
 void Ynca::volUp(void)
@@ -194,11 +139,17 @@ string Ynca::getVolume(void)
 
 void Ynca::setVolume(string vol)
 {
-   string msg = "@MAIN:VOL=" + vol + "\r\n";
+   // If we set the current volume again, there is no reply from 
+   // Yamaha, and comm fails. So, only change if we are at
+   // a different volume
+   if (getVolume() != vol)
+   {
+      string msg = "@MAIN:VOL=" + vol + "\r\n";
 
-   cout << "Setting volume: " << vol << endl;
+      cout << "Setting volume: " << vol << endl;
 
-   m_comms->yamahaComm(msg.c_str(), m_reply, 2000);
+      m_comms->yamahaComm(msg.c_str(), m_reply, 2000);
+   }
 }
 
 YamahaSourcesEnum Ynca::getCurrentSource(void)

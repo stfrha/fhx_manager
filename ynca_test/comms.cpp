@@ -46,6 +46,7 @@ extern string g_latestStatus;
 // and both threads are static, i.e. make it global
 int g_portNum = 51717;
 
+
 void error(const char *msg)
 {
    perror(msg);
@@ -56,14 +57,37 @@ Comms::Comms()
 {
 }
 
+void* Comms::receiverThread(void* somePointer)
+{
+   Comms* myself = (Comms*)somePointer;
+   
+   char reply[2000];
+
+   while (true)
+   {
+      int len = recv(myself->m_socket_desc, reply, 2000, 0);
+      
+      if (len >= 0 )
+      {
+         cout << "Received " << len << " bytes." << endl;
+
+         reply[len] = 0;
+         
+         cout << "Got reply: " << reply << endl;
+      }
+
+   }
+    
+}
+
 int Comms::getYamahaSocket(void)
 {
-   int socket_desc = 0;
+   m_socket_desc = 0;
    struct sockaddr_in server;
    char yamaha_reply[200];
    
-   socket_desc = socket(AF_INET, SOCK_STREAM, 0);
-   if (socket_desc == -1)
+   m_socket_desc = socket(AF_INET, SOCK_STREAM, 0);
+   if (m_socket_desc == -1)
    {
       cout << "Could not create Yamaha client socket" << endl;
    }
@@ -72,70 +96,53 @@ int Comms::getYamahaSocket(void)
    server.sin_family = AF_INET;
    server.sin_port = htons(50000);
    
-   if (connect(socket_desc, (struct sockaddr *)&server, sizeof(server)) < 0)
+   if (connect(m_socket_desc, (struct sockaddr *)&server, sizeof(server)) < 0)
    {
       cout << "Yamaha client connection error" << endl;     
    }
+
+   // pthread_t threadId;
+   // 
+   // int result = pthread_create(&threadId, NULL, receiverThread, (void*)this);
+   // if (result)
+   // {
+   //    cout << "Receiver thread could not be created, " << result << endl;
+   //    exit(1);
+   // }
    
-   return socket_desc;
+   return m_socket_desc;
 }
 
-void Comms::yamahaClientComm(void)
+void Comms::closeSocket(void)
 {
-   char yamaha_reply[200];
-
-   cout << "Running yamaha comm test" << endl;
-   
-   int socket_desc = getYamahaSocket();
-   
-   char message[] = "@MAIN:PWR=?\r\n";
-
-   cout << "Sending data..." << endl;
-   
-   if (send(socket_desc, message, strlen(message), 0) < 0)
-   {
-      cout << "Yamaha client send error" << endl;     
-   }
-
-   cout << "Receiving data..." << endl;
-   
-   int len = recv(socket_desc, yamaha_reply, 200, 0);
-   if (len < 0 )
-   {
-      cout << "Yamaha client receive error" << endl;     
-   }
-
-   cout << "Received " << len << " bytes." << endl;
-   
-   cout << "Got reply: " << yamaha_reply << endl;
- 
-   close(socket_desc);
+   close(m_socket_desc);
 }
 
-int Comms::yamahaComm(const char* request, char* reply, int replyMaxLen)
+int Comms::yamahaComm(int socket_desc, const char* request)
 {
-   int socket_desc = getYamahaSocket();
    if (send(socket_desc, request, strlen(request), 0) < 0)
    {
       cout << "Yamaha client send error" << endl;     
    }
    
-   int len = recv(socket_desc, reply, replyMaxLen, 0);
-   if (len < 0 )
-   {
-      cout << "Yamaha client receive error" << endl;     
-   }
-
-   cout << "Received " << len << " bytes." << endl;
-
-   reply[len] = 0;
-   
-   cout << "Got reply: " << reply << endl;
- 
-   close(socket_desc);
-   
-   return len;
+   return 0;
 }
 
+int Comms::yamahaReceive(int socket_desc)
+{
+   char reply[20];
+
+   int len = recv(socket_desc, reply, 20, 0);
+   
+   if (len >= 0 )
+   {
+      cout << "Received " << len << " bytes." << endl;
+
+      reply[len] = 0;
+      
+      cout << "Got reply: " << reply << endl;
+   }
+
+}
 
 

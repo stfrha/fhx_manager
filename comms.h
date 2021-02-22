@@ -24,7 +24,7 @@ public:
    // Should probably have a destructor that stops all sockets
    
    void yamahaClientComm(void);
-   int yamahaComm(const char* request, char* reply, int replyMaxLen);
+   int yamahaComm(const char* request, char* reply, int replyMaxLen, bool purge = false);
 
 };
 
