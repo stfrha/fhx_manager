@@ -46,12 +46,19 @@ if (isset($_GET["op"]))
       $yamahaPower = $statusArray[2];
       $benqPower = $statusArray[3];
       $volume = $statusArray[4];
+      
    }
 }
 else
 {
    // Default value if non is provided
    $volume = "-80.0";
+}
+
+// For safety
+if (abs(floatval($volume)) < 0.01)
+{
+   $volume = "-40.0";
 }
 
 $connection->close_socket(); 

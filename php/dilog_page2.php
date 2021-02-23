@@ -34,7 +34,7 @@ include './comms.php';
          </div>
       </a>
 
-      <a href="dilog_page2.php">  
+      <a href="dilog_page2.php?op=dilogPower">  
          <div class="imgButton divBase buttonSize row1Page2 left" style="background-image:url('dilog_buttons/dk_power.png')">
          </div>
       </a>

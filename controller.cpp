@@ -23,11 +23,13 @@ Controller::Controller(Comms* comms, Ynca* ynca) :
    m_ynca(ynca),
    m_state(allOn),
    m_prevState(m_state),
+   m_ir(),
    m_yamahaOn(false),
    m_benqOn(false),
    m_lightOn(true),
    m_stateChangePending(false),
-   m_ledOverridePending(false)
+   m_ledOverridePending(false),
+   m_oneTimeIrInit(true)
 {
    
 }
@@ -55,10 +57,11 @@ void Controller::initializeController(void)
    {
       cout << "Error initializing Benq." << endl;
    }
-   
+
    // Yamaha is ok to communicate with even before comms has been initialized
    m_yamahaOn = m_ynca->isYamahaOn();
    m_benqOn = m_benq.isBenqOn();
+   
 }
 
 void* Controller::monitorThread(void* cntrlPointer)
@@ -265,6 +268,46 @@ SOURCEPS--------  - Start source PS
 SOURCECC--------  - Start source CC
 SOURCETV--------  - Start source TV
 LCC(128,128,128)  - Led color command
+DH660POWER------  - Dilog IR Code 
+DH660MUTE-------  - Dilog IR Code 
+DH660LIST-------  - Dilog IR Code 
+DH660TIME-------  - Dilog IR Code 
+DH660K1---------  - Dilog IR Code 
+DH660K2---------  - Dilog IR Code 
+DH660K3---------  - Dilog IR Code 
+DH660K4---------  - Dilog IR Code 
+DH660K5---------  - Dilog IR Code 
+DH660K6---------  - Dilog IR Code 
+DH660K7---------  - Dilog IR Code 
+DH660K8---------  - Dilog IR Code 
+DH660K9---------  - Dilog IR Code 
+DH660K0---------  - Dilog IR Code 
+DH660CHANUP-----  - Dilog IR Code 
+DH660CHANDWN----  - Dilog IR Code 
+DH660INFO-------  - Dilog IR Code 
+DH660DIRECTORY--  - Dilog IR Code 
+DH660MENU-------  - Dilog IR Code 
+DH660EPG--------  - Dilog IR Code 
+DH660UP---------  - Dilog IR Code 
+DH660EXIT-------  - Dilog IR Code 
+DH660LEFT-------  - Dilog IR Code 
+DH660SELECT-----  - Dilog IR Code 
+DH660RIGHT------  - Dilog IR Code 
+DH660SUBTITLE---  - Dilog IR Code 
+DH660DOWN-------  - Dilog IR Code 
+DH660TEXT-------  - Dilog IR Code 
+DH660STOP-------  - Dilog IR Code 
+DH660PLAY-------  - Dilog IR Code 
+DH660PAUSE------  - Dilog IR Code 
+DH660RECORD-----  - Dilog IR Code 
+DH660RED--------  - Dilog IR Code 
+DH660GREEN------  - Dilog IR Code 
+DH660YELLOW-----  - Dilog IR Code 
+DH660BLUE-------  - Dilog IR Code 
+DH660NEXT-------  - Dilog IR Code 
+DH660PREVIOUS---  - Dilog IR Code 
+DH660AUDIO------  - Dilog IR Code 
+DH660ZOOM-------  - Dilog IR Code 
 */
 
 // The following method will be called by and executed in
@@ -275,6 +318,13 @@ LCC(128,128,128)  - Led color command
 
 void Controller::executeCommand(std::string command)
 {
+   if (m_oneTimeIrInit)
+   {
+      m_oneTimeIrInit = false;
+      
+      m_ir.initialize();
+   }
+   
    cout << "Received command: " << command << endl;
    
    if (command == "ALON------------")
@@ -424,6 +474,16 @@ void Controller::executeCommand(std::string command)
       cout << "Setting volume: " << volValStr << endl;
       
       m_ynca->setVolume(volValStr);
+   }
+   else if (command.substr(0, 5) == "DH660")
+   {
+      cout << "Found DILOG DH660-HD IR Command" << endl;
+      
+      if (command.substr(5) == "POWER------")
+      {
+         cout << "Found DILOG DH660-HD IR Command 'KEY_POWER'" << endl;
+         m_ir.sendIr("dh_660hd", "KEY_POWER");
+      }
    }
    else
    {

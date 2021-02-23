@@ -144,6 +144,10 @@ if (isset($_GET["op"]))
       {
          $command = $sourceBr;
       }
+      else if ($operation =="dilogPower")
+      {
+         $command = "DH660POWER------";
+      }
       else
       {
          $command = $statusRequest;

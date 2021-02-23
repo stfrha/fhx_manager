@@ -8,6 +8,7 @@
 #include "led_strip.h"
 #include "dali.h"
 #include "benq.h"
+#include "ir.h"
 
 class Comms;
 class Ynca;
@@ -35,6 +36,7 @@ private:
    Benq m_benq;
    Comms* m_comms;
    Ynca* m_ynca;
+   Ir m_ir;
    bool m_yamahaOn;
    bool m_benqOn;
    bool m_lightOn;
@@ -44,6 +46,7 @@ private:
    unsigned int m_greenColorOverride;
    unsigned int m_blueColorOverride;
 
+   bool m_oneTimeIrInit;
 
    void prepareStatusMessage(void);
    std::string generateStatusMessage(int precision);
