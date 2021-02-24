@@ -1,0 +1,22 @@
+
+
+Lirc version: 0.9.4c-9 but with patch according to:
+https://www.raspberrypi.org/forums/viewtopic.php?t=235256
+
+in=23
+out=24
+
+/dev/lirc0 is transmitter (?)
+/dev/lirc1 is receiver
+
+
+för att köra sändning:
+sudo systemctl stop lircd.service
+sudo systemctl stop lircd.socket
+sudo lircd --device /dev/lirc0
+irsend SEND_ONCE knastest2 KEY_POWER
+
+
+
+
+
