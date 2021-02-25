@@ -1,23 +1,28 @@
-IDIR =../include
-CC=gcc
-CFLAGS=-I$(IDIR)
+LCLIDIR =../include
+RMTIDIR =../../../build/lirc-0.9.4c/debian/tmp/usr/include
+
+CC=g++
+LCLCFLAGS=$(LCLIDIR:%=-I%)
+RMTCFLAGS=$(RMTIDIR:%=-I%)
+CFLAGS=$(LCLCFLAGS) $(RMTCFLAGS)
 
 ODIR=obj
 LDIR =../lib
+_dummy := $(shell mkdir -p obj)
 
-LIBS=-lm
+LIBS=-lwiringPi -lpthread -lm ./../../../build/lirc-0.9.4c/debian/tmp/usr/lib/arm-linux-gnueabihf/liblirc_client.so
 
-_DEPS = hellomake.h
-DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
+_DEPS = benq.h comms.h controller.h dali.h easing.h ir.h led_strip.h ynca.h 
+DEPS = $(patsubst %,$(LCLIDIR)/%,$(_DEPS))
 
-_OBJ = hellomake.o hellofunc.o 
+_OBJ = main.o comms.o controller.o dali.o led_strip.o easing.o ir.o ynca.o benq.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
-$(ODIR)/%.o: %.c $(DEPS)
+$(ODIR)/%.o: %.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-hellomake: $(OBJ)
+../fhx_manager: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 .PHONY: clean

@@ -8,7 +8,8 @@
 #include <wiringPi.h>
 #include <softPwm.h>
 
-#include "..\easing-functions\src\easing.h"
+//#include "..\easing-functions\src\easing.h"
+#include "easing.h"
 
 #define BLUE_LED 25
 #define RED_LED 29

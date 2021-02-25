@@ -1,7 +1,7 @@
 #include <stdlib.h>
 
 #include "ir.h"
-#include <lirc_client.h>
+#include "lirc_client.h"
 
 using namespace std;
 

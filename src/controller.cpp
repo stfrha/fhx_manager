@@ -12,6 +12,7 @@
 #include "comms.h"
 #include "ynca.h"
 
+
 using namespace std;
 
 pthread_mutex_t globalStatusMutex = PTHREAD_MUTEX_INITIALIZER;
