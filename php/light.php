@@ -20,8 +20,8 @@ include './comms.php';
    </style>
    <body>
 
-      <a href="confirm_system_off.php">
-         <div class="imgButton divBase turnOffButton" style="background-image:url('turn_off_button.png')">
+      <a href="index.php">  
+         <div class="imgButton divBase turnOffButton" style="background-image:url('back_button.png')">
          </div>
       </a>
 
@@ -30,11 +30,11 @@ include './comms.php';
          </div>
       </a>
 
-      <a href="volume.php?op=<?php echo($volume)?>">  
+      <a href="volume.php?op=<?php echo("is" . $volume)?>">  
          <div class="imgButton divBase volumeDownButton" style="background-image:url('vol_button.png')">
          </div>
       </a>
-
+      
 <?php 
 if ($lightsOn == "1")
 {
