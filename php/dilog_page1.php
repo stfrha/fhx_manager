@@ -34,127 +34,127 @@ include './comms.php';
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilog1">  
          <div class="imgButton divBase buttonSize row1Page1 left" style="background-image:url('dilog_buttons/dk_1.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilog2">  
          <div class="imgButton divBase buttonSize row1Page1 middle" style="background-image:url('dilog_buttons/dk_2.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilog3">  
          <div class="imgButton divBase buttonSize row1Page1 right" style="background-image:url('dilog_buttons/dk_3.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilog4">  
          <div class="imgButton divBase buttonSize row2Page1 left" style="background-image:url('dilog_buttons/dk_4.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilog5">  
          <div class="imgButton divBase buttonSize row2Page1 middle" style="background-image:url('dilog_buttons/dk_5.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilog6">  
          <div class="imgButton divBase buttonSize row2Page1 right" style="background-image:url('dilog_buttons/dk_6.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilog7">  
          <div class="imgButton divBase buttonSize row3Page1 left" style="background-image:url('dilog_buttons/dk_7.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilog8">  
          <div class="imgButton divBase buttonSize row3Page1 middle" style="background-image:url('dilog_buttons/dk_8.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilog9">  
          <div class="imgButton divBase buttonSize row3Page1 right" style="background-image:url('dilog_buttons/dk_9.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilogEpg">  
          <div class="imgButton divBase buttonSize row4Page1 left" style="background-image:url('dilog_buttons/dk_epg.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilog0">  
          <div class="imgButton divBase buttonSize row4Page1 middle" style="background-image:url('dilog_buttons/dk_0.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilogInfo">  
          <div class="imgButton divBase buttonSize row4Page1 right" style="background-image:url('dilog_buttons/dk_info.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilogMenu">  
          <div class="imgButton divBase buttonSize row5 left" style="background-image:url('dilog_buttons/dk_menu.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilogUp">  
          <div class="imgButton divBase upDwnButtonSize row5 upDwnButtonPos" style="background-image:url('dilog_buttons/dk_up.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilogExit">  
          <div class="imgButton divBase buttonSize row5 right" style="background-image:url('dilog_buttons/dk_exit.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilogLeft">  
          <div class="imgButton divBase tButtonSize leftButtonPos" style="background-image:url('dilog_buttons/dk_left.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilogOk">  
          <div class="imgButton divBase okButtonSize okButtonPos" style="background-image:url('dilog_buttons/dk_ok.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilogRight">  
          <div class="imgButton divBase tButtonSize rightButtonPos" style="background-image:url('dilog_buttons/dk_right.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilogPlay">  
          <div class="imgButton divBase buttonSize row7 left" style="background-image:url('dilog_buttons/dk_play.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilogDown">  
          <div class="imgButton divBase upDwnButtonSize row7 upDwnButtonPos" style="background-image:url('dilog_buttons/dk_down.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilogRecord">  
          <div class="imgButton divBase buttonSize row7 right" style="background-image:url('dilog_buttons/dk_rec.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilogRed">  
          <div class="imgButton divBase colorButtonSize row8 left" style="background-image:url('dilog_buttons/dk_red.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilogGreen">  
          <div class="imgButton divBase colorButtonSize row8 fourSplitCol2" style="background-image:url('dilog_buttons/dk_green.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilogYellow">  
          <div class="imgButton divBase colorButtonSize row8 fourSplitCol3" style="background-image:url('dilog_buttons/dk_yellow.png')">
          </div>
       </a>
 
-      <a href="dilog_page1.php">  
+      <a href="dilog_page1.php?op=dilogBlue">  
          <div class="imgButton divBase colorButtonSize row8 right" style="background-image:url('dilog_buttons/dk_blue.png')">
          </div>
       </a>

@@ -1,1 +1,2 @@
-cp -R /home/pi/git/fhx_manager/php /var/www/html 
+cp -a /home/pi/git/fhx_manager/php/. /var/www/html/
+

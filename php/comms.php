@@ -144,10 +144,47 @@ if (isset($_GET["op"]))
       {
          $command = $sourceBr;
       }
-      else if ($operation =="dilogPower")
-      {
-         $command = "DH660POWER------";
-      }
+      else if ($operation =="dilogPower") $command = "DH660POWER------";
+      else if ($operation =="dilogMute") $command = "DH660MUTE-------";
+      else if ($operation =="dilogPower") $command = "DH660LIST-------";
+      else if ($operation =="dilogPower") $command = "DH660TIME-------";
+      else if ($operation =="dilog1") $command = "DH660K1---------";
+      else if ($operation =="dilog2") $command = "DH660K2---------";
+      else if ($operation =="dilog3") $command = "DH660K3---------";
+      else if ($operation =="dilog4") $command = "DH660K4---------";
+      else if ($operation =="dilog5") $command = "DH660K5---------";
+      else if ($operation =="dilog6") $command = "DH660K6---------";
+      else if ($operation =="dilog7") $command = "DH660K7---------";
+      else if ($operation =="dilog8") $command = "DH660K8---------";
+      else if ($operation =="dilog9") $command = "DH660K9---------";
+      else if ($operation =="dilog0") $command = "DH660K0---------";
+      // else if ($operation =="dilogPower") $command = "DH660CHANUP-----";
+      // else if ($operation =="dilogPower") $command = "DH660CHANDWN----";
+      else if ($operation =="dilogInfo") $command = "DH660INFO-------";
+      // else if ($operation =="dilogPower") $command = "DH660DIRECTORY--";
+      else if ($operation =="dilogMenu") $command = "DH660MENU-------";
+      else if ($operation =="dilogEpg") $command = "DH660EPG--------";
+      else if ($operation =="dilogUp") $command = "DH660UP---------";
+      else if ($operation =="dilogExit") $command = "DH660EXIT-------";
+      else if ($operation =="dilogLeft") $command = "DH660LEFT-------";
+      else if ($operation =="dilogOk") $command = "DH660SELECT-----";
+      else if ($operation =="dilogRight") $command = "DH660RIGHT------";
+      // else if ($operation =="dilogPower") $command = "DH660SUBTITLE---";
+      else if ($operation =="dilogDown") $command = "DH660DOWN-------";
+      //else if ($operation =="dilogPower") $command = "DH660TEXT-------";
+      else if ($operation =="dilogStop") $command = "DH660STOP-------";
+      else if ($operation =="dilogPlay") $command = "DH660PLAY-------";
+      else if ($operation =="dilogPause") $command = "DH660PAUSE------";
+      else if ($operation =="dilogRecord") $command = "DH660RECORD-----";
+      else if ($operation =="dilogRed") $command = "DH660RED--------";
+      else if ($operation =="dilogGreen") $command = "DH660GREEN------";
+      else if ($operation =="dilogYellow") $command = "DH660YELLOW-----";
+      else if ($operation =="dilogBlue") $command = "DH660BLUE-------";
+      else if ($operation =="dilogNext") $command = "DH660NEXT-------";
+      else if ($operation =="dilogPrevious") $command = "DH660PREVIOUS---";
+      //else if ($operation =="dilogPower") $command = "DH660AUDIO------";
+      //else if ($operation =="dilogPower") $command = "DH660ZOOM-------";
+      
       else
       {
          $command = $statusRequest;
