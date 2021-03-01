@@ -1,8 +1,11 @@
+#include "lirc_client.h"
 
 
 class Ir
 {
 private:
+   int send_packet(lirc_cmd_ctx* ctx, int fd);
+   void sendIrSequence(const char* command, const char* remote, const char* button);
    
 public:   
    Ir();

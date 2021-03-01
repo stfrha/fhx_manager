@@ -7,6 +7,8 @@
 #include <string.h>
 #include <time.h>
 #include <vector>
+#include <unistd.h>
+
 
 // For threads
 #include <pthread.h>
@@ -362,7 +364,7 @@ int Comms::yamahaComm(const char* request, char* reply, int replyMaxLen, bool pu
    
    if (purge)
    {
-      delay(500);
+      usleep(500000);
       len = recv(socket_desc, reply, replyMaxLen, 0);
       cout << "Purged: " << len << " characters." << endl;
    }

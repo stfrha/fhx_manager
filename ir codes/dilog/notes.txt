@@ -17,6 +17,24 @@ sudo lircd --device /dev/lirc0
 irsend SEND_ONCE knastest2 KEY_POWER
 
 
+Enl babytech:
+  name  dh_660hd
+  bits           32
+  flags SPACE_ENC|CONST_LENGTH
+  eps            30
+  aeps          100
+
+  header       9080  4520
+  one           590  1660
+  zero          590   550
+  ptrail        590
+  repeat       9080  2224
+  gap          108600
+  toggle_bit_mask 0x0
+  frequency    38000
+
+
+
 
 
 

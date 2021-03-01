@@ -4,6 +4,8 @@
 #include <sstream>
 #include <iomanip>
 #include <time.h>
+#include <unistd.h>
+
 
 // For threads
 #include <pthread.h>
@@ -247,7 +249,7 @@ void* Controller::monitorThread(void* cntrlPointer)
          instance->m_lightOn = false;
 
       }
-      delay(250);
+      usleep(250000);
    }
 }
 
@@ -488,35 +490,35 @@ void Controller::executeCommand(std::string command)
       else if (command.substr(5) == "MUTE-------") m_ir.sendIr("dh_660hd", "KEY_MUTE");
       else if (command.substr(5) == "LIST-------") m_ir.sendIr("dh_660hd", "KEY_LIST");
       else if (command.substr(5) == "TIME-------") m_ir.sendIr("dh_660hd", "KEY_TIME");
-      else if (command.substr(5) == "K1---------") m_ir.sendIr("dh_660hd", "KEY_1   ");
-      else if (command.substr(5) == "K2---------") m_ir.sendIr("dh_660hd", "KEY_2   ");
-      else if (command.substr(5) == "K3---------") m_ir.sendIr("dh_660hd", "KEY_3   ");
-      else if (command.substr(5) == "K4---------") m_ir.sendIr("dh_660hd", "KEY_4   ");
-      else if (command.substr(5) == "K5---------") m_ir.sendIr("dh_660hd", "KEY_5   ");
-      else if (command.substr(5) == "K6---------") m_ir.sendIr("dh_660hd", "KEY_6   ");
-      else if (command.substr(5) == "K7---------") m_ir.sendIr("dh_660hd", "KEY_7   ");
-      else if (command.substr(5) == "K8---------") m_ir.sendIr("dh_660hd", "KEY_8   ");
-      else if (command.substr(5) == "K9---------") m_ir.sendIr("dh_660hd", "KEY_9   ");
-      else if (command.substr(5) == "K0---------") m_ir.sendIr("dh_660hd", "KEY_0   ");
+      else if (command.substr(5) == "K1---------") m_ir.sendIr("dh_660hd", "KEY_1");
+      else if (command.substr(5) == "K2---------") m_ir.sendIr("dh_660hd", "KEY_2");
+      else if (command.substr(5) == "K3---------") m_ir.sendIr("dh_660hd", "KEY_3");
+      else if (command.substr(5) == "K4---------") m_ir.sendIr("dh_660hd", "KEY_4");
+      else if (command.substr(5) == "K5---------") m_ir.sendIr("dh_660hd", "KEY_5");
+      else if (command.substr(5) == "K6---------") m_ir.sendIr("dh_660hd", "KEY_6");
+      else if (command.substr(5) == "K7---------") m_ir.sendIr("dh_660hd", "KEY_7");
+      else if (command.substr(5) == "K8---------") m_ir.sendIr("dh_660hd", "KEY_8");
+      else if (command.substr(5) == "K9---------") m_ir.sendIr("dh_660hd", "KEY_9");
+      else if (command.substr(5) == "K0---------") m_ir.sendIr("dh_660hd", "KEY_0");
       else if (command.substr(5) == "CHANUP-----") m_ir.sendIr("dh_660hd", "KEY_CHANNELUP");
-      else if (command.substr(5) == "CHANDWN----") m_ir.sendIr("dh_660hd", "KEY_CHANNELDOWN       ");
-      else if (command.substr(5) == "INFO-------") m_ir.sendIr("dh_660hd", "KEY_INFO        ");
-      else if (command.substr(5) == "DIRECTORY--") m_ir.sendIr("dh_660hd", "KEY_DIRECTORY  ");
-      else if (command.substr(5) == "MENU-------") m_ir.sendIr("dh_660hd", "KEY_MENU       ");
-      else if (command.substr(5) == "EPG--------") m_ir.sendIr("dh_660hd", "KEY_VOLUMEDOWN ");
-      else if (command.substr(5) == "UP---------") m_ir.sendIr("dh_660hd", "KEY_UP     ");
-      else if (command.substr(5) == "EXIT-------") m_ir.sendIr("dh_660hd", "KEY_EXIT   ");
-      else if (command.substr(5) == "LEFT-------") m_ir.sendIr("dh_660hd", "KEY_LEFT   ");
+      else if (command.substr(5) == "CHANDWN----") m_ir.sendIr("dh_660hd", "KEY_CHANNELDOWN");
+      else if (command.substr(5) == "INFO-------") m_ir.sendIr("dh_660hd", "KEY_INFO");
+      else if (command.substr(5) == "DIRECTORY--") m_ir.sendIr("dh_660hd", "KEY_DIRECTORY");
+      else if (command.substr(5) == "MENU-------") m_ir.sendIr("dh_660hd", "KEY_MENU");
+      else if (command.substr(5) == "EPG--------") m_ir.sendIr("dh_660hd", "KEY_VOLUMEDOWN");
+      else if (command.substr(5) == "UP---------") m_ir.sendIr("dh_660hd", "KEY_UP");
+      else if (command.substr(5) == "EXIT-------") m_ir.sendIr("dh_660hd", "KEY_EXIT");
+      else if (command.substr(5) == "LEFT-------") m_ir.sendIr("dh_660hd", "KEY_LEFT");
       else if (command.substr(5) == "SELECT-----") m_ir.sendIr("dh_660hd", "KEY_SELECT");
-      else if (command.substr(5) == "RIGHT------") m_ir.sendIr("dh_660hd", "KEY_RIGHT       ");
-      else if (command.substr(5) == "SUBTITLE---") m_ir.sendIr("dh_660hd", "KEY_SUBTITLE       ");
-      else if (command.substr(5) == "DOWN-------") m_ir.sendIr("dh_660hd", "KEY_DOWN       ");
-      else if (command.substr(5) == "TEXT-------") m_ir.sendIr("dh_660hd", "KEY_TEXT      ");
-      else if (command.substr(5) == "STOP-------") m_ir.sendIr("dh_660hd", "KEY_STOP     ");
-      else if (command.substr(5) == "PLAY-------") m_ir.sendIr("dh_660hd", "KEY_PLAY        ");
-      else if (command.substr(5) == "PAUSE------") m_ir.sendIr("dh_660hd", "KEY_PAUSE      ");
-      else if (command.substr(5) == "RECORD-----") m_ir.sendIr("dh_660hd", "KEY_RECORD     ");
-      else if (command.substr(5) == "RED--------") m_ir.sendIr("dh_660hd", "KEY_RED       ");
+      else if (command.substr(5) == "RIGHT------") m_ir.sendIr("dh_660hd", "KEY_RIGHT");
+      else if (command.substr(5) == "SUBTITLE---") m_ir.sendIr("dh_660hd", "KEY_SUBTITLE");
+      else if (command.substr(5) == "DOWN-------") m_ir.sendIr("dh_660hd", "KEY_DOWN");
+      else if (command.substr(5) == "TEXT-------") m_ir.sendIr("dh_660hd", "KEY_TEXT");
+      else if (command.substr(5) == "STOP-------") m_ir.sendIr("dh_660hd", "KEY_STOP");
+      else if (command.substr(5) == "PLAY-------") m_ir.sendIr("dh_660hd", "KEY_PLAY");
+      else if (command.substr(5) == "PAUSE------") m_ir.sendIr("dh_660hd", "KEY_PAUSE");
+      else if (command.substr(5) == "RECORD-----") m_ir.sendIr("dh_660hd", "KEY_RECORD");
+      else if (command.substr(5) == "RED--------") m_ir.sendIr("dh_660hd", "KEY_RED");
       else if (command.substr(5) == "GREEN------") m_ir.sendIr("dh_660hd", "KEY_GREEN");
       else if (command.substr(5) == "YELLOW-----") m_ir.sendIr("dh_660hd", "KEY_YELLOW");
       else if (command.substr(5) == "BLUE-------") m_ir.sendIr("dh_660hd", "KEY_BLUE");
@@ -524,6 +526,7 @@ void Controller::executeCommand(std::string command)
       else if (command.substr(5) == "PREVIOUS---") m_ir.sendIr("dh_660hd", "KEY_PREVIOUS");
       else if (command.substr(5) == "AUDIO------") m_ir.sendIr("dh_660hd", "KEY_AUDIO");
       else if (command.substr(5) == "ZOOM-------") m_ir.sendIr("dh_660hd", "KEY_ZOOM");
+      else if (command.substr(5) == "EPG--------") m_ir.sendIr("dh_660hd", "KEY_EPG");
    }
    else
    {
