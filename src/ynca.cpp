@@ -25,7 +25,7 @@ const char* const Ynca::sourceStrings[] = {
   "@MAIN:INP=PHONO\r\n",      //   vinyl,
   "@MAIN:INP=Spotify\r\n",    //   spotify,
   "@MAIN:INP=TUNER\r\n",      //   tuner
-  "@MAIN:INP=AV5\r\n",        //   aux
+  "@MAIN:INP=AV5\r\n",        //   aux, TODO: this is not the correct port!!!
   "@MAIN:INP=USB\r\n",        //   usb
   "@MAIN:INP=AV5\r\n",        //   blu-ray
   "@MAIN:INP=AV4\r\n"         //   raspberryPi
@@ -184,10 +184,10 @@ YamahaSourcesEnum Ynca::getCurrentSource(void)
       {
          return tuner;
       }
-      else if (rep == "@MAIN:INP=AV5\r\n")
-      {
-         return aux;
-      }
+      // else if (rep == "@MAIN:INP=AV5\r\n")
+      // {
+      //    return aux;
+      // }
       else if (rep == "@MAIN:INP=USB\r\n")
       {
          return usb;

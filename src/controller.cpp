@@ -311,6 +311,50 @@ DH660NEXT-------  - Dilog IR Code
 DH660PREVIOUS---  - Dilog IR Code 
 DH660AUDIO------  - Dilog IR Code 
 DH660ZOOM-------  - Dilog IR Code 
+IRCCCONFIRM-----  - Blu-ray IRCC    irccConfirm, 
+IRCCUP----------  - Blu-ray IRCC    irccUp,
+IRCCDOWN--------  - Blu-ray IRCC    irccDown,
+IRCCRIGHT-------  - Blu-ray IRCC    irccRight,
+IRCCLEFT--------  - Blu-ray IRCC    irccLeft,
+IRCCHOME--------  - Blu-ray IRCC    irccHome,
+IRCCOPTIONS-----  - Blu-ray IRCC    irccOptions,
+IRCCRETURN------  - Blu-ray IRCC    irccReturn,
+IRCCNUM1--------  - Blu-ray IRCC    irccNum1,
+IRCCNUM2--------  - Blu-ray IRCC    irccNum2,
+IRCCNUM3--------  - Blu-ray IRCC    irccNum3,
+IRCCNUM4--------  - Blu-ray IRCC    irccNum4,
+IRCCNUM5--------  - Blu-ray IRCC    irccNum5,
+IRCCNUM6--------  - Blu-ray IRCC    irccNum6,
+IRCCNUM7--------  - Blu-ray IRCC    irccNum7,
+IRCCNUM8--------  - Blu-ray IRCC    irccNum8,
+IRCCNUM9--------  - Blu-ray IRCC    irccNum9,
+IRCCNUM0--------  - Blu-ray IRCC    irccNum0,
+IRCCPOWER-------  - Blu-ray IRCC    irccPower,
+IRCCDISPLAY-----  - Blu-ray IRCC    irccDisplay,
+IRCCAUDIO-------  - Blu-ray IRCC    irccAudio,
+IRCCSUBTITLE----  - Blu-ray IRCC    irccSubTitle,
+IRCCFAVORITES---  - Blu-ray IRCC    irccFavorites,
+IRCCYELLOW------  - Blu-ray IRCC    irccYellow,
+IRCCBLUE--------  - Blu-ray IRCC    irccBlue,
+IRCCRED---------  - Blu-ray IRCC    irccRed,
+IRCCGREEN-------  - Blu-ray IRCC    irccGreen,
+IRCCPLAY--------  - Blu-ray IRCC    irccPlay,
+IRCCSTOP--------  - Blu-ray IRCC    irccStop,
+IRCCPAUSE-------  - Blu-ray IRCC    irccPause,
+IRCCREWIND------  - Blu-ray IRCC    irccRewind,
+IRCCFORWARD-----  - Blu-ray IRCC    irccForward,
+IRCCPREV--------  - Blu-ray IRCC    irccPrev,
+IRCCNEXT--------  - Blu-ray IRCC    irccNext,
+IRCCREPLAY------  - Blu-ray IRCC    irccReplay,
+IRCCADVANCE-----  - Blu-ray IRCC    irccAdvance,
+IRCCANGLE-------  - Blu-ray IRCC    irccAngle,
+IRCCTOPMENU-----  - Blu-ray IRCC    irccTopMenu,
+IRCCPOPUPMENU---  - Blu-ray IRCC    irccPopUpMenu,
+IRCCEJECT-------  - Blu-ray IRCC    irccEject,
+IRCCKARAOKE-----  - Blu-ray IRCC    irccKaraoke,
+IRCCNETFLIX-----  - Blu-ray IRCC    irccNetflix,
+IRCCMODE3D------  - Blu-ray IRCC    irccMode3D,
+
 */
 
 // The following method will be called by and executed in
@@ -458,6 +502,8 @@ void Controller::executeCommand(std::string command)
    }
    else if (command == "SOURCEBR--------")
    {
+      cout << "Waking up Blu-ray player..." << endl;
+      m_ircc.wakeOnLan();
       m_benq.turnOn();
       m_ynca->startSource(bluRay);
       m_yamahaOn = true;
@@ -527,6 +573,54 @@ void Controller::executeCommand(std::string command)
       else if (command.substr(5) == "AUDIO------") m_ir.sendIr("dh_660hd", "KEY_AUDIO");
       else if (command.substr(5) == "ZOOM-------") m_ir.sendIr("dh_660hd", "KEY_ZOOM");
       else if (command.substr(5) == "EPG--------") m_ir.sendIr("dh_660hd", "KEY_EPG");
+   }
+   else if (command.substr(0, 5) == "IRCC")
+   {
+      cout << "Found Sony Blu-ray IRCC" << endl;
+    
+      if (command.substr(5) == "CONFIRM-----") m_ircc.sendCode(irccCode_t::irccConfirm);
+      else if (command.substr(5) == "UP----------") m_ircc.sendCode(irccCode_t::irccUp);
+      else if (command.substr(5) == "DOWN--------") m_ircc.sendCode(irccCode_t::irccDown);
+      else if (command.substr(5) == "RIGHT-------") m_ircc.sendCode(irccCode_t::irccRight);
+      else if (command.substr(5) == "LEFT--------") m_ircc.sendCode(irccCode_t::irccLeft);
+      else if (command.substr(5) == "HOME--------") m_ircc.sendCode(irccCode_t::irccHome);
+      else if (command.substr(5) == "OPTIONS-----") m_ircc.sendCode(irccCode_t::irccOptions);
+      else if (command.substr(5) == "RETURN------") m_ircc.sendCode(irccCode_t::irccReturn);
+      else if (command.substr(5) == "NUM1--------") m_ircc.sendCode(irccCode_t::irccNum1);
+      else if (command.substr(5) == "NUM2--------") m_ircc.sendCode(irccCode_t::irccNum2);
+      else if (command.substr(5) == "NUM3--------") m_ircc.sendCode(irccCode_t::irccNum3);
+      else if (command.substr(5) == "NUM4--------") m_ircc.sendCode(irccCode_t::irccNum4);
+      else if (command.substr(5) == "NUM5--------") m_ircc.sendCode(irccCode_t::irccNum5);
+      else if (command.substr(5) == "NUM6--------") m_ircc.sendCode(irccCode_t::irccNum6);
+      else if (command.substr(5) == "NUM7--------") m_ircc.sendCode(irccCode_t::irccNum7);
+      else if (command.substr(5) == "NUM8--------") m_ircc.sendCode(irccCode_t::irccNum8);
+      else if (command.substr(5) == "NUM9--------") m_ircc.sendCode(irccCode_t::irccNum9);
+      else if (command.substr(5) == "NUM0--------") m_ircc.sendCode(irccCode_t::irccNum0);
+      else if (command.substr(5) == "POWER-------") m_ircc.sendCode(irccCode_t::irccPower);
+      else if (command.substr(5) == "DISPLAY-----") m_ircc.sendCode(irccCode_t::irccDisplay);
+      else if (command.substr(5) == "AUDIO-------") m_ircc.sendCode(irccCode_t::irccAudio);
+      else if (command.substr(5) == "SUBTITLE----") m_ircc.sendCode(irccCode_t::irccSubTitle);
+      else if (command.substr(5) == "FAVORITES---") m_ircc.sendCode(irccCode_t::irccFavorites);
+      else if (command.substr(5) == "YELLOW------") m_ircc.sendCode(irccCode_t::irccYellow);
+      else if (command.substr(5) == "BLUE--------") m_ircc.sendCode(irccCode_t::irccBlue);
+      else if (command.substr(5) == "RED---------") m_ircc.sendCode(irccCode_t::irccRed);
+      else if (command.substr(5) == "GREEN-------") m_ircc.sendCode(irccCode_t::irccGreen);
+      else if (command.substr(5) == "PLAY--------") m_ircc.sendCode(irccCode_t::irccPlay);
+      else if (command.substr(5) == "STOP--------") m_ircc.sendCode(irccCode_t::irccStop);
+      else if (command.substr(5) == "PAUSE-------") m_ircc.sendCode(irccCode_t::irccPause);
+      else if (command.substr(5) == "REWIND------") m_ircc.sendCode(irccCode_t::irccRewind);
+      else if (command.substr(5) == "FORWARD-----") m_ircc.sendCode(irccCode_t::irccForward);
+      else if (command.substr(5) == "PREV--------") m_ircc.sendCode(irccCode_t::irccPrev);
+      else if (command.substr(5) == "NEXT--------") m_ircc.sendCode(irccCode_t::irccNext);
+      else if (command.substr(5) == "REPLAY------") m_ircc.sendCode(irccCode_t::irccReplay);
+      else if (command.substr(5) == "ADVANCE-----") m_ircc.sendCode(irccCode_t::irccAdvance);
+      else if (command.substr(5) == "ANGLE-------") m_ircc.sendCode(irccCode_t::irccAngle);
+      else if (command.substr(5) == "TOPMENU-----") m_ircc.sendCode(irccCode_t::irccTopMenu);
+      else if (command.substr(5) == "POPUPMENU---") m_ircc.sendCode(irccCode_t::irccPopUpMenu);
+      else if (command.substr(5) == "EJECT-------") m_ircc.sendCode(irccCode_t::irccEject);
+      else if (command.substr(5) == "KARAOKE-----") m_ircc.sendCode(irccCode_t::irccKaraoke);
+      else if (command.substr(5) == "NETFLIX-----") m_ircc.sendCode(irccCode_t::irccNetflix);
+      else if (command.substr(5) == "MODE3D------") m_ircc.sendCode(irccCode_t::irccMode3D);
    }
    else
    {

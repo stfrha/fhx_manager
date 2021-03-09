@@ -9,6 +9,7 @@
 #include "dali.h"
 #include "benq.h"
 #include "ir.h"
+#include "ircc.h"
 
 class Comms;
 class Ynca;
@@ -37,6 +38,8 @@ private:
    Comms* m_comms;
    Ynca* m_ynca;
    Ir m_ir;
+   Ircc m_ircc;
+   
    bool m_yamahaOn;
    bool m_benqOn;
    bool m_lightOn;
