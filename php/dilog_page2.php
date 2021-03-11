@@ -104,8 +104,8 @@ include './comms.php';
          </div>
       </a>
 
-      <a href="dilog_page2.php?op=dilogPlay">  
-         <div class="imgButton divBase buttonSize row7 left" style="background-image:url('dilog_buttons/dk_play.png')">
+      <a href="dilog_page2.php?op=dilogSubtitle">  
+         <div class="imgButton divBase buttonSize row7 left" style="background-image:url('dilog_buttons/dk_subtitle.png')">
          </div>
       </a>
 
@@ -114,8 +114,8 @@ include './comms.php';
          </div>
       </a>
 
-      <a href="dilog_page2.php?op=dilogRecord">  
-         <div class="imgButton divBase buttonSize row7 right" style="background-image:url('dilog_buttons/dk_rec.png')">
+      <a href="dilog_page2.php?op=dilogText">  
+         <div class="imgButton divBase buttonSize row7 right" style="background-image:url('dilog_buttons/dk_text.png')">
          </div>
       </a>
 

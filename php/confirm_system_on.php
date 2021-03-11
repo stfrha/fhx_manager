@@ -19,10 +19,10 @@ if (isset($_GET["op"]))
    // {
    //    $image = "tv_button.png";  
    // }
-   else if ($operation =="sourceBr")
-   {
-      $image = "blu_ray_button.png";  
-   }
+   // else if ($operation =="sourceBr")
+   // {
+   //    $image = "blu_ray_button.png";  
+   // }
    else if ($operation =="sourceRpi")
    {
       $image = "rpi_button.png";  
@@ -82,7 +82,17 @@ if ($operation =="sourceTv")
       </a>
 TVSOURCE;
 }
+else if ($operation =="sourceBr")
+{
+   echo <<<BDSOURCE
+      <a href="bd_page.php?op=sourceBr">
+         <div class="imgButton divBase row1NoSplit" style="background-image:url('blu_ray_button.png')">
+         </div>
+      </a>
+BDSOURCE;
+}
 else
+
 {
    echo("      <a href=\"index.php?op=" . $operation . "\">\r\n");
    echo("         <div class=\"imgButton divBase row1NoSplit\" style=\"background-image:url('" . $image . "')\">\r\n");

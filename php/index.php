@@ -56,19 +56,34 @@ ECHODILOG;
 }
 else
 {
-  echo <<<ECHOCONFIRM
+  echo <<<ECHODILOGCONFIRM
       <a href="confirm_system_on.php?op=sourceTv">  
          <div class="imgButton divBase row2DualSplit left" style="background-image:url('tv_button.png')">
          </div>
       </a>
-ECHOCONFIRM;
+ECHODILOGCONFIRM;
 }   
-?>
 
+if (($yamahaPower == "1") && ($source == "8")) 
+{
+   echo <<<ECHOBD
+      <a href="bd_page.php">  
+         <div class="imgButton divBase row2DualSplit right" style="background-image:url('blu_ray_button.png')">
+         </div>
+      </a>
+ECHOBD;
+}
+else
+{
+  echo <<<ECHOBDCONFIRM
       <a href="confirm_system_on.php?op=sourceBr">  
          <div class="imgButton divBase row2DualSplit right" style="background-image:url('blu_ray_button.png')">
          </div>
       </a>
+ECHOBDCONFIRM;
+}   
+
+?>
 
       <a href="confirm_system_on.php?op=sourceRpi">  
          <div class="imgButton divBase row3DualSplit left" style="background-image:url('rpi_button.png')">

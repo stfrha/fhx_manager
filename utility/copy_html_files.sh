@@ -1,2 +1,2 @@
-cp -a /home/pi/git/fhx_manager/php/. /var/www/html/
+rsync -a /home/pi/git/fhx_manager/php/. /var/www/html
 

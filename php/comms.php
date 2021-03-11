@@ -169,9 +169,9 @@ if (isset($_GET["op"]))
       else if ($operation =="dilogLeft") $command = "DH660LEFT-------";
       else if ($operation =="dilogOk") $command = "DH660SELECT-----";
       else if ($operation =="dilogRight") $command = "DH660RIGHT------";
-      // else if ($operation =="dilogPower") $command = "DH660SUBTITLE---";
+      else if ($operation =="dilogSubtitle") $command = "DH660SUBTITLE---";
       else if ($operation =="dilogDown") $command = "DH660DOWN-------";
-      //else if ($operation =="dilogPower") $command = "DH660TEXT-------";
+      else if ($operation =="dilogText") $command = "DH660TEXT-------";
       else if ($operation =="dilogStop") $command = "DH660STOP-------";
       else if ($operation =="dilogPlay") $command = "DH660PLAY-------";
       else if ($operation =="dilogPause") $command = "DH660PAUSE------";
@@ -184,6 +184,30 @@ if (isset($_GET["op"]))
       else if ($operation =="dilogPrevious") $command = "DH660PREVIOUS---";
       //else if ($operation =="dilogPower") $command = "DH660AUDIO------";
       //else if ($operation =="dilogPower") $command = "DH660ZOOM-------";
+
+      else if ($operation =="bdPower")    $command = "IRCCPOWER-------";
+      else if ($operation =="bdSubtitle") $command = "IRCCSUBTITLE----";
+      else if ($operation =="bdEject")    $command = "IRCCEJECT-------";
+      else if ($operation =="bdRewind")   $command = "IRCCREWIND------";
+      else if ($operation =="dbPlay")     $command = "IRCCPLAY--------";
+      else if ($operation =="bdFf")       $command = "IRCCFORWARD-----";
+      else if ($operation =="bdPrevious") $command = "IRCCPREV--------";
+      else if ($operation =="bdPause")    $command = "IRCCPAUSE-------";
+      else if ($operation =="bdStop")     $command = "IRCCSTOP--------";
+      else if ($operation =="bdNext")     $command = "IRCCNEXT--------";
+      else if ($operation =="bdTopMenu")  $command = "IRCCTOPMENU-----";
+      else if ($operation =="bdUp")       $command = "IRCCUP----------";
+      else if ($operation =="bdBack")     $command = "IRCCRETURN------";
+      else if ($operation =="bdLeft")     $command = "IRCCLEFT--------";
+      else if ($operation =="bdOk")       $command = "IRCCCONFIRM-----";
+      else if ($operation =="bdRight")    $command = "IRCCRIGHT-------";
+      else if ($operation =="bdPopupMenu")$command = "IRCCPOPUPMENU---";
+      else if ($operation =="bdDown")     $command = "IRCCDOWN--------";
+      else if ($operation =="bdOptions")  $command = "IRCCOPTIONS-----";
+      else if ($operation =="bdRed")      $command = "IRCCRED---------";
+      else if ($operation =="bdGreen")    $command = "IRCCGREEN-------";
+      else if ($operation =="bdYellow")   $command = "IRCCYELLOW------";
+      else if ($operation =="bdBlue")     $command = "IRCCBLUE--------";
       
       else
       {
