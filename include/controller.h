@@ -10,6 +10,7 @@
 #include "benq.h"
 #include "ir.h"
 #include "ircc.h"
+#include "script.h"
 
 class Comms;
 class Ynca;
@@ -39,6 +40,7 @@ private:
    Ynca* m_ynca;
    Ir m_ir;
    Ircc m_ircc;
+   Script m_script;
    
    bool m_yamahaOn;
    bool m_benqOn;
@@ -51,10 +53,11 @@ private:
 
    bool m_oneTimeIrInit;
 
+   void setNewLightState(LightControllerState newState);
    void prepareStatusMessage(void);
    std::string generateStatusMessage(int precision);
        
-   static void* monitorThread(void* threadId);
+   static void* lightControllerThread(void* threadId);
 
          
 public:
@@ -62,7 +65,7 @@ public:
    
    void initializeController(void);
 
-   void executeCommand(std::string command);
+   std::string executeCommand(std::string command);
 };
 
 #endif

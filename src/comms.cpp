@@ -33,15 +33,15 @@ using namespace std;
 // Global variables:
 
 // The message queue
-extern pthread_mutex_t msgQueuMutex;
-extern vector<string> g_messageQueue;
+// extern pthread_mutex_t msgQueuMutex;
+// extern vector<string> g_messageQueue;
 
 // Conditional variable to indicate message in queue
-extern pthread_cond_t g_cv;
-extern pthread_mutex_t g_cvLock;
+// extern pthread_cond_t g_cv;
+// extern pthread_mutex_t g_cvLock;
 
 // Status as exposed globally from Controller class
-extern string g_latestStatus;
+// extern string g_latestStatus;
 
 
 // Both threads needs to agree on port number, 
@@ -93,9 +93,9 @@ void Comms::handleMessage(Controller* cntrl, int socketFd, char* buffer, int len
    for (int i = 0; i < numOfMessages; i++)
    {
       string message = strBuffer.substr(i * 16, 16);
-      cntrl->executeCommand(message);
+      string latestStatus = cntrl->executeCommand(message);
 
-      n = write(socketFd, g_latestStatus.c_str(), g_latestStatus.length());
+      n = write(socketFd, latestStatus.c_str(), latestStatus.length());
       if (n < 0)
       {
          error("ERROR writing to socket");

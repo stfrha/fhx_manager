@@ -1,3 +1,5 @@
+#ifndef YNCA_H
+#define YNCA_H
 
 #include "comms.h"
 
@@ -38,3 +40,6 @@ public:
    void volDown(void);
    YamahaSourcesEnum getCurrentSource(void);
 };
+
+#endif
+

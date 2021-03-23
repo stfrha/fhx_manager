@@ -12,10 +12,10 @@ _dummy := $(shell mkdir -p obj)
 
 LIBS=-lwiringPi -lpthread -lm -lcurl ./../../../build/lirc-0.9.4c/debian/tmp/usr/lib/arm-linux-gnueabihf/liblirc_client.so
 
-_DEPS = benq.h comms.h controller.h dali.h easing.h ir.h led_strip.h ynca.h ircc.h base64.h
+_DEPS = benq.h comms.h controller.h dali.h easing.h ir.h led_strip.h ynca.h ircc.h base64.h script.h
 DEPS = $(patsubst %,$(LCLIDIR)/%,$(_DEPS))
 
-_OBJ = main.o comms.o controller.o dali.o led_strip.o easing.o ir.o ynca.o benq.o ircc.o base64.o
+_OBJ = main.o comms.o controller.o dali.o led_strip.o easing.o ir.o ynca.o benq.o ircc.o base64.o script.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 

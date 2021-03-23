@@ -1,3 +1,5 @@
+#ifndef LEDSSTRIP_H
+#define LEDSSTRIP_H
 
 #include <iostream>
 #include <fstream>
@@ -67,3 +69,7 @@ public:
    
 
 };
+
+
+#endif
+

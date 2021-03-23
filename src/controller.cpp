@@ -6,20 +6,26 @@
 #include <time.h>
 #include <unistd.h>
 
-
 // For threads
 #include <pthread.h>
+
+// For mutex
+#include <mutex>
 
 #include "controller.h"
 #include "comms.h"
 #include "ynca.h"
 
-
 using namespace std;
 
-pthread_mutex_t globalStatusMutex = PTHREAD_MUTEX_INITIALIZER;
+extern t_scriptStates scriptState;
+extern string scriptFileName;
 
-string g_latestStatus;
+mutex controllerMutex;
+
+//pthread_mutex_t globalStatusMutex = PTHREAD_MUTEX_INITIALIZER;
+
+//string g_latestStatus;
 
 Controller::Controller(Comms* comms, Ynca* ynca) :
    m_comms(comms),
@@ -49,12 +55,14 @@ void Controller::initializeController(void)
 
    pthread_t thread;
 
-   int result = pthread_create(&thread, NULL, monitorThread, this);
+   int result = pthread_create(&thread, NULL, lightControllerThread, this);
    if (result)
    {
       cout << "Monitor thread could not be created, " << result << endl;
       exit(1);
    }
+   
+   m_script.initializeScript(this);
    
    if (!m_benq.initializeBenq())
    {
@@ -67,7 +75,29 @@ void Controller::initializeController(void)
    
 }
 
-void* Controller::monitorThread(void* cntrlPointer)
+
+// This thread holds control over DALI and led strip (the only control?)
+// It is managed by the variable m_state which it both monitors (can be
+// set outside the thread) and writes to. There is a race condition here!
+// It is also affected by the state of the dali controller which can be 
+// on or off (light switch on wall)
+// The Dali and led stripe is controlled using the controller instance
+// which is passed to the thread. The Controller class owns these objects
+// privately and does not provide any interface for outside control.
+// Inside the controller, the led strip and dali is only communicated to from the 
+// thread. Perhaps the thread shall own these objects on its own.
+// Controll of the thread is done using the following member variables of the 
+// controller instance:
+
+// Member:                 Accessed outside thread:
+// m_state                 rw
+// m_prevState             rw
+// m_stateChangePending    rw (set to true outside thread, set to false inside thread)
+// m_lightOn               r  (to generate status)
+// 
+// 
+
+void* Controller::lightControllerThread(void* cntrlPointer)
 {
    Controller* instance = (Controller*)cntrlPointer;
 
@@ -87,6 +117,8 @@ void* Controller::monitorThread(void* cntrlPointer)
       }
    }
 
+   controllerMutex.lock();
+
    instance->m_lightOn = instance->m_dali.isLightsOn();
    if (instance->m_lightOn)
    {
@@ -99,15 +131,23 @@ void* Controller::monitorThread(void* cntrlPointer)
       instance->m_state = allOff;
    }
 
+   controllerMutex.unlock();
+   
+   //int clock = 0;
 
    while (true)
    {
+      //cout << "light control thread count: " << clock << endl;
       if (instance->m_dali.isLightsOn())
       {
          if (!instance->m_lightOn)
          {
+            controllerMutex.lock();
+
             instance->m_prevState = instance->m_state;
             instance->m_state = allOn;
+
+            controllerMutex.unlock();
 
             cout << "Led stripe on at random color" << endl;
 
@@ -137,6 +177,7 @@ void* Controller::monitorThread(void* cntrlPointer)
                break;
             }
          }
+
          instance->m_lightOn = true;
 
          if (instance->m_stateChangePending)
@@ -224,6 +265,7 @@ void* Controller::monitorThread(void* cntrlPointer)
             }
 
             instance->m_stateChangePending = false;
+            cout << "Handled a light state change" << endl;
 
          }
          else if (instance->m_ledOverridePending)
@@ -250,6 +292,7 @@ void* Controller::monitorThread(void* cntrlPointer)
 
       }
       usleep(250000);
+      // clock++;
    }
 }
 
@@ -357,14 +400,31 @@ IRCCMODE3D------  - Blu-ray IRCC    irccMode3D,
 
 */
 
-// The following method will be called by and executed in
-// another thread than the main
-// This method is the only place (after initialization)
-// where the m_state member and the relays are set. Therefore
-// there is no need to mutex protect them. 
+// TODO: The following method can be called from different
+// threads: 
+// 1. Communication server (socket)
+// 2. Script execution
+// All resources controlled by it must be mutex protected.
 
-void Controller::executeCommand(std::string command)
+void Controller::setNewLightState(LightControllerState newState)
 {
+   cout << "Getting mutext for state change..." << endl;
+   controllerMutex.lock();
+   cout << "Mutext locked" << endl;
+
+   m_prevState = m_state;
+   m_state = newState;
+   m_stateChangePending = true;
+
+   cout << "Releasing mutext for state change" << endl;
+   controllerMutex.unlock();
+   cout << "Mutext released" << endl;
+}
+
+std::string Controller::executeCommand(std::string command)
+// Returns with status message
+{
+   
    if (m_oneTimeIrInit)
    {
       m_oneTimeIrInit = false;
@@ -373,60 +433,53 @@ void Controller::executeCommand(std::string command)
    }
    
    cout << "Received command: " << command << endl;
+   m_script.recordCommand(command);
    
    if (command == "ALON------------")
    {
-      m_prevState = m_state;
-      m_state = allOn;
-      m_stateChangePending = true;
+      setNewLightState(allOn);
+
+      m_script.startScript("/home/pi/fhx_manager/scripts/test_script");
    
       cout << "State is All On." << endl;
    }
    else if (command == "ALOF------------")
    {
-      m_prevState = m_state;
-      m_state = allOff;
-      m_stateChangePending = true;
+      setNewLightState(allOff);
+      
+      m_script.stopScript();
+
+      // m_script.beginRecordScript(command);
 
       cout << "State is All Off." << endl;
    }
    else if (command == "PRMV------------")
    {
-      m_prevState = m_state;
-      m_state = preMovie;
-      m_stateChangePending = true;
+      setNewLightState(preMovie);
 
       cout << "State is Pre Movie." << endl;
    }
    else if (command == "MOVI------------")
    {
-      m_prevState = m_state;
-      m_state = movie;
-      m_stateChangePending = true;
+      setNewLightState(movie);
 
       cout << "State is Movie." << endl;
    }
    else if (command == "KDMO------------")
    {
-      m_prevState = m_state;
-      m_state = kidsMovie;
-      m_stateChangePending = true;
+      setNewLightState(kidsMovie);
 
       cout << "State is Kids Movie." << endl;
    }
    else if (command == "PAUS------------")
    {
-      m_prevState = m_state;
-      m_state = pause;
-      m_stateChangePending = true;
+      setNewLightState(pause);
 
       cout << "State is Pause." << endl;
    }
    else if (command == "ENCR------------")
    {
-      m_prevState = m_state;
-      m_state = endCredits;
-      m_stateChangePending = true;
+      setNewLightState(endCredits);
 
       cout << "State is End credits." << endl;
    }
@@ -643,6 +696,9 @@ void Controller::executeCommand(std::string command)
          m_blueColorOverride = (stoi(blueStr) * 100) / 255;
          
          m_ledOverridePending = true;        
+         
+         // m_script.beginRecordScript(command);
+         
       }
       else
       {
@@ -650,15 +706,17 @@ void Controller::executeCommand(std::string command)
       }
    }
 
-   prepareStatusMessage();
-
+   return generateStatusMessage(3);
+   
+   
 }
 
 string Controller::generateStatusMessage(int precision)
 {
    // Latest status is on the form:
-   // {Light power on=1 or off=2};{Light state};{Yamaha power, 1=On, 2=Standby};{Benq power, 1=On, 2=Off};{Volume -23.5}
+   // {Light power on=1 or off=2};{Light state};{Yamaha power, 1=On, 2=Standby};{Benq power, 1=On, 2=Off};{Volume -23.5};{script state};{active script name}
    // Example: "2;4;2;2;-23.5" Light power on, Movie state, Yamaha on, Benq On, Volume -23.5 dB
+   // Script states: 1=idle, 2=recording, 3=playing, 4=paused
 
    ostringstream statStream;
 
@@ -713,21 +771,25 @@ string Controller::generateStatusMessage(int precision)
    
    statStream << m_ynca->getVolume() << ";";
    
-   statStream << (int)m_ynca->getCurrentSource();
+   statStream << (int)m_ynca->getCurrentSource() << ";";
+   
+   statStream << ((int)scriptState + 1) << ";";
+   
+   statStream << scriptFileName;
 
    return statStream.str();
 }
 
 
-void Controller::prepareStatusMessage(void)
-{
-   string stat = generateStatusMessage(3);
+// void Controller::prepareStatusMessage(void)
+// {
+   // string stat = generateStatusMessage(3);
 
-   // This method is called from multiple threads
-   // The global status needs thus be protected
-   // by mutex.
-   pthread_mutex_lock(&globalStatusMutex);
-   g_latestStatus = stat;
-   pthread_mutex_unlock(&globalStatusMutex);
-}
+   // // This method is called from multiple threads
+   // // The global status needs thus be protected
+   // // by mutex.
+   // pthread_mutex_lock(&globalStatusMutex);
+   // g_latestStatus = stat;
+   // pthread_mutex_unlock(&globalStatusMutex);
+// }
 

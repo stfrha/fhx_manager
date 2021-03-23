@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
    cntrl.initializeController();
    comms.initializeComms(&cntrl);
 
+
    while (true)
    {
       delay(1000);

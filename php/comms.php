@@ -221,17 +221,9 @@ else
    $command = $statusRequest;
 }
 	
-echo 'Command: ' . $command;
-   
 $connection->send_data($command); //Send command String
 
 $fhxManagerStatus = $connection->read_data();
-
-// Latest status is on the form:
-// {lights on},{state} where lights on: 1=on, 2=off, and status: 1=all on, 2=all off, 3=pre movie, 4=movie, 5=pause, 6=end credits
-// Example "1,4"
-
-echo 'status: ' . $fhxManagerStatus;
 
 $statusArray = explode(";", $fhxManagerStatus);
 $lightsOn = $statusArray[0];
@@ -240,6 +232,8 @@ $yamahaPower = $statusArray[2];
 $benqPower = $statusArray[3];
 $volume = $statusArray[4];
 $source = $statusArray[5];
+$scriptState = $statusArray[6];
+$scriptName = $statusArray[7];
 
 $connection->close_socket(); 
 

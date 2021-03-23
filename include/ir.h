@@ -1,3 +1,6 @@
+#ifndef IR_H
+#define IR_H
+
 #include "lirc_client.h"
 
 
@@ -14,3 +17,8 @@ public:
 
    void sendIr(const char* remote, const char* button);
 };
+
+
+#endif
+
+
