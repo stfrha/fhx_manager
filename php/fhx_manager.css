@@ -152,6 +152,30 @@
   top: 40vh;
 }
 
+.row3TrippleSplit { 
+  height: 12vh;
+  width: 28vw;
+  top: 55vh;
+}
+
+.row4TrippleSplit { 
+  height: 12vh;
+  width: 28vw;
+  top: 70vh;
+}
+
+.row5TrippleSplit { 
+  height: 12vh;
+  width: 28vw;
+  top: 85vh;
+}
+
+.row6TrippleSplit { 
+  height: 12vh;
+  width: 28vw;
+  top: 72vh;
+}
+
 .row1Vol { 
   height: 12vh;
   width: 60vw;
@@ -197,4 +221,79 @@
 .imgButton {
    background-size: 100% 100%;
 }
+
+.myInput {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: red;
+  border: 5px solid darkred;
+  border-radius: 4vh;
+  border-radius: 4vh;
+  margin-right: 2rem;
+  padding: 1rem;
+  padding-right: 2rem;
+}
+
+.selectBig {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: red;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%234d4d4d' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+  background-repeat: no-repeat;
+  background-position: top 50% right;
+  border: 5px solid darkred;
+  border-radius: 4vh;
+  margin-right: 2rem;
+  padding: 1rem;
+  padding-right: 2rem;
+}
+
+.selectSmall {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: red;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%234d4d4d' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+  background-repeat: no-repeat;
+  background-position: top 50% right;
+  border: 0.5vw solid darkred;
+  border-radius: 4vh;
+  margin-right: 2rem;
+  padding: 1rem;
+  padding-right: 2rem;
+}
+
+.myButton {
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
+    outline:none;
+}
+
+.ticketFeature {
+   font-family: Arial;
+   font-size: 6vmin;
+   font-weight: bold;
+}
+
+.ticketStartsAt {
+   font-family: Arial;
+   font-size: 5vmin;
+   font-weight: bold;
+}
+
+.durationLabel {
+   font-family: Arial;
+   font-size: 3vmin;
+   font-weight: bold;
+}
+
+.durExLabel {
+   font-family: Arial;
+   font-size: 4vmin;
+   font-weight: bold;
+}
+
+
 

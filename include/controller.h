@@ -11,6 +11,7 @@
 #include "ir.h"
 #include "ircc.h"
 #include "script.h"
+#include "commands.h"
 
 class Comms;
 class Ynca;
@@ -50,7 +51,11 @@ private:
    unsigned int m_redColorOverride;
    unsigned int m_greenColorOverride;
    unsigned int m_blueColorOverride;
-
+   std::string m_startHour;
+   std::string m_startMinute;
+   std::string m_featureDuration;
+   std::string m_endCredits;
+   
    bool m_oneTimeIrInit;
 
    void setNewLightState(LightControllerState newState);
@@ -65,7 +70,8 @@ public:
    
    void initializeController(void);
 
-   std::string executeCommand(std::string command);
+   void setBlackScreen(void);
+   std::string executeCommand(const CommandStruct& command);
 };
 
 #endif

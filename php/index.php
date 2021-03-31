@@ -29,7 +29,7 @@ include './comms.php';
          </div>
       </a>
 
-      <a href="volume.php?op=<?php echo("is" . $volume)?>">  
+      <a href="volume.php">  
          <div class="imgButton divBase volumeDownButton" style="background-image:url('vol_button.png')">
          </div>
       </a>
@@ -112,6 +112,11 @@ ECHOBDCONFIRM;
 
       <a href="light.php">  
          <div class="imgButton divBase row6DualSplit left" style="background-image:url('light_button.png')">
+         </div>
+      </a>
+
+      <a href="feature_show.php">  
+         <div class="imgButton divBase row6DualSplit right" style="background-image:url('theatre_show_button.png')">
          </div>
       </a>
    </body>

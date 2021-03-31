@@ -30,7 +30,7 @@ include './comms.php';
          </div>
       </a>
 
-      <a href="volume.php?op=<?php echo("is" . $volume)?>">  
+      <a href="volume.php">  
          <div class="imgButton divBase volumeDownButton" style="background-image:url('vol_button.png')">
          </div>
       </a>
@@ -39,32 +39,32 @@ include './comms.php';
 if ($lightsOn == "1")
 {
    echo <<<ECHOEND
-      <a href="light.php?op=all_on">  
+      <a href="light.php?op=lightAllOn">  
          <div class="imgButton divBase row1TrippleSplit left" style="background-image:url('light_all_on_button.png')">
          </div>
       </a>
 
-      <a href="light.php?op=all_off">  
+      <a href="light.php?op=lightAllOff">  
          <div class="imgButton divBase row1TrippleSplit middle" style="background-image:url('light_all_off_button.png')">
          </div>
       </a>
 
-      <a href="light.php?op=kids_movie">  
+      <a href="light.php?op=lightKidsMovie">  
          <div class="imgButton divBase row1TrippleSplit right" style="background-image:url('light_kids_movie_button.png')">
          </div>
       </a>
 
-      <a href="light.php?op=pre_movie">  
+      <a href="light.php?op=lightPreMovie">  
          <div class="imgButton divBase row2TrippleSplit left" style="background-image:url('light_before_button.png')">
          </div>
       </a>
 
-      <a href="light.php?op=movie">  
+      <a href="light.php?op=lightMovie">  
          <div class="imgButton divBase row2TrippleSplit middle" style="background-image:url('light_movie_button.png')">
          </div>
       </a>
 
-      <a href="light.php?op=end_cred">  
+      <a href="light.php?op=lightEndCred">  
          <div class="imgButton divBase row2TrippleSplit right" style="background-image:url('light_end_button.png')">
          </div>
       </a>
@@ -123,7 +123,7 @@ ECHOEND;
             // Build color string of type "(129,054,255)"
             // I.e. pad so all decimal numbers are three characters
             $c = '(' .  str_pad($reds[$y][$x], 3, '0', STR_PAD_LEFT) . ',' . str_pad($greens[$y][$x], 3, '0', STR_PAD_LEFT) . ',' . str_pad($blues[$y][$x] , 3, '0', STR_PAD_LEFT) . ')';
-            echo '   <a href="?op=' . $c . '">';
+            echo '   <a href="?op=ledStrip&arg=' . $c . '">';
             echo "\r\n";
 
             echo '      <div class="cpbBase" style="border:none; background-color:rgb' . $c . '; width:7vw; height:3vh; left:' . (0.64 + $x * 7.64) . 'vw; top:' . (($y * 3.64) + 58)  . 'vh;"></div>';
@@ -132,73 +132,6 @@ ECHOEND;
          }
    ?>
 
-<!--
-      <a href="?op=all_off">  
-         <div class="divBase row1DualSplit right <?php if ($lightsOn == "1") echo("enabled"); else echo("disabled");?> <?php if (($state == "2") && ($lightsOn == "1")) echo("selected"); else echo("notSelected"); ?>">
-           <div class="centered">
-             <h2>Main Off</h2>
-           </div>
-         </div>
-      </a>
-
-      <a href="?op=pre_movie">  
-         <div class="divBase row2DualSplit left <?php if ($lightsOn == "1") echo("enabled"); else echo("disabled");?> <?php if (($state == "3") && ($lightsOn == "1")) echo("selected"); else echo("notSelected"); ?>">
-           <div class="centered">
-             <h2>Before Movie</h2>
-           </div>
-         </div>
-      </a>
-
-      <a href="?op=kids_movie">  
-         <div class="divBase row2DualSplit right <?php if ($lightsOn == "1") echo("enabled"); else echo("disabled");?> <?php if (($state == "7") && ($lightsOn == "1")) echo("selected"); else echo("notSelected"); ?>">
-           <div class="centered">
-             <h2>Kids Movie</h2>
-           </div>
-         </div>
-      </a>
-
-      <a href="?op=movie">  
-         <div class="divBase row3DualSplit left <?php if ($lightsOn == "1") echo("enabled"); else echo("disabled");?> <?php if (($state == "4") && ($lightsOn == "1")) echo("selected"); else echo("notSelected"); ?>">
-           <div class="centered">
-             <h2>Movie</h2>
-           </div>
-         </div>
-      </a>
-
-      <a href="?op=pause">  
-         <div class="divBase row3DualSplit right <?php if ($lightsOn == "1") echo("enabled"); else echo("disabled");?> <?php if (($state == "5") && ($lightsOn == "1")) echo("selected"); else echo("notSelected"); ?>">
-           <div class="centered">
-             <h2>Pause</h2>
-           </div>
-         </div>
-      </a>
-
-      <a href="?op=end_cred">  
-         <div class="divBase row4DualSplit left <?php if ($lightsOn == "1") echo("enabled"); else echo("disabled");?> <?php if (($state == "6") && ($lightsOn == "1")) echo("selected"); else echo("notSelected"); ?>">
-           <div class="centered">
-             <h2>End Credits</h2>
-           </div>
-         </div>
-      </a>
-
-      <a href="index.php">  
-         <div class="divBase row41DualSplit rightLeft enabled notSelected">
-           <div class="centered">
-             <h2>Refresh</h2>
-           </div>
-         </div>
-      </a>
-
-      <a href="color.php">  
-         <div class="divBase row41DualSplit right enabled notSelected">
-           <div class="centered">
-             <h2>Colors</h2>
-           </div>
-         </div>
-      </a>
--->      
-      
-      
    </body>
 </html>
 

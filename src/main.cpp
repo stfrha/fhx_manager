@@ -4,6 +4,8 @@
 #include <vector>
 #include <string.h>
 #include <iomanip>
+#include <ctime>
+#include <cstdlib>
 
 #include "comms.h"
 #include "controller.h"
@@ -22,6 +24,8 @@ pthread_mutex_t g_cvLock;
 int main(int argc, char *argv[])
 {
    cout << "Welcome to FHX-manager!" << endl;
+
+   srand(time(0));
 
    Comms comms;
    Ynca ynca(&comms);
