@@ -10,6 +10,8 @@
 #include "benq.h"
 #include "ir.h"
 #include "ircc.h"
+#include "script.h"
+#include "commands.h"
 
 class Comms;
 class Ynca;
@@ -39,6 +41,7 @@ private:
    Ynca* m_ynca;
    Ir m_ir;
    Ircc m_ircc;
+   Script m_script;
    
    bool m_yamahaOn;
    bool m_benqOn;
@@ -48,9 +51,14 @@ private:
    unsigned int m_redColorOverride;
    unsigned int m_greenColorOverride;
    unsigned int m_blueColorOverride;
-
+   std::string m_startHour;
+   std::string m_startMinute;
+   std::string m_featureDuration;
+   std::string m_endCredits;
+   
    bool m_oneTimeIrInit;
 
+   void setNewLightState(LightControllerState newState);
    void prepareStatusMessage(void);
    std::string generateStatusMessage(int precision);
        
@@ -62,7 +70,8 @@ public:
    
    void initializeController(void);
 
-   void executeCommand(std::string command);
+   void setBlackScreen(void);
+   std::string executeCommand(const CommandStruct& command);
 };
 
 #endif

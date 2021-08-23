@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include <fstream>
-#include <string.h>
+#include <string>
 #include <time.h>
 #include <vector>
 #include <unistd.h>
@@ -27,21 +27,22 @@
 #include <arpa/inet.h> //close 
 
 #include "comms.h"
+#include "commands.h"
 
 using namespace std;
 
 // Global variables:
 
 // The message queue
-extern pthread_mutex_t msgQueuMutex;
-extern vector<string> g_messageQueue;
+// extern pthread_mutex_t msgQueuMutex;
+// extern vector<string> g_messageQueue;
 
 // Conditional variable to indicate message in queue
-extern pthread_cond_t g_cv;
-extern pthread_mutex_t g_cvLock;
+// extern pthread_cond_t g_cv;
+// extern pthread_mutex_t g_cvLock;
 
 // Status as exposed globally from Controller class
-extern string g_latestStatus;
+// extern string g_latestStatus;
 
 
 // Both threads needs to agree on port number, 
@@ -71,35 +72,86 @@ void Comms::initializeComms(Controller* cntrl)
    }
 }
 
+void Comms::sendCommand(Controller* cntrl, int socketFd, const CommandStruct& cs)
+{
+   int n = 0;
+   string latestStatus = cntrl->executeCommand(cs);
+   n = write(socketFd, latestStatus.c_str(), latestStatus.length());
+   if (n < 0)
+   {
+      error("ERROR writing to socket");
+   }
+}
+
 void Comms::handleMessage(Controller* cntrl, int socketFd, char* buffer, int length)
 {
-   int n;
 
-   // Check if the buffer contains broken messages
-   // it is assumed that all messages are 16 characters.
-   if ((length % 16) != 0)
+   // Check if the buffer contains at least one message (no broken)
+   if (length < 4)
    {
       // At least one broken message, discard the whole buffer
       cout << "At least one broken message, discard the whole buffer" << endl;
       cout << "-- Length is: " << length << endl;
       cout << "-- Message data is: " << buffer << endl;
+
+      sendCommand(cntrl, socketFd, CommandStruct(t_commands::statusReq, ""));
+
       return;
    }
 
-   int numOfMessages = length / 16;
-
-   string strBuffer = buffer;
-
-   for (int i = 0; i < numOfMessages; i++)
+   // Parse (possibly multiple) messages
+   int n = 0;
+   
+   while (n < length)
    {
-      string message = strBuffer.substr(i * 16, 16);
-      cntrl->executeCommand(message);
-
-      n = write(socketFd, g_latestStatus.c_str(), g_latestStatus.length());
-      if (n < 0)
+      CommandStruct cs;
+      int magic;
+      int msgLen;
+      int id;
+      int startN = n;
+      
+      magic = buffer[n++];
+      
+      if (magic != CommandStruct::c_magic)
       {
-         error("ERROR writing to socket");
+         // At least one broken message, discard the whole buffer
+         cout << "At least one broken message, did not find magic word, discard the whole buffer" << endl;
+         cout << "-- Length is: " << length << endl;
+         cout << "-- Message data is: " << buffer << endl;
+
+         sendCommand(cntrl, socketFd, CommandStruct(t_commands::statusReq, ""));
+
+         return;
       }
+
+      msgLen = buffer[n++];
+      if (msgLen > 4)
+      {
+         // There is an argument, we want length to be at least equal to msgLen
+         if (length < msgLen + startN)
+         {
+            // At least one broken message, discard the whole buffer
+            cout << "At least one broken message, discard the whole buffer" << endl;
+            cout << "-- Length is: " << length << endl;
+            cout << "-- Message data is: " << buffer << endl;
+            
+            sendCommand(cntrl, socketFd, CommandStruct(t_commands::statusReq, ""));
+            
+            return;
+
+         }
+      }
+
+      unsigned int tId = buffer[n++] * 256 + buffer[n++] ;
+      cs.m_id = (t_commands)tId;
+      cs.m_argument = "";
+      
+      for (int i = 0; i < msgLen - 4; i++)
+      {
+         cs.m_argument += buffer[n++];
+      }
+      
+      sendCommand(cntrl, socketFd, cs);
    }
 }
 

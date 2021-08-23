@@ -1,3 +1,5 @@
+#ifndef DALI_H
+#define DALI_H
 
 class Dali
 {
@@ -36,8 +38,7 @@ public:
 
 //#define COMMISSIONING_TEST
 
-
-
-
-
 };
+
+#endif
+

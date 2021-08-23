@@ -1,4 +1,5 @@
-#pragma once 
+#ifndef EASING_H
+#define EASING_H
 
 enum easing_functions
 {
@@ -39,3 +40,4 @@ typedef double(*easingFunction)(double);
 
 easingFunction getEasingFunction( easing_functions function );
 
+#endif

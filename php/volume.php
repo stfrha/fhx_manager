@@ -2,66 +2,13 @@
 ini_set("display_errors",1);
 error_reporting(E_ALL);
 
-include './socket.php';
-
-$RaspberryPiIP = "127.0.0.1"; // Change by your RaspberryPi/PC IP 
-
-// Read port number from file: /home/pi/therminal/socket_config.txt
-$myfile = fopen("/home/pi/fhx_manager/socket_config.txt", "r") or die("Unable to open file!");
-$portString = fgets($myfile);
-fclose($myfile);
-
-$RaspberryPiPORT = (int)$portString; // Change by your RaspberryPi / PC Port Number ..
-$connection = new Socket($RaspberryPiIP,$RaspberryPiPORT); // Create a new socket Connection object. 
-$connection->init();
-
-$connection->open_socket(); // Connect PHP to RaspberryPi or computer.
-
-if (isset($_GET["op"]))
-{
-   $operation = $_GET["op"];
-
-   if (substr($operation, 0, 2) == "is")
-   {
-      $volume = substr($operation, 2);
-   }
-   else if (substr($operation, 0, 3) == "set")
-   {
-      $command = "VOLUMEVAL(" .  substr($operation, 3) . ")------";
-      $command = substr($command, 0, 16);
-
-      $connection->send_data($command); //Send command String
-
-      $fhxManagerStatus = $connection->read_data();
-
-      // Latest status is on the form:
-      // {lights on},{state} where lights on: 1=on, 2=off, and status: 1=all on, 2=all off, 3=pre movie, 4=movie, 5=pause, 6=end credits
-      // Example "1,4"
-
-      echo 'status: ' . $fhxManagerStatus;
-
-      $statusArray = explode(";", $fhxManagerStatus);
-      $lightsOn = $statusArray[0];
-      $state  = $statusArray[1];
-      $yamahaPower = $statusArray[2];
-      $benqPower = $statusArray[3];
-      $volume = $statusArray[4];
-      
-   }
-}
-else
-{
-   // Default value if non is provided
-   $volume = "-80.0";
-}
+include './comms.php';
 
 // For safety
 if (abs(floatval($volume)) < 0.01)
 {
    $volume = "-40.0";
 }
-
-$connection->close_socket(); 
 
 $newM5Vol = floatval($volume) - 5.0;
 if ($newM5Vol < "-80.0")
@@ -165,22 +112,22 @@ html {
       </div>
    </a>
 
-   <a  href="volume.php?op=set<?php echo($newM5Vol); ?>">
+   <a  href="volume.php?op=volSet&arg=<?php echo($newM5Vol); ?>">
       <div class="imgButton divBase row2Vol left" style="background-image:url('minus5bd_button.png')">
       </div>
    </a>
 
-   <a  href="volume.php?op=set<?php echo($newP5Vol); ?>">
+   <a  href="volume.php?op=volSet&arg=<?php echo($newP5Vol); ?>">
       <div class="imgButton divBase row2Vol right" style="background-image:url('plus5db_button.png')">
       </div>
    </a>
 
-   <a  href="volume.php?op=set<?php echo($newM1Vol); ?>">
+   <a  href="volume.php?op=volSet&arg=<?php echo($newM1Vol); ?>">
       <div class="imgButton divBase row3Vol left" style="background-image:url('minus1bd_button.png')">
       </div>
    </a>
 
-   <a  href="volume.php?op=set<?php echo($newP1Vol); ?>">
+   <a  href="volume.php?op=volSet&arg=<?php echo($newP1Vol); ?>">
       <div class="imgButton divBase row3Vol right" style="background-image:url('plus1db_button.png')">
       </div>
    </a>
@@ -200,7 +147,7 @@ slider.oninput = function() {
 
 function changeLink() {
    var slider = document.getElementById("myRange");
-   window.location.href = "volume.php?op=set" + (slider.value / 2.0) .toString();
+   window.location.href = "volume.php?op=volSet&arg=" + (slider.value / 2.0) .toString();
 }
 
 </script>

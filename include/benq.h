@@ -1,3 +1,6 @@
+#ifndef BENQ_H
+#define BENQ_H
+
 
 class Benq
 {
@@ -20,9 +23,6 @@ public:
    
 
 //#define COMMISSIONING_TEST
-
-
-
-
-
 };
+
+#endif

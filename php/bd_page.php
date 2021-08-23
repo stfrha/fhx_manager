@@ -29,14 +29,13 @@ include './comms.php';
          </div>
       </a>
 
-<!--
-      <a href="bd_page.php?op=bdPower">  
+      <a href="bd_page.php?op=bdPowerOnLan">  
          <div class="imgButton divBase buttonSize row1Page2 left" style="background-image:url('dilog_buttons/dk_power.png')">
          </div>
       </a>
--->
+
       <a href="bd_page.php?op=bdSubtitle">  
-         <div class="imgButton divBase buttonSize row1Page2 middle" style="background-image:url('dilog_buttons/dk_subtutle.png')">
+         <div class="imgButton divBase buttonSize row1Page2 middle" style="background-image:url('dilog_buttons/dk_subtitle.png')">
          </div>
       </a>
 
@@ -50,7 +49,7 @@ include './comms.php';
          </div>
       </a>
 
-      <a href="bd_page.php?op=dbPlay">  
+      <a href="bd_page.php?op=bdPlay">  
          <div class="imgButton divBase buttonSize row2Page2 middle" style="background-image:url('dilog_buttons/dk_play.png')">
          </div>
       </a>

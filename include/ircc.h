@@ -1,3 +1,5 @@
+#ifndef IRCC_H
+#define IRCC_H
 
 #include <vector>
 
@@ -122,3 +124,5 @@ public:
    void wakeOnLan(void);
    void sendCode(irccCode_t code);
 };
+
+#endif

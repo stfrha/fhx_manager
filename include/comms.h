@@ -3,16 +3,17 @@
 
 
 #include "controller.h"
+#include "commands.h"
 
 class Comms
 {
 private:
    Controller * m_cntrl;
 
-
-
    static void* serverThread(void* threadId);
+   static void sendCommand(Controller* cntrl, int socketFd, const CommandStruct& cs);
    static void handleMessage(Controller* cntrl, int socketFd, char* buffer, int length);
+   
 
    int getYamahaSocket(void);
 
