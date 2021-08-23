@@ -49,10 +49,10 @@ void Controller::initializeController(void)
 
    pthread_t thread;
 
-   int result = pthread_create(&thread, NULL, monitorThread, this);
+   int result = pthread_create(&thread, NULL, lightControllerThread, this);
    if (result)
    {
-      cout << "Monitor thread could not be created, " << result << endl;
+      cout << "Light Control thread could not be created, " << result << endl;
       exit(1);
    }
    
@@ -67,7 +67,29 @@ void Controller::initializeController(void)
    
 }
 
-void* Controller::monitorThread(void* cntrlPointer)
+
+// This thread holds control over DALI and led strip (the only control?)
+// It is managed by the variable m_state which it both monitors (can be
+// set outside the thread) and writes to. There is a race condition here!
+// It is also affected by the state of the dali controller which can be 
+// on or off (light switch on wall)
+// The Dali and led stripe is controlled using the controller instance
+// which is passed to the thread. The Controller class owns these objects
+// privately and does not provide any interface for outside control.
+// Inside the controller, the led strip and dali is only communicated to from the 
+// thread. Perhaps the thread shall own these objects on its own.
+// Controll of the thread is done using the following member variables of the 
+// controller instance:
+
+// Member:                 Accessed outside thread:
+// m_state                 rw
+// m_prevState             rw
+// m_stateChangePending    rw (set to true outside thread, set to false inside thread)
+// m_lightOn               r  (to generate status)
+// 
+// 
+
+void* Controller::lightControllerThread(void* cntrlPointer)
 {
    Controller* instance = (Controller*)cntrlPointer;
 

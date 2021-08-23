@@ -54,7 +54,7 @@ private:
    void prepareStatusMessage(void);
    std::string generateStatusMessage(int precision);
        
-   static void* monitorThread(void* threadId);
+   static void* lightControllerThread(void* threadId);
 
          
 public:
