@@ -90,6 +90,11 @@ ECHOBDCONFIRM;
          </div>
       </a>
 
+      <a href="confirm_system_on.php?op=sourceHdmi">  
+         <div class="imgButton divBase row3DualSplit right" style="background-image:url('hdmi_button.png')">
+         </div>
+      </a>
+
       <a href="confirm_system_on.php?op=sourceSpotify">  
          <div class="imgButton divBase row4DualSplit left" style="background-image:url('spotify_button.png')">
          </div>
