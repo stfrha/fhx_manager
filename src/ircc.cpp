@@ -81,7 +81,7 @@ void Ircc::getDial(void)
 
    if(curl) 
    {
-      curl_easy_setopt(curl, CURLOPT_URL, "192.168.0.179:50201/dial.xml");
+      curl_easy_setopt(curl, CURLOPT_URL, "192.168.0.161:50201/dial.xml");
       list = curl_slist_append(list, "Connection: close");
       curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
       curl_easy_setopt(curl, CURLOPT_USERAGENT, "FHX Manager/0.1 (Raspberry Pi 3b+)");
@@ -109,7 +109,7 @@ void Ircc::getIrcc(void)
 
    if(curl) 
    {
-      curl_easy_setopt(curl, CURLOPT_URL, "192.168.0.179:50001/Ircc.xml");
+      curl_easy_setopt(curl, CURLOPT_URL, "192.168.0.161:50001/Ircc.xml");
       list = curl_slist_append(list, "Connection: close");
       curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
       curl_easy_setopt(curl, CURLOPT_USERAGENT, "FHX Manager/0.1 (Raspberry Pi 3b+)");
@@ -137,7 +137,7 @@ void Ircc::getDmr(void)
 
    if(curl) 
    {
-      curl_easy_setopt(curl, CURLOPT_URL, "192.168.0.179:52323/dmr.xml");
+      curl_easy_setopt(curl, CURLOPT_URL, "192.168.0.161:52323/dmr.xml");
       curl_easy_setopt(curl, CURLOPT_USERAGENT, "UPnP/1.0");
       list = curl_slist_append(list, "X-AV-Client-Info: av=5.0; cn=\"Fredrik Hoffman\"; mn=\"FHX Manager\"; mv=\"0.1.0\";");
       curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
@@ -173,7 +173,7 @@ void Ircc::registerNoAuth(void)
 
    cout << registerArg << endl;
 
-   string url = "192.168.0.179:50002/" + registerArg;
+   string url = "192.168.0.161:50002/" + registerArg;
 
    if(curl) 
    {
@@ -216,7 +216,7 @@ void Ircc::registerAuth(string authStr)
 
    cout << registerArg << endl;
 
-   string url = "192.168.0.179:50002/" + registerArg;
+   string url = "192.168.0.161:50002/" + registerArg;
 
    if(curl) 
    {
@@ -252,7 +252,7 @@ void Ircc::sendPause(void)
 
    // Gather header strings.
    
-   string url = "192.168.0.179:50001/upnp/control/IRCC";
+   string url = "192.168.0.161:50001/upnp/control/IRCC";
    string post = "<?xml version=\"1.0\"?><s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><s:Body><u:X_SendIRCC xmlns:u=\"urn:schemas-sony-com:service:IRCC:1\"><IRCCCode>AAAAAwAAHFoAAAAZAw==</IRCCCode></u:X_SendIRCC></s:Body></s:Envelope>";
 
 // <?xml version="1.0"?><s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"><s:Body><u:X_SendIRCC xmlns:u="urn:schemas-sony-com:service:IRCC:1"><IRCCCode>AAAAAwAAHFoAAAAZAw==</IRCCCode></u:X_SendIRCC></s:Body></s:Envelope>
@@ -295,7 +295,7 @@ void Ircc::sendCode(irccCode_t code)
    curl = curl_easy_init();
 
    // Gather header strings.
-   string url = "192.168.0.179:50001/upnp/control/IRCC";
+   string url = "192.168.0.161:50001/upnp/control/IRCC";
    string post = "<?xml version=\"1.0\"?><s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><s:Body><u:X_SendIRCC xmlns:u=\"urn:schemas-sony-com:service:IRCC:1\"><IRCCCode>" + m_irccCmnds[(int)code] + "</IRCCCode></u:X_SendIRCC></s:Body></s:Envelope>";
 
    if(curl) 
@@ -336,7 +336,7 @@ void Ircc::sendPlay(void)
 
    // Gather header strings.
    
-   string url = "192.168.0.179:50001/upnp/control/IRCC";
+   string url = "192.168.0.161:50001/upnp/control/IRCC";
    string post = "<?xml version=\"1.0\"?><s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><s:Body><u:X_SendIRCC xmlns:u=\"urn:schemas-sony-com:service:IRCC:1\"><IRCCCode>AAAAAwAAHFoAAAAaAw==</IRCCCode></u:X_SendIRCC></s:Body></s:Envelope>";
 
 // <?xml version="1.0"?><s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"><s:Body><u:X_SendIRCC xmlns:u="urn:schemas-sony-com:service:IRCC:1"><IRCCCode>AAAAAwAAHFoAAAAaAw==</IRCCCode></u:X_SendIRCC></s:Body></s:Envelope>

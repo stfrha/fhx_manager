@@ -15,6 +15,7 @@ enum YamahaSourcesEnum
    usb,
    bluRay,
    raspberryPi,
+   hdmi,
    lastSource
 };
 

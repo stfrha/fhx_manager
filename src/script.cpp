@@ -288,7 +288,7 @@ void* Script::theatreThread(void* cntrlPointer)
                system( cmd.c_str() );
 
                cout << "Crowd movie finished, lower lights to pre-movie and start commercials" << endl;
-               cntrl->executeCommand(CommandStruct(t_commands::lightPreMovie, ""));
+               cntrl->executeCommand(CommandStruct(t_commands::lightKidsMovie, ""));
                
                //  Play 3 Commercials
                vector<string> files;
@@ -323,6 +323,7 @@ void* Script::theatreThread(void* cntrlPointer)
                   system( cmd.c_str() );
                }
 
+               cntrl->executeCommand(CommandStruct(t_commands::lightMovie, ""));
                cntrl->executeCommand(CommandStruct(t_commands::sourceBr, ""));
             }
          }
@@ -336,7 +337,7 @@ void* Script::theatreThread(void* cntrlPointer)
          {
             unique_lock<mutex> lk(theatreMu);
 
-            if (theatreCondVar.wait_for(lk, 14*1000ms, []{return theatreGo;}))
+            if (theatreCondVar.wait_for(lk, 12*1000ms, []{return theatreGo;}))
             {
                cout << "Thread got a kick while waiting for next command timeout" << endl;
                theatreGo = false;

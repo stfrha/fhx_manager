@@ -28,7 +28,9 @@ const char* const Ynca::sourceStrings[] = {
   "@MAIN:INP=AV5\r\n",        //   aux, TODO: this is not the correct port!!!
   "@MAIN:INP=USB\r\n",        //   usb
   "@MAIN:INP=AV5\r\n",        //   blu-ray
-  "@MAIN:INP=AV4\r\n"         //   raspberryPi
+  "@MAIN:INP=AV4\r\n",        //   raspberryPi
+  "@MAIN:INP=AV6\r\n"         //   HDMI
+  
 };
 
 Ynca::Ynca(Comms* comms) :
@@ -200,7 +202,10 @@ YamahaSourcesEnum Ynca::getCurrentSource(void)
       {
          return raspberryPi;
       }
+      else if (rep == "@MAIN:INP=AV6\r\n")
+      {
+         return hdmi;
+      }
    }
-
 }
 
