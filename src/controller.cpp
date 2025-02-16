@@ -70,7 +70,7 @@ void Controller::initializeController(void)
    int result = pthread_create(&thread, NULL, lightControllerThread, this);
    if (result)
    {
-      cout << "Monitor thread could not be created, " << result << endl;
+      cout << "Light Control thread could not be created, " << result << endl;
       exit(1);
    }
    
