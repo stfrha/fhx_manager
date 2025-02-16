@@ -1,0 +1,5 @@
+Att göra med fhx_manager!!
+
+[..] Kolla vilket exe autostart pekar ut och starar, om den är utanför git, lägg till att kopiera binären som en del av bygget.
+
+
