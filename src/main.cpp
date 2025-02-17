@@ -23,7 +23,7 @@ pthread_mutex_t g_cvLock;
 
 int main(int argc, char *argv[])
 {
-   cout << "Welcome to FHX-manager!" << endl;
+   cout << "Welcome to FHX-manager, now built with CMAKE!" << endl;
 
    srand(time(0));
 

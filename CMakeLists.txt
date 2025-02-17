@@ -30,6 +30,9 @@ target_link_libraries(${PROJECT}
         curl 
         liblirc_client)
 
-
-    
-
+add_custom_command(
+    TARGET ${PROJECT} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+        fhx_manager
+        ../../fhx_manager/fhx_manager
+)

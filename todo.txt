@@ -1,5 +1,36 @@
 Att göra med fhx_manager!!
 
-[..] Kolla vilket exe autostart pekar ut och starar, om den är utanför git, lägg till att kopiera binären som en del av bygget.
+[ok] Kolla vilket exe autostart pekar ut och starar, om den är utanför git, lägg till att kopiera binären som en del av bygget. Den utanför git pekas ut. Behöver kopiera resultatet när bygget är klart. Hur?
+
+
+Jag bytte i CMakePresets.json enl första svaret på: 
+https://forums.raspberrypi.com/viewtopic.php?t=368836
+
+Gammal CMakePresets.json
+{
+    "version": 8,
+    "configurePresets": [
+        {
+            "name": "fhx_manager",
+            "displayName": "GCC 6.3.0 arm-linux-gnueabihf",
+            "description": "Using compilers: C = /usr/bin/arm-linux-gnueabihf-gcc, CXX = /usr/bin/arm-linux-gnueabihf-g++",
+            "generator": "Unix Makefiles",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_C_COMPILER": "/usr/bin/arm-linux-gnueabihf-gcc",
+                "CMAKE_CXX_COMPILER": "/usr/bin/arm-linux-gnueabihf-g++",
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        }
+    ]
+}
+
+Men ändrade version till 8 och name till "fhx_manager". Slutade få problem med att generator inte hittades.
+
+Nu tar jag nästa problem: Jag får inte upp ../../build/lirc-0.9.4c/debian/tmp/usr/include som include-sökväg.
+
+
+
 
 
