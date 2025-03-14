@@ -1,0 +1,3 @@
+/home/pi/git/fhx_manager/CMakeFiles/rebuild_cache.dir
+/home/pi/git/fhx_manager/CMakeFiles/edit_cache.dir
+/home/pi/git/fhx_manager/CMakeFiles/fhx_manager.dir
