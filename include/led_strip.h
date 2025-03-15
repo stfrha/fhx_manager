@@ -17,7 +17,7 @@
 #define RED_LED 29
 #define GREEN_LED 28
 
-#define SEC_CLOCK_TICK 0.015
+#define SEC_CLOCK_TICK 0.010
 #define MS_CLOCK_TICK SEC_CLOCK_TICK * 1000
 
 // Code below is found by https://github.com/barrymcandrews/tlc59711/blob/master/include/tlc59711.h
