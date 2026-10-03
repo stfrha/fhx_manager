@@ -1,0 +1,86 @@
+
+# Please take the time to finish this file as described in
+# https://sourceforge.net/p/lirc-remotes/wiki/Checklist/
+# and make it available to others by sending it to
+# <lirc@bartelmus.de>
+#
+# This config file was automatically generated
+# using lirc-0.9.4c(default) on Sat Feb 27 21:38:16 2021
+# Command line used: -u dh_660hd.lircd.conf
+# Kernel version (uname -r): 4.19.66-v7+
+#
+# Remote name (as of config file): dh_660hd
+# Brand of remote device, the thing you hold in your hand:
+# Remote device model nr:
+# Remote device info url:
+# Does remote device has a bundled capture device e. g., a
+#     usb dongle? :
+# For bundled USB devices: usb vendor id, product id
+#     and device string (use dmesg or lsusb):
+# Type of device controlled
+#     (TV, VCR, Audio, DVD, Satellite, Cable, HTPC, ...) :
+# Device(s) controlled by this remote:
+
+begin remote
+
+  name  dh_660hd
+  bits           32
+  flags SPACE_ENC|CONST_LENGTH
+  eps            30
+  aeps          100
+
+  header       9068  4497
+  one           597  1667
+  zero          597   543
+  ptrail        598
+  repeat       9069  2224
+  gap          108650
+  toggle_bit_mask 0x0
+  frequency    38000
+
+      begin codes
+          KEY_POWER                0x10EF08F7 0x7EA07AFC
+          KEY_MUTE                 0x10EFE817 0x7EA07AFC
+          KEY_LIST                 0x10EF02FD 0x7EA07AFC
+          KEY_TIME                 0x10EFC23D 0x7EA07AFC
+          KEY_1                    0x10EFF00F 0x7EA07AFC
+          KEY_2                    0x10EF708F 0x7EA07AFC
+          KEY_3                    0x10EFB04F 0x7EA07AFC
+          KEY_4                    0x10EFF807 0x7EA07AFC
+          KEY_5                    0x10EF7887 0x7EA07AFC
+          KEY_6                    0x10EFB847 0x7EA07AFC
+          KEY_7                    0x10EFE01F 0x7EA07AFC
+          KEY_8                    0x10EF609F 0x7EA07AFC
+          KEY_9                    0x10EFA05F 0x7EA07AFC
+          KEY_0                    0x10EFD02F 0x7EA07AFC
+          KEY_INFO                 0x10EF6897 0x7EA07AFC
+          KEY_EXIT                 0x10EF728D 0x7EA07AFC
+          KEY_DIRECTORY            0x10EFD827 0x7EA07AFC
+          KEY_MENU                 0x10EF18E7 0x7EA07AFC
+          KEY_CHANNELUP            0x10EF28D7 0x7EA07AFC
+          KEY_CHANNELDOWN          0x10EF8877 0x7EA07AFC
+          KEY_UP                   0x10EF00FF 0x7EA07AFC
+          KEY_DOWN                 0x10EF807F 0x7EA07AFC
+          KEY_LEFT                 0x10EFC03F 0x7EA07AFC
+          KEY_RIGHT                0x10EF40BF 0x7EA07AFC
+          KEY_SELECT               0x10EF50AF 0x7EA07AFC
+          KEY_SUBTITLE             0x10EF32CD 0x7EA07AFC
+          KEY_TEXT                 0x10EFB24D 0x7EA07AFC
+          KEY_STOP                 0x10EFAA55 0x7EA07AFC
+          KEY_PLAY                 0x10EF6A95 0x7EA07AFC
+          KEY_PAUSE                0x10EFEA15 0x7EA07AFC
+          KEY_RECORD               0x10EF1AE5 0x7EA07AFC
+          KEY_RED                  0x10EF0AF5 0x7EA07AFC
+          KEY_GREEN                0x10EF8A75 0x7EA07AFC
+          KEY_YELLOW               0x10EF4AB5 0x7EA07AFC
+          KEY_BLUE                 0x10EFCA35 0x7EA07AFC
+          KEY_NEXT                 0x10EF12ED 0x7EA07AFC
+          KEY_PREVIOUS             0x10EFE21D 0x7EA07AFC
+          KEY_AUDIO                0x10EFA25D 0x7EA07AFC
+          KEY_ZOOM                 0x10EF629D 0x7EA07AFC
+          KEY_EPG                  0x10EFD22D 0x7EA07AFC
+      end codes
+
+end remote
+
+

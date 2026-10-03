@@ -342,7 +342,7 @@ int Comms::getYamahaSocket(void)
       cout << "Could not create Yamaha client socket" << endl;
    }
    
-   server.sin_addr.s_addr = inet_addr("192.168.0.113");
+   server.sin_addr.s_addr = inet_addr("192.168.0.203");
    server.sin_family = AF_INET;
    server.sin_port = htons(50000);
    

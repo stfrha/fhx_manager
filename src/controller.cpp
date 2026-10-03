@@ -113,6 +113,8 @@ void* Controller::lightControllerThread(void* cntrlPointer)
 {
    Controller* instance = (Controller*)cntrlPointer;
 
+   cout << "About to initialise led-strip..." << endl;
+
    if (!instance->m_ledStrip.initializeLedStrip())
    {
       cout << "Error initializing Led strip." << endl;
@@ -120,6 +122,8 @@ void* Controller::lightControllerThread(void* cntrlPointer)
       {
       }
    }
+
+   cout << "led-strip initialised" << endl;
 
    if (!instance->m_dali.initializeDali())
    {
@@ -397,16 +401,16 @@ std::string Controller::executeCommand(const CommandStruct& command)
    else if (command.m_id == t_commands::ledStrip)
    {
       // Decode color values and scale them to max
-      // being 100. pwm = (color * 100) / 255
+      // being 4095. pwm = (color * 16)
       // argument is (128,128,128)
 
       std::string redStr = command.m_argument.substr(1, 3);
       std::string greenStr = command.m_argument.substr(5, 3);
       std::string blueStr = command.m_argument.substr(9, 3);
   
-      m_redColorOverride = (stoi(redStr) * 100) / 255;
-      m_greenColorOverride = (stoi(greenStr) * 100) / 255;
-      m_blueColorOverride = (stoi(blueStr) * 100) / 255;
+      m_redColorOverride = stoi(redStr) * 16;
+      m_greenColorOverride = stoi(greenStr) * 16;
+      m_blueColorOverride = stoi(blueStr) * 16;
       
       m_ledOverridePending = true;        
      
