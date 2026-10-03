@@ -28,7 +28,9 @@ public:
    
    bool initializeDali(void);
    void terminate(void);
-   void commisioningProtocol(void);
+   // newAddr = -1: original first-time commissioning (all drivers, addresses 0 and 1)
+   // newAddr = 0..63: commission only drivers WITHOUT a short address, assign newAddr
+   void commisioningProtocol(int newAddr = -1);
    void setLightPower(unsigned int channel, unsigned int power);
    void setFadeTime(unsigned int channel, unsigned int fadeTime);
    void broadcastLightPower(unsigned int power);

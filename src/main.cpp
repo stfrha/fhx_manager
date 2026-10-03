@@ -10,6 +10,7 @@
 #include "comms.h"
 #include "controller.h"
 #include "ynca.h"
+#include "dali.h"
 
 using namespace std;
 
@@ -23,6 +24,29 @@ pthread_mutex_t g_cvLock;
 
 int main(int argc, char *argv[])
 {
+   // One-shot commissioning of a replaced DALI driver:
+   //   ./fhx_manager --commission <short address>
+   // Stop the normal fhx_manager service first so the serial port is free.
+   if (argc == 3 && strcmp(argv[1], "--commission") == 0)
+   {
+      int addr = atoi(argv[2]);
+      if (addr < 0 || addr > 63)
+      {
+         cout << "Short address must be 0..63" << endl;
+         return 1;
+      }
+
+      Dali dali;
+      if (!dali.initializeDali())
+      {
+         return 1;
+      }
+      cout << "Commissioning new driver to short address " << addr << endl;
+      dali.commisioningProtocol(addr);
+      dali.terminate();
+      return 0;
+   }
+
    cout << "Welcome to FHX-manager!" << endl;
 
    srand(time(0));

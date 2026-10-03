@@ -313,7 +313,7 @@ void Dali::withdraw(void)
 
 }
 
-void Dali::commisioningProtocol(void)
+void Dali::commisioningProtocol(int newAddr)
 {
    m_randomAddress1 = 0xdeadbe;
    m_randomAddress2 = 0x00dead;
@@ -332,11 +332,6 @@ void Dali::commisioningProtocol(void)
    delay(500);
 
 
-   cout << "Broadcast reset..." << endl;
-   communicateDaliCommand("t2000\n");
-   
-   delay(500);
-
    cout << "Send all off..." << endl;
    communicateDaliCommand("hFF00\n");
    
@@ -346,8 +341,9 @@ void Dali::commisioningProtocol(void)
    // Below, with A500, I get all yes after query
    // but with A5FF I get all no after query
 
+   // INITIALISE 00 = all drivers join, FF = only drivers without a short address
    cout << "Send initial twice..." << endl;
-   communicateDaliCommand("tA500\n");
+   communicateDaliCommand(newAddr >= 0 ? "tA5FF\n" : "tA500\n");
 
    delay(500);
    
@@ -364,7 +360,8 @@ void Dali::commisioningProtocol(void)
    unsigned int nextBit = 0x400000;
    unsigned int lowestMatchAddress = 0x1000000;
    unsigned int highestEmptyAddress = 0x0000000;
-   unsigned int shortAddress = 1;
+   // PROGRAM SHORT ADDRESS data byte is (address << 1) | 1
+   unsigned int shortAddress = (newAddr >= 0) ? ((newAddr << 1) | 1) : 1;
    
    std::stringstream stream;
    bool done = false;
@@ -484,6 +481,12 @@ void Dali::commisioningProtocol(void)
       
       if (iterations > 24)
       {
+         if (lowestMatchAddress == 0x1000000)
+         {
+            cout << "No unaddressed driver answered, nothing programmed." << endl;
+            break;
+         }
+
          // Now we have an adress match
          cout << "Address match at: " << std::setfill('0') << std::setw(6) << std::hex << std::uppercase << lowestMatchAddress << endl << std::dec;
          
@@ -514,7 +517,7 @@ void Dali::commisioningProtocol(void)
 
          shortAddress += 2;
          
-         if (shortAddress > 3)
+         if (newAddr >= 0 || shortAddress > 3)
          {
             done = true;
          }
