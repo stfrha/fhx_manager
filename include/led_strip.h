@@ -19,6 +19,12 @@
 #define GREEN_LED 28
 
 #define SEC_CLOCK_TICK 0.010
+
+// Color levels in the LedStrip API are 0..255, the same values as a web
+// color (rgb(r,g,b)). They are converted to the TLC59711's 16-bit PWM
+// (0..65535) with a gamma curve, so steps look even to the eye and the
+// LEDs match the color swatches on the web page.
+#define LED_GAMMA 2.2
 #define MS_CLOCK_TICK SEC_CLOCK_TICK * 1000
 
 // Code below is found by https://github.com/barrymcandrews/tlc59711/blob/master/include/tlc59711.h
@@ -75,22 +81,25 @@ private:
 
    TLC59711 m_tlc = TLC59711(1);
 
-   int m_red;
-   int m_green;
-   int m_blue;
+   // Current color levels, 0.0..255.0 (kept as double so fades are smooth)
+   double m_red;
+   double m_green;
+   double m_blue;
    ColorTween m_redTween;
    ColorTween m_greenTween;
    ColorTween m_blueTween;
    double m_time; // In seconds
 
    static void* stepThread(void* threadId);
+   static uint16_t levelToPwm(double level);
+   void writeLevels(double red, double green, double blue);
 
 public:   
    LedStrip();
    
    bool initializeLedStrip(void);
    void setColor(unsigned int color); // 0xRRGGBB
-   void setColor(int red, int green, int blue);
+   void setColor(int red, int green, int blue); // levels 0..255
    void fadeToColor(unsigned int color, double duration, easing_functions easingFunction = EaseLinear); // 0xRRGGBB
    void fadeToColor(int red, int green, int blue, double duration, easing_functions easingFunction = EaseLinear);
    bool isFadeComplete(void);

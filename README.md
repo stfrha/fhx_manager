@@ -113,7 +113,7 @@ To stop the app, the start-up script need to be stopped at the same time:
 pkill -f start_fhx.sh; pkill fhx_manager
 
 Restart with:
-setsid ~/fhx_manager/start_fhx.sh &
+setsid ~/fhx_manager/fhx_manager/start_fhx.sh &
 
 Check log:
 tail -f ~/fhx_manager/fhx_manager/fhx.log

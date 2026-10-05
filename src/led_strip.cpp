@@ -1,5 +1,6 @@
 // For threads
 #include <pthread.h>
+#include <cmath>
 
 #include "led_strip.h"
 
@@ -61,9 +62,39 @@ double ColorTween::getEasingValue(double time)
    return v;
 }
 
-LedStrip::LedStrip()
+LedStrip::LedStrip() :
+   m_red(0.0),
+   m_green(0.0),
+   m_blue(0.0),
+   m_time(0)
 {
-   m_time = 0;
+}
+
+// Convert a color level 0..255 (web color value) to TLC59711 16-bit PWM.
+uint16_t LedStrip::levelToPwm(double level)
+{
+   if (level <= 0.0)
+   {
+      return 0;
+   }
+   if (level >= 255.0)
+   {
+      return 65535;
+   }
+   return (uint16_t)(pow(level / 255.0, LED_GAMMA) * 65535.0 + 0.5);
+}
+
+void LedStrip::writeLevels(double red, double green, double blue)
+{
+   uint16_t r = levelToPwm(red);
+   uint16_t g = levelToPwm(green);
+   uint16_t b = levelToPwm(blue);
+
+   for (uint8_t led = 0; led < 4; led++)
+   {
+      m_tlc.setLED(led, r, g, b);
+   }
+   m_tlc.write();
 }
 
 bool LedStrip::initializeLedStrip(void)
@@ -122,7 +153,8 @@ bool LedStrip::initializeLedStrip(void)
    // }
 
 
-   setColor(0xfff, 0xfff, 0xfff);
+   // Dim white at start-up (same light output as the old raw value 0xfff)
+   setColor(72, 72, 72);
 
    pthread_t threadId;
 
@@ -139,8 +171,7 @@ bool LedStrip::initializeLedStrip(void)
 void LedStrip::setColor(unsigned int color) 
 // 0xRRGGBB
 {
-   // We are loosing some dynamics here, but it is ok.
-   setColor(((color & 0xff0000) >> 16) * 16, ((color & 0xff00) >> 8) * 16, (color & 0xff) * 16);
+   setColor((color >> 16) & 0xff, (color >> 8) & 0xff, color & 0xff);
 }
 
 void LedStrip::setColor(int red, int green, int blue)
@@ -149,11 +180,7 @@ void LedStrip::setColor(int red, int green, int blue)
    m_green = green;
    m_blue = blue;
 
-   m_tlc.setLED(0, red, green, blue);
-   m_tlc.setLED(1, red, green, blue);
-   m_tlc.setLED(2, red, green, blue);
-   m_tlc.setLED(3, red, green, blue);
-   m_tlc.write();
+   writeLevels(m_red, m_green, m_blue);
 
    // softPwmWrite(RED_LED, 100-m_red);
    // softPwmWrite(GREEN_LED, 100-m_green);
@@ -164,7 +191,7 @@ void LedStrip::setColor(int red, int green, int blue)
 
 void LedStrip::fadeToColor(unsigned int color, double duration, easing_functions easingFunction) // 0xRRGGBB
 {
-   fadeToColor(((color & 0xff0000) >> 16) * 16, ((color & 0xff00) >> 8) * 16, (color & 0xff) * 16, duration, easingFunction);
+   fadeToColor((color >> 16) & 0xff, (color >> 8) & 0xff, color & 0xff, duration, easingFunction);
 }
 
 void LedStrip::fadeToColor(int red, int green, int blue, double duration, easing_functions easingFunction)
@@ -217,9 +244,12 @@ void LedStrip::update(void)
       blue = m_blueTween.getEasingValue(m_time);
    }
 
-   // cout << "Setting colors, red: " << (int)red << ", green: " << (int)green << ", blue: " << (int)blue << endl;
+   // cout << "Setting colors, red: " << red << ", green: " << green << ", blue: " << blue << endl;
 
-   setColor((int)red, (int)green, (int)blue);
+   m_red = red;
+   m_green = green;
+   m_blue = blue;
+   writeLevels(red, green, blue);
 
 }
 

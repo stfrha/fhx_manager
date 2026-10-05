@@ -27,6 +27,10 @@
 
 using namespace std;
 
+// Led strip level used by the light scenes (0..255, gamma corrected).
+// 13 gives the same light output as the old raw PWM value 0x64.
+#define SCENE_LEVEL 13
+
 extern t_scriptStates scriptState;
 extern string scriptFileName;
 
@@ -171,25 +175,25 @@ void* Controller::lightControllerThread(void* cntrlPointer)
             switch (colorCode)
             {
             case 0:
-               instance->m_ledStrip.fadeToColor(0x64, 0x64, 0x64, 4.5, EaseInQuad);
+               instance->m_ledStrip.fadeToColor(SCENE_LEVEL, SCENE_LEVEL, SCENE_LEVEL, 4.5, EaseInQuad);
                break;
             case 1:
-               instance->m_ledStrip.fadeToColor(0x64, 0x0, 0x0, 4.5, EaseInQuad);
+               instance->m_ledStrip.fadeToColor(SCENE_LEVEL, 0x0, 0x0, 4.5, EaseInQuad);
                break;
             case 2:
-               instance->m_ledStrip.fadeToColor(0x0, 0x64, 0x00, 4.5, EaseInQuad);
+               instance->m_ledStrip.fadeToColor(0x0, SCENE_LEVEL, 0x00, 4.5, EaseInQuad);
                break;
             case 3:
-               instance->m_ledStrip.fadeToColor(0x0, 0x0, 0x64, 4.5, EaseInQuad);
+               instance->m_ledStrip.fadeToColor(0x0, 0x0, SCENE_LEVEL, 4.5, EaseInQuad);
                break;
             case 4:
-               instance->m_ledStrip.fadeToColor(0x64, 0x64, 0x0, 4.5, EaseInQuad);
+               instance->m_ledStrip.fadeToColor(SCENE_LEVEL, SCENE_LEVEL, 0x0, 4.5, EaseInQuad);
                break;
             case 5:
-               instance->m_ledStrip.fadeToColor(0x0, 0x64, 0x64, 4.5, EaseInQuad);
+               instance->m_ledStrip.fadeToColor(0x0, SCENE_LEVEL, SCENE_LEVEL, 4.5, EaseInQuad);
                break;
             case 6:
-               instance->m_ledStrip.fadeToColor(0x64, 0x0, 0x64, 4.5, EaseInQuad);
+               instance->m_ledStrip.fadeToColor(SCENE_LEVEL, 0x0, SCENE_LEVEL, 4.5, EaseInQuad);
                break;
             }
          }
@@ -205,7 +209,7 @@ void* Controller::lightControllerThread(void* cntrlPointer)
                instance->m_dali.setFadeTime(0, 1);
                instance->m_dali.setFadeTime(1, 4);
                instance->m_dali.broadcastLightPower(0xFE);
-               instance->m_ledStrip.fadeToColor(0x64, 0x64, 0x64, 4.5, EaseInQuad);
+               instance->m_ledStrip.fadeToColor(SCENE_LEVEL, SCENE_LEVEL, SCENE_LEVEL, 4.5, EaseInQuad);
                cout << "State is All On." << endl;
                break;
             case allOff:
@@ -220,7 +224,7 @@ void* Controller::lightControllerThread(void* cntrlPointer)
                instance->m_dali.setFadeTime(1, 10);
                instance->m_dali.setLightPower(0, 0xc0);
                instance->m_dali.setLightPower(1, 0x80);
-               instance->m_ledStrip.fadeToColor(0x64, 0x64, 0x0, 4.5, EaseInQuad);
+               instance->m_ledStrip.fadeToColor(SCENE_LEVEL, SCENE_LEVEL, 0x0, 4.5, EaseInQuad);
                cout << "State is Pre Movie." << endl;
                break;
             case movie:
@@ -248,7 +252,7 @@ void* Controller::lightControllerThread(void* cntrlPointer)
                   instance->m_dali.setFadeTime(1, 10);
                   instance->m_dali.setLightPower(0, 0x80);
                   instance->m_dali.setLightPower(1, 0x00);
-                  instance->m_ledStrip.fadeToColor(0x64, 0x64, 0x64, 4.5, EaseInQuad);
+                  instance->m_ledStrip.fadeToColor(SCENE_LEVEL, SCENE_LEVEL, SCENE_LEVEL, 4.5, EaseInQuad);
                   cout << "State is Movie (from preMovie)." << endl;
                }
                else
@@ -257,7 +261,7 @@ void* Controller::lightControllerThread(void* cntrlPointer)
                   instance->m_dali.setFadeTime(1, 4);
                   instance->m_dali.setLightPower(0, 0x80);
                   instance->m_dali.setLightPower(1, 0x00);
-                  instance->m_ledStrip.fadeToColor(0x64, 0x64, 0x64, 4.5, EaseInQuad);
+                  instance->m_ledStrip.fadeToColor(SCENE_LEVEL, SCENE_LEVEL, SCENE_LEVEL, 4.5, EaseInQuad);
                   cout << "State is Movie (from preMovie)." << endl;
                }
                break;
@@ -266,7 +270,7 @@ void* Controller::lightControllerThread(void* cntrlPointer)
                instance->m_dali.setFadeTime(1, 4);
                instance->m_dali.setLightPower(0, 0xC0);
                instance->m_dali.setLightPower(1, 0x40);
-               instance->m_ledStrip.fadeToColor(0x0, 0x64, 0x64, 4.5, EaseInQuad);
+               instance->m_ledStrip.fadeToColor(0x0, SCENE_LEVEL, SCENE_LEVEL, 4.5, EaseInQuad);
                cout << "State is Pause." << endl;
                break;
             case endCredits:
@@ -274,7 +278,7 @@ void* Controller::lightControllerThread(void* cntrlPointer)
                instance->m_dali.setFadeTime(1, 12);
                instance->m_dali.setLightPower(0, 0xC0);
                instance->m_dali.setLightPower(1, 0x80);
-               instance->m_ledStrip.fadeToColor(0x0, 0x0, 0x64, 4.5, EaseInQuad);
+               instance->m_ledStrip.fadeToColor(0x0, 0x0, SCENE_LEVEL, 4.5, EaseInQuad);
                cout << "State is End credits." << endl;
                break;
 
@@ -400,17 +404,16 @@ std::string Controller::executeCommand(const CommandStruct& command)
    // }
    else if (command.m_id == t_commands::ledStrip)
    {
-      // Decode color values and scale them to max
-      // being 4095. pwm = (color * 16)
-      // argument is (128,128,128)
+      // Decode color values, 0..255 each (web color values).
+      // LedStrip converts them to PWM. Argument is (128,128,128)
 
       std::string redStr = command.m_argument.substr(1, 3);
       std::string greenStr = command.m_argument.substr(5, 3);
       std::string blueStr = command.m_argument.substr(9, 3);
   
-      m_redColorOverride = stoi(redStr) * 16;
-      m_greenColorOverride = stoi(greenStr) * 16;
-      m_blueColorOverride = stoi(blueStr) * 16;
+      m_redColorOverride = stoi(redStr);
+      m_greenColorOverride = stoi(greenStr);
+      m_blueColorOverride = stoi(blueStr);
       
       m_ledOverridePending = true;        
      
