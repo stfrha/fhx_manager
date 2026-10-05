@@ -25,6 +25,8 @@
 #include <errno.h> 
 #include <arpa/inet.h> //close 
 
+#include "common_paths.h"
+
 using namespace std;
 
 void error(const char *msg)
@@ -226,7 +228,7 @@ void* serverThread(void* threadId)
       }
    }
       
-   ofstream sockectConfigFile("socket_config.txt");
+   ofstream sockectConfigFile(FHX_DATA_DIR + "socket_config.txt");
    if (sockectConfigFile.is_open())
    {
       sockectConfigFile << g_portNum;

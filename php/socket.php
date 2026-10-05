@@ -1,6 +1,6 @@
 <?php 
 /////////php Code///////
-class Socket{
+class FhxSocket{
    public $socket;
    public $host ;
    public $port;

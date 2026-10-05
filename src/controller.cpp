@@ -813,7 +813,7 @@ void Controller::setBlackScreen(void)
       MAP_SHARED, 
       fbfd, 0);
 
-   if ((int)fbp == -1) 
+   if (fbp == MAP_FAILED)
    {
       cout << "Failed to mmap." << endl;
    }

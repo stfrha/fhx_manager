@@ -207,5 +207,7 @@ YamahaSourcesEnum Ynca::getCurrentSource(void)
          return hdmi;
       }
    }
+
+   return playStation;
 }
 

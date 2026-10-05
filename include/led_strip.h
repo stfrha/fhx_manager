@@ -6,6 +6,7 @@
 #include <vector>
 #include <string.h>
 #include <iomanip>
+#include <cstdint>
 
 #include <wiringPi.h>
 #include <softPwm.h>

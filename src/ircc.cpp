@@ -3,13 +3,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <iomanip>
-
-#include <curl/curl.h>
-
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <errno.h>
-
+#include <curl/curl.h>
 #include "ircc.h"
 #include "base64.h"
 

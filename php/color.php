@@ -2,17 +2,19 @@
 ini_set("display_errors",1);
 error_reporting(E_ALL);
 
+require_once __DIR__ . '/config.php';
+
 include './socket.php';
 
 $RaspberryPiIP = "127.0.0.1"; // Change by your RaspberryPi/PC IP 
 
 // Read port number from file: /home/pi/therminal/socket_config.txt
-$myfile = fopen("/home/pi/fhx_manager/socket_config.txt", "r") or die("Unable to open file!");
+$myfile = fopen(FHX_DATA_DIR . 'socket_config.txt', "r") or die("Unable to open file!");
 $portString = fgets($myfile);
 fclose($myfile);
 
 $RaspberryPiPORT = (int)$portString; // Change by your RaspberryPi / PC Port Number ..
-$connection = new Socket($RaspberryPiIP,$RaspberryPiPORT); // Create a new socket Connection object. 
+$connection = new FhxSocket($RaspberryPiIP,$RaspberryPiPORT); // Create a new socket Connection object. 
 $connection->init();
 
 $connection->open_socket(); // Connect PHP to RaspberryPi or computer.

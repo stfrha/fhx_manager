@@ -18,11 +18,6 @@ target_include_directories(${PROJECT}
       "../../build/lirc-0.9.4c/debian/tmp/usr/include"
    )
 
-add_library(liblirc_client STATIC IMPORTED)
-
-set_target_properties(liblirc_client PROPERTIES
-   IMPORTED_LOCATION "../../build/lirc-0.9.4c/debian/tmp/usr/lib/arm-linux-gnueabihf/liblirc_client.so")
-
 target_link_libraries(${PROJECT} 
    PUBLIC 
       stdc++fs 
@@ -30,10 +25,13 @@ target_link_libraries(${PROJECT}
       pthread 
       m 
       curl 
-      liblirc_client)
+      lirc_client)
 
 add_custom_command(
    TARGET ${PROJECT} POST_BUILD
    COMMAND ${CMAKE_COMMAND} -E copy
       fhx_manager
       ../../fhx_manager/fhx_manager)
+
+add_executable(dali_debug tools/dali_debug.cpp)
+target_link_libraries(dali_debug wiringPi)

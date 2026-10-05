@@ -1,6 +1,7 @@
 <?php
 class CommandStruct
 {
+   public $id;
    public $op;
    public $numOfArgs;
    public $messageId;

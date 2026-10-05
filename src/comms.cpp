@@ -28,6 +28,7 @@
 
 #include "comms.h"
 #include "commands.h"
+#include "common_paths.h"
 
 using namespace std;
 
@@ -211,11 +212,16 @@ void* Comms::serverThread(void* cntrlPointer)
       }
    }
 
-   ofstream sockectConfigFile("socket_config.txt");
+   ofstream sockectConfigFile(FHX_DATA_DIR + "socket_config.txt");
    if (sockectConfigFile.is_open())
    {
       sockectConfigFile << g_portNum;
       sockectConfigFile.close();
+      cout << "From comms.cpp: Created " +  FHX_DATA_DIR + "socket_config.txt file" << endl;
+   }
+   else
+   {
+      cout << "From comms.cpp: Could not write " +  FHX_DATA_DIR + "socket_config.txt file" << endl;
    }
 
    listen(masterSockfd, 5);
