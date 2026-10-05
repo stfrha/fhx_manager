@@ -25,6 +25,15 @@
 // (0..65535) with a gamma curve, so steps look even to the eye and the
 // LEDs match the color swatches on the web page.
 #define LED_GAMMA 2.2
+
+// The TLC59711 splits each 16-bit PWM cycle into 128 segments (512 counts,
+// ~51 us each) and puts one pulse in each segment. The transistor/MOSFET
+// stage keeps the LED on a little after every pulse ends, which adds a
+// fixed "tail" per pulse and makes low levels too bright. LED_TAIL_COUNTS
+// is that tail in PWM counts (1 count = 0.1 us); levelToPwm subtracts it.
+// Increase it if low levels are still too bright, decrease it if the
+// darkest levels disappear. 0 turns the compensation off.
+#define LED_TAIL_COUNTS 30
 #define MS_CLOCK_TICK SEC_CLOCK_TICK * 1000
 
 // Code below is found by https://github.com/barrymcandrews/tlc59711/blob/master/include/tlc59711.h

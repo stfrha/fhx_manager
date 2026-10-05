@@ -81,7 +81,34 @@ uint16_t LedStrip::levelToPwm(double level)
    {
       return 65535;
    }
-   return (uint16_t)(pow(level / 255.0, LED_GAMMA) * 65535.0 + 0.5);
+   // Light output we want, in PWM counts
+   double target = pow(level / 255.0, LED_GAMMA) * 65535.0;
+
+   // A PWM value v gives pulses in min(v, 128) segments, each one
+   // stretched by LED_TAIL_COUNTS, so the light we get is about
+   //    v + LED_TAIL_COUNTS * min(v, 128)
+   // Invert that to find v for the target.
+   const double tail = LED_TAIL_COUNTS;
+   const double knee = 128.0 * (1.0 + tail);  // light output at v = 128
+   double v;
+   if (target >= knee)
+   {
+      v = target - 128.0 * tail;
+   }
+   else
+   {
+      v = target / (1.0 + tail);
+   }
+
+   if (v < 1.0)
+   {
+      v = 1.0;   // level > 0 always gives some light
+   }
+   if (v > 65535.0)
+   {
+      v = 65535.0;
+   }
+   return (uint16_t)(v + 0.5);
 }
 
 void LedStrip::writeLevels(double red, double green, double blue)
