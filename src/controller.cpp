@@ -29,7 +29,7 @@ using namespace std;
 
 // Led strip level used by the light scenes (0..255, gamma corrected).
 // 13 gives the same light output as the old raw PWM value 0x64.
-#define SCENE_LEVEL 13
+#define SCENE_LEVEL 255
 
 extern t_scriptStates scriptState;
 extern string scriptFileName;
