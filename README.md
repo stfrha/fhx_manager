@@ -114,7 +114,17 @@ sudo mkdir -p /var/lib/fhx_manager
 
 sudo chown pi:pi /var/lib/fhx_manager
 
-###14. Create autostart of fhx_manager (has to be done after desktop-boot since videos are shown from the desktop)
+### 14. Let the web server read the scripts directory
+
+The web pages (e.g. feature_show.php) read /home/pi/fhx_manager/scripts, but Raspberry Pi OS makes /home/pi private (drwx------), so Apache (user www-data) gets "Permission denied". Allow others to pass through the home directory (they still can not list its contents):
+
+chmod o+x /home/pi
+
+Check with (the pi line should read drwx-----x):
+
+namei -l /home/pi/fhx_manager/scripts
+
+### 15. Create autostart of fhx_manager (has to be done after desktop-boot since videos are shown from the desktop)
 
 sudo raspi-config
 
