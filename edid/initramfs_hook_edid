@@ -1,0 +1,12 @@
+#!/bin/sh
+# initramfs-tools hook: include the projector EDID in the initramfs.
+# The vc4 driver is loaded from the initramfs, so the EDID file given with
+# drm.edid_firmware must be available there.
+# Install: sudo cp edid/initramfs_hook_edid /etc/initramfs-tools/hooks/edid
+PREREQ=""
+prereqs() { echo "$PREREQ"; }
+case "$1" in
+   prereqs) prereqs; exit 0 ;;
+esac
+. /usr/share/initramfs-tools/hook-functions
+copy_file firmware /lib/firmware/edid/benq_pj.bin

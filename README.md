@@ -144,19 +144,43 @@ Check with (the pi line should read drwx-----x):
 
 namei -l /home/pi/fhx_manager/scripts
 
-### 17. Force HDMI resolution to 1280x720
+### 17. Force HDMI on and use a saved projector EDID
 
-The Pi is connected to the BenQ projector through the Yamaha receiver. If the projector is off when the Pi boots, the Pi falls back to 1024x768, which the receiver does not pass through, so videos are not shown. Force 1280x720 on HDMI (D = always enable the output). cmdline.txt must stay a single line:
+The Pi is connected to the BenQ projector through the Yamaha receiver. If the projector is off when the Pi boots, the Pi falls back to 1024x768, which the receiver does not pass through, so videos are not shown. Therefore HDMI is forced on (D = always enable the output).
+
+A forced output never reads the projector's EDID, and without EDID the Pi treats the screen as a DVI monitor without audio, so there is no HDMI sound. Therefore the projector's EDID is saved in the repo (edid/benq_pj.bin) and given to the kernel. It must also be in the initramfs, since the vc4 graphics driver is loaded from there. With the EDID the projector's preferred 1920x1080 is used (the receiver passes it through); 1280x720 in video= is only used if the EDID can not be loaded.
+
+sudo mkdir -p /lib/firmware/edid
+
+sudo cp ~/fhx_manager/fhx_manager/edid/benq_pj.bin /lib/firmware/edid/
+
+sudo cp ~/fhx_manager/fhx_manager/edid/initramfs_hook_edid /etc/initramfs-tools/hooks/edid
+
+sudo update-initramfs -u
+
+lsinitramfs /boot/firmware/initramfs8 | grep edid      [should list lib/firmware/edid/benq_pj.bin]
+
+Then add both settings to cmdline.txt. cmdline.txt must stay a single line:
 
 sudo cp /boot/firmware/cmdline.txt /boot/firmware/cmdline.txt.bak
 
-sudo sed -i '1 s/$/ video=HDMI-A-1:1280x720@60D/' /boot/firmware/cmdline.txt
+sudo sed -i '1 s/$/ video=HDMI-A-1:1280x720@60D drm.edid_firmware=HDMI-A-1:edid\/benq_pj.bin/' /boot/firmware/cmdline.txt
 
-cat /boot/firmware/cmdline.txt      [should end with video=HDMI-A-1:1280x720@60D]
+cat /boot/firmware/cmdline.txt      [should end with video=HDMI-A-1:1280x720@60D drm.edid_firmware=HDMI-A-1:edid/benq_pj.bin]
 
 sudo reboot
 
-To test without rebooting (lasts until next reboot):
+Check after reboot (should be 256, and HDMI should be listed under Sinks):
+
+wc -c < /sys/class/drm/card0-HDMI-A-1/edid
+
+wpctl status
+
+To read the EDID again (e.g. new projector), with the projector on and connected without the forced settings:
+
+sudo i2cdump -y 2 0x50 b            [HDMI DDC bus on Raspberry Pi 3, EDID is at address 0x50]
+
+To test the resolution without rebooting (lasts until next reboot):
 
 wlr-randr --output HDMI-A-1 --custom-mode 1280x720@60
 
