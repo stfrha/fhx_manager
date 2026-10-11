@@ -114,7 +114,27 @@ sudo mkdir -p /var/lib/fhx_manager
 
 sudo chown pi:pi /var/lib/fhx_manager
 
-### 14. Let the web server read the scripts directory
+### 14. Deploy the web pages
+
+Copies the php/ folder to Apache's web root (/var/www/html). Run again after every change in php/:
+
+cd ~/fhx_manager/fhx_manager
+
+./deploy_php.sh
+
+### 15. Copy movie scripts and videos
+
+The movie scripts and videos are not in git. They must be placed next to the repo (not inside it):
+
+/home/pi/fhx_manager/scripts          [theatre scripts, e.g. Tenet]
+
+/home/pi/fhx_manager/video            [crowd.mp4, black_screen.mp4, comming_attractions.mp4, nu_blir_det_reklam.mp4]
+
+/home/pi/fhx_manager/video/commercials   [commercial videos, picked at random]
+
+Copy them from the backup.
+
+### 16. Let the web server read the scripts directory
 
 The web pages (e.g. feature_show.php) read /home/pi/fhx_manager/scripts, but Raspberry Pi OS makes /home/pi private (drwx------), so Apache (user www-data) gets "Permission denied". Allow others to pass through the home directory (they still can not list its contents):
 
@@ -124,7 +144,49 @@ Check with (the pi line should read drwx-----x):
 
 namei -l /home/pi/fhx_manager/scripts
 
-### 15. Create autostart of fhx_manager (has to be done after desktop-boot since videos are shown from the desktop)
+### 17. Force HDMI resolution to 1280x720
+
+The Pi is connected to the BenQ projector through the Yamaha receiver. If the projector is off when the Pi boots, the Pi falls back to 1024x768, which the receiver does not pass through, so videos are not shown. Force 1280x720 on HDMI (D = always enable the output). cmdline.txt must stay a single line:
+
+sudo cp /boot/firmware/cmdline.txt /boot/firmware/cmdline.txt.bak
+
+sudo sed -i '1 s/$/ video=HDMI-A-1:1280x720@60D/' /boot/firmware/cmdline.txt
+
+cat /boot/firmware/cmdline.txt      [should end with video=HDMI-A-1:1280x720@60D]
+
+sudo reboot
+
+To test without rebooting (lasts until next reboot):
+
+wlr-randr --output HDMI-A-1 --custom-mode 1280x720@60
+
+### 18. Send sound to HDMI at full volume
+
+Videos are played with VLC, which uses the default audio output. Raspberry Pi OS defaults to the headphone jack at 40%. Make HDMI the default and set it to 100%, the volume is then controlled on the Yamaha receiver. Both settings are remembered after reboot.
+
+wpctl status                        [find the id of "Built-in Audio Digital Stereo (HDMI)" under Sinks]
+
+wpctl set-default <id>
+
+wpctl set-volume @DEFAULT_AUDIO_SINK@ 1.0
+
+wpctl get-volume @DEFAULT_AUDIO_SINK@   [should show Volume: 1.00]
+
+### 19. Enable serial port for DALI
+
+DALI is controlled through the Pi's serial port (/dev/serial0, 19200 baud). The BenQ projector uses a USB serial adapter (/dev/ttyUSB0) and needs nothing here. Enable the serial hardware and disable the serial login console:
+
+sudo raspi-config nonint do_serial_hw 0
+
+sudo raspi-config nonint do_serial_cons 1
+
+sudo reboot
+
+Test with:
+
+./build/dali_debug
+
+### 20. Create autostart of fhx_manager (has to be done after desktop-boot since videos are shown from the desktop)
 
 sudo raspi-config
 
