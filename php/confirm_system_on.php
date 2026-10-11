@@ -43,6 +43,10 @@ if (isset($_GET["op"]))
    {
       $image = "tuner_button.png";  
    }
+   else if ($operation =="theatreStart")
+   {
+      $image = "theatre_start_button.png";  
+   }
    else
    {
       $image = "back_button.png";  

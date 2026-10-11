@@ -97,6 +97,7 @@ enum t_commands
    abortTheatreProgram = 0x87,
    pauseTheatreProgram = 0x88,
    continueTheatreProgram = 0x89,
+   theatreStart = 0x8a,
 };
 
 class CommandStruct

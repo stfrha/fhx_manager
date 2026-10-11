@@ -284,44 +284,13 @@ void* Script::theatreThread(void* cntrlPointer)
                cntrl->executeCommand(CommandStruct(t_commands::lightAllOn, ""));
                cntrl->setBlackScreen();
                cntrl->executeCommand(CommandStruct(t_commands::sourceRpi, ""));
-               string cmd = "omxplayer -o hdmi \"/home/pi/fhx_manager/video/crowd.mp4\"";
-               system( cmd.c_str() );
+               Controller::playVideo("/home/pi/fhx_manager/video/crowd.mp4");
 
                cout << "Crowd movie finished, lower lights to pre-movie and start commercials" << endl;
                cntrl->executeCommand(CommandStruct(t_commands::lightKidsMovie, ""));
                
                //  Play 3 Commercials
-               vector<string> files;
-               vector<int> list; 
-               int i = 0;
-               string path = "/home/pi/fhx_manager/video/commercials";
-               for (const auto & entry : experimental::filesystem::directory_iterator(path))
-               {
-                  files.push_back(entry.path());
-                  list.push_back(i++);
-                  cout << "Found commercial file: " << entry.path() << endl;
-               }
-               cout << "Found " << files.size() << " commercial videos" << endl;
-
-               // Now randomize order
-               for (int i = 0; i < list.size(); i++)
-               {
-                  // Swap position i with a random number
-                  int r = rand() % list.size();
-                  int t = list[i];
-                  list[i] = list[r];
-                  list[r] = t;
-               }
-               
-               // Now play the three first files
-               for (int i = 0; i < min(3, (int)list.size()); i++)
-               {
-                  cout << files[list[i]] << endl;
-                  string cmd = "omxplayer -o hdmi \"" + files[list[i]] + "\"";
-                  system( cmd.c_str() );
-                  cmd = "omxplayer -o hdmi \"/home/pi/fhx_manager/video/black_screen.mp4\"";
-                  system( cmd.c_str() );
-               }
+               Controller::playRandomCommercials(3);
 
                cntrl->executeCommand(CommandStruct(t_commands::lightMovie, ""));
                cntrl->executeCommand(CommandStruct(t_commands::sourceBr, ""));

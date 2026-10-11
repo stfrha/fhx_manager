@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <atomic>
 
 #include "led_strip.h"
 #include "dali.h"
@@ -57,12 +58,14 @@ private:
    std::string m_endCredits;
    
    bool m_oneTimeIrInit;
+   std::atomic<bool> m_theatreStartRunning;
 
    void setNewLightState(LightControllerState newState);
    void prepareStatusMessage(void);
    std::string generateStatusMessage(int precision);
        
    static void* lightControllerThread(void* threadId);
+   static void* theatreStartThread(void* cntrlPointer);
 
          
 public:
@@ -71,6 +74,8 @@ public:
    void initializeController(void);
 
    void setBlackScreen(void);
+   static void playVideo(const std::string& file, int maxSeconds = 0);
+   static void playRandomCommercials(int count);
    std::string executeCommand(const CommandStruct& command);
 };
 

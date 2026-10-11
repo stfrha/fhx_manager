@@ -115,7 +115,8 @@ $cmdArray = array(
    new CommandStruct(0x86, "startTheatreProgram", 3, ""),
    new CommandStruct(0x87, "abortTheatreProgram", 0, ""),
    new CommandStruct(0x88, "pauseTheatreProgram", 0, ""),
-   new CommandStruct(0x89, "continueTheatreProgram", 0, "")   
+   new CommandStruct(0x89, "continueTheatreProgram", 0, ""),
+   new CommandStruct(0x8a, "theatreStart",   0, "")   
 );
    
 // print_r($array);

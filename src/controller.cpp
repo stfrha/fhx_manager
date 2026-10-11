@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <experimental/filesystem>
 #include <vector>
+#include <algorithm>
+#include <random>
 
 // For threads
 #include <pthread.h>
@@ -54,7 +56,8 @@ Controller::Controller(Comms* comms, Ynca* ynca) :
    m_lightOn(true),
    m_stateChangePending(false),
    m_ledOverridePending(false),
-   m_oneTimeIrInit(true)
+   m_oneTimeIrInit(true),
+   m_theatreStartRunning(false)
 {
    
 }
@@ -686,6 +689,30 @@ std::string Controller::executeCommand(const CommandStruct& command)
    {
       m_script.continueTheatreProgram();
    }
+   else if (command.m_id == t_commands::theatreStart)
+   {
+      // The sequence takes several minutes, run it in its own thread so
+      // the web interface stays responsive. Ignore presses while running.
+      bool expected = false;
+      if (m_theatreStartRunning.compare_exchange_strong(expected, true))
+      {
+         pthread_t thread;
+         int result = pthread_create(&thread, NULL, theatreStartThread, this);
+         if (result)
+         {
+            cout << "Theatre Start thread could not be created, " << result << endl;
+            m_theatreStartRunning = false;
+         }
+         else
+         {
+            pthread_detach(thread);
+         }
+      }
+      else
+      {
+         cout << "Theatre Start already running, ignoring command" << endl;
+      }
+   }
 
    return generateStatusMessage(3);
    
@@ -776,6 +803,81 @@ string Controller::generateStatusMessage(int precision)
 }
 
 
+
+// Theatre Start: turn on system, half lights (kids movie scene), play the
+// crowd movie (first three minutes) and four random commercials, turn off
+// the lights and change source to Chromecast.
+void* Controller::theatreStartThread(void* cntrlPointer)
+{
+   Controller* cntrl = (Controller*)cntrlPointer;
+
+   cout << "Theatre Start sequence started" << endl;
+
+   bool systemWasOn = cntrl->m_yamahaOn && cntrl->m_benqOn;
+
+   cntrl->executeCommand(CommandStruct(t_commands::lightKidsMovie, ""));
+   cntrl->setBlackScreen();
+   cntrl->executeCommand(CommandStruct(t_commands::sourceRpi, ""));
+
+   if (!systemWasOn)
+   {
+      // Let the projector warm up before the crowd movie starts
+      cout << "Theatre Start: waiting for projector warm-up" << endl;
+      sleep(40);
+   }
+
+   playVideo("/home/pi/fhx_manager/video/crowd.mp4", 3 * 60);
+   playRandomCommercials(4);
+
+   cntrl->executeCommand(CommandStruct(t_commands::lightAllOff, ""));
+   cntrl->executeCommand(CommandStruct(t_commands::sourceCc, ""));
+
+   cout << "Theatre Start sequence finished" << endl;
+   cntrl->m_theatreStartRunning = false;
+
+   return NULL;
+}
+
+// Plays a video fullscreen and returns when it has finished, or after
+// maxSeconds if that is larger than 0.
+// omxplayer is not available on 64-bit Raspberry Pi OS, VLC is used instead.
+void Controller::playVideo(const string& file, int maxSeconds)
+{
+   cout << "Playing video: " << file << endl;
+   string stopTime = "";
+   if (maxSeconds > 0)
+   {
+      stopTime = "--stop-time=" + to_string(maxSeconds) + " ";
+   }
+   string cmd = "cvlc --fullscreen --play-and-exit --no-video-title-show --quiet " + stopTime + "\"" + file + "\" > /dev/null 2>&1";
+   int result = system(cmd.c_str());
+   if (result != 0)
+   {
+      cout << "Video player returned " << result << " for " << file << endl;
+   }
+}
+
+// Plays count randomly chosen commercials, with a black screen in between
+void Controller::playRandomCommercials(int count)
+{
+   vector<string> files;
+   string path = "/home/pi/fhx_manager/video/commercials";
+   for (const auto & entry : experimental::filesystem::directory_iterator(path))
+   {
+      files.push_back(entry.path());
+   }
+   cout << "Found " << files.size() << " commercial videos" << endl;
+
+   random_device rd;
+   mt19937 gen(rd());
+   shuffle(files.begin(), files.end(), gen);
+
+   for (int i = 0; i < min(count, (int)files.size()); i++)
+   {
+      playVideo(files[i]);
+      playVideo("/home/pi/fhx_manager/video/black_screen.mp4");
+   }
+}
 
 void Controller::setBlackScreen(void)
 {

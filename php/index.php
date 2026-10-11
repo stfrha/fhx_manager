@@ -24,8 +24,8 @@ include './comms.php';
          </div>
       </a>
 
-      <a href="index.php">  
-         <div class="imgButton divBase volumeUpButton" style="background-image:url('refresh_button.png')">
+      <a href="light.php">  
+         <div class="imgButton divBase volumeUpButton" style="background-image:url('light_button.png')">
          </div>
       </a>
 
@@ -115,8 +115,8 @@ ECHOBDCONFIRM;
          </div>
       </a>
 
-      <a href="light.php">  
-         <div class="imgButton divBase row6DualSplit left" style="background-image:url('light_button.png')">
+      <a href="confirm_system_on.php?op=theatreStart">  
+         <div class="imgButton divBase row6DualSplit left" style="background-image:url('theatre_start_button.png')">
          </div>
       </a>
 
