@@ -1,19 +1,50 @@
 #include <stdlib.h>
 #include <iostream>
-#include <stdlib.h>
 #include <unistd.h>
 #include <iomanip>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <errno.h>
+#include <string.h>
 #include <curl/curl.h>
 #include "ircc.h"
 #include "base64.h"
 
 using namespace std;
 
+// Sony Blu-ray player. Give it a DHCP reservation in the router so this
+// address stays valid.
+static const string bdIpAddress = "192.168.0.198";
+static const string bdMacAddress = "64:ff:0a:d5:b2:60";
+
+// MAC address of this Raspberry Pi, used as device id when registering
+static const string ownMacAddress = "b8-27-eb-24-95-16";
+
+static const string userAgent = "FHX Manager/0.1 (Raspberry Pi 3b+)";
+
+// IRCC commands must never block the controller for long. If the player
+// is off or unreachable we give up quickly.
+static const long irccTimeoutMs = 2000;
+static const long infoTimeoutMs = 5000;
+
+static size_t discardResponse(char* ptr, size_t size, size_t nmemb, void* userdata)
+{
+   (void)ptr;
+   (void)userdata;
+   return size * nmemb;
+}
+
+static size_t storeResponse(char* ptr, size_t size, size_t nmemb, void* userdata)
+{
+   ((string*)userdata)->append(ptr, size * nmemb);
+   return size * nmemb;
+}
+
 Ircc::Ircc()
 {   
+   // Must be called once before curl is used from any thread
+   curl_global_init(CURL_GLOBAL_DEFAULT);
+
 
    // Init ircc array of commands
    m_irccCmnds.push_back("AAAAAwAAHFoAAAA9Aw==");
@@ -66,374 +97,220 @@ void Ircc::initialize(void)
 {
 }
 
+// Performs a GET (postBody == NULL) or POST request. Returns true if the
+// player answered with HTTP 200.
+bool Ircc::httpRequest(const string& url,
+                       const vector<string>& headers,
+                       const string* postBody,
+                       long timeoutMs)
+{
+   CURL *curl = curl_easy_init();
+   if (!curl)
+   {
+      cout << "IRCC: curl_easy_init() failed" << endl;
+      return false;
+   }
+
+   struct curl_slist *list = NULL;
+   for (const string& h : headers)
+   {
+      list = curl_slist_append(list, h.c_str());
+   }
+   list = curl_slist_append(list, "Connection: close");
+
+   string response;
+
+   curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+   curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
+   curl_easy_setopt(curl, CURLOPT_USERAGENT, userAgent.c_str());
+   curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "gzip");
+   curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT_MS, timeoutMs);
+   curl_easy_setopt(curl, CURLOPT_TIMEOUT_MS, timeoutMs);
+   // Required for timeouts to work safely in a multithreaded program
+   curl_easy_setopt(curl, CURLOPT_NOSIGNAL, 1L);
+
+   if (postBody)
+   {
+      // Let curl compute Content-Length from the body
+      curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postBody->c_str());
+      curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long)postBody->size());
+      curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, discardResponse);
+   }
+   else
+   {
+      curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, storeResponse);
+      curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+   }
+
+   bool ok = false;
+   CURLcode res = curl_easy_perform(curl);
+   if (res != CURLE_OK)
+   {
+      cout << "IRCC: request to " << url << " failed: " << curl_easy_strerror(res) << endl;
+   }
+   else
+   {
+      long httpCode = 0;
+      curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
+      if (httpCode == 200)
+      {
+         ok = true;
+      }
+      else
+      {
+         cout << "IRCC: " << url << " answered HTTP " << httpCode << endl;
+      }
+   }
+
+   if (!response.empty())
+   {
+      cout << response << endl;
+   }
+
+   curl_slist_free_all(list);
+   curl_easy_cleanup(curl);
+
+   return ok;
+}
+
 void Ircc::getDial(void)
 {
    cout << "Requesting Dial.xml..." << endl;
-
-   CURL *curl;
-   CURLcode res;
-   struct curl_slist *list = NULL;
-
-   curl = curl_easy_init();
-
-   if(curl) 
-   {
-      curl_easy_setopt(curl, CURLOPT_URL, "192.168.0.161:50201/dial.xml");
-      list = curl_slist_append(list, "Connection: close");
-      curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
-      curl_easy_setopt(curl, CURLOPT_USERAGENT, "FHX Manager/0.1 (Raspberry Pi 3b+)");
-      curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "gzip");
- 
-      res = curl_easy_perform(curl);
-      if(res != CURLE_OK)
-         fprintf(stderr, "curl_easy_perform() failed: %s\n",
-         curl_easy_strerror(res));
-
-      /* always cleanup */ 
-      curl_easy_cleanup(curl);
-   }
+   httpRequest("http://" + bdIpAddress + ":50201/dial.xml", {}, NULL, infoTimeoutMs);
 }
 
 void Ircc::getIrcc(void)
 {
    cout << "Requesting Ircc.xml..." << endl;
-
-   CURL *curl;
-   CURLcode res;
-   struct curl_slist *list = NULL;
-
-   curl = curl_easy_init();
-
-   if(curl) 
-   {
-      curl_easy_setopt(curl, CURLOPT_URL, "192.168.0.161:50001/Ircc.xml");
-      list = curl_slist_append(list, "Connection: close");
-      curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
-      curl_easy_setopt(curl, CURLOPT_USERAGENT, "FHX Manager/0.1 (Raspberry Pi 3b+)");
-      curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "gzip");
- 
-      res = curl_easy_perform(curl);
-      if(res != CURLE_OK)
-         fprintf(stderr, "curl_easy_perform() failed: %s\n",
-         curl_easy_strerror(res));
-
-      /* always cleanup */ 
-      curl_easy_cleanup(curl);
-   }
+   httpRequest("http://" + bdIpAddress + ":50001/Ircc.xml", {}, NULL, infoTimeoutMs);
 }
 
 void Ircc::getDmr(void)
 {
    cout << "Requesting Dmr.xml..." << endl;
+   httpRequest("http://" + bdIpAddress + ":52323/dmr.xml",
+               { "X-AV-Client-Info: av=5.0; cn=\"Fredrik Hoffman\"; mn=\"FHX Manager\"; mv=\"0.1.0\";" },
+               NULL,
+               infoTimeoutMs);
+}
 
-   CURL *curl;
-   CURLcode res;
-   struct curl_slist *list = NULL;
-
-   curl = curl_easy_init();
-
-   if(curl) 
-   {
-      curl_easy_setopt(curl, CURLOPT_URL, "192.168.0.161:52323/dmr.xml");
-      curl_easy_setopt(curl, CURLOPT_USERAGENT, "UPnP/1.0");
-      list = curl_slist_append(list, "X-AV-Client-Info: av=5.0; cn=\"Fredrik Hoffman\"; mn=\"FHX Manager\"; mv=\"0.1.0\";");
-      curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
- 
-      res = curl_easy_perform(curl);
-      if(res != CURLE_OK)
-         fprintf(stderr, "curl_easy_perform() failed: %s\n",
-         curl_easy_strerror(res));
-
-      /* always cleanup */ 
-      curl_easy_cleanup(curl);
-   }
+static string registerUrl(void)
+{
+   return "http://" + bdIpAddress + ":50002/register?name=BiorummetRPi+FHX_Manager"
+          "&registrationType=initial&deviceId=FHX_Manager%3A" + ownMacAddress + "&wolSupport=true";
 }
 
 void Ircc::registerNoAuth(void)
 {
    cout << "Registering without auth" << endl;
 
-   CURL *curl;
-   CURLcode res;
-   struct curl_slist *list = NULL;
-
-   curl = curl_easy_init();
-
-   // Gather header strings.
-   
-   string registerArg = "register?name=BiorummetRPi+FHX_Manager&registrationType=initial&deviceId=FHX_Manager%3A";
-   // Get macAddress
-   string macAddress = "b8-27-eb-24-95-16";
-   string trailingArg = "&wolSupport=true ";
-
-   registerArg = registerArg + macAddress + trailingArg;
-
-   cout << registerArg << endl;
-
-   string url = "192.168.0.161:50002/" + registerArg;
-
-   if(curl) 
-   {
-      curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-      list = curl_slist_append(list, string("X-CERS-DEVICE_ID: FHX_Manager:" + macAddress).c_str());
-      list = curl_slist_append(list, "X-CERS-DEVICE_INFO: Raspbian/FHX_Manager/BiorummetRPi");
-      list = curl_slist_append(list, "Connection: close");
-      curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
-      curl_easy_setopt(curl, CURLOPT_USERAGENT, "FHX Manager/0.1 (Raspberry Pi 3b+)");
-      curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "gzip");
-
-      res = curl_easy_perform(curl);
-      if(res != CURLE_OK)
-         fprintf(stderr, "curl_easy_perform() failed: %s\n",
-         curl_easy_strerror(res));
-
-      /* always cleanup */ 
-      curl_easy_cleanup(curl);
-   }
+   httpRequest(registerUrl(),
+               { "X-CERS-DEVICE_ID: FHX_Manager:" + ownMacAddress,
+                 "X-CERS-DEVICE_INFO: Raspbian/FHX_Manager/BiorummetRPi" },
+               NULL,
+               infoTimeoutMs);
 }
 
 void Ircc::registerAuth(string authStr)
 {
    cout << "Registering with auth" << endl;
 
-   CURL *curl;
-   CURLcode res;
-   struct curl_slist *list = NULL;
-
-   curl = curl_easy_init();
-
-   // Gather header strings.
-   
-   string registerArg = "register?name=BiorummetRPi+FHX_Manager&registrationType=initial&deviceId=FHX_Manager%3A";
-   // Get macAddress
-   string macAddress = "b8-27-eb-24-95-16";
-   string trailingArg = "&wolSupport=true ";
-
-   registerArg = registerArg + macAddress + trailingArg;
-
-   cout << registerArg << endl;
-
-   string url = "192.168.0.161:50002/" + registerArg;
-
-   if(curl) 
-   {
-      curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-      list = curl_slist_append(list, string("X-CERS-DEVICE_ID: FHX_Manager:" + macAddress).c_str());
-      list = curl_slist_append(list, string("Authorization: Basic " + authStr).c_str());
-      list = curl_slist_append(list, "X-CERS-DEVICE_INFO: Raspbian/FHX_Manager/BiorummetRPi");
-      list = curl_slist_append(list, "Connection: close");
-      curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
-      curl_easy_setopt(curl, CURLOPT_USERAGENT, "FHX Manager/0.1 (Raspberry Pi 3b+)");
-      curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "gzip");
-
-      res = curl_easy_perform(curl);
-      if(res != CURLE_OK)
-         fprintf(stderr, "curl_easy_perform() failed: %s\n",
-         curl_easy_strerror(res));
-
-      /* always cleanup */ 
-      curl_easy_cleanup(curl);
-   }
-}
-
-void Ircc::sendPause(void)
-// AAAAAwAAHFoAAAAZAw
-{
-   cout << "Send Pause IRCC" << endl;
-
-   CURL *curl;
-   CURLcode res;
-   struct curl_slist *list = NULL;
-
-   curl = curl_easy_init();
-
-   // Gather header strings.
-   
-   string url = "192.168.0.161:50001/upnp/control/IRCC";
-   string post = "<?xml version=\"1.0\"?><s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><s:Body><u:X_SendIRCC xmlns:u=\"urn:schemas-sony-com:service:IRCC:1\"><IRCCCode>AAAAAwAAHFoAAAAZAw==</IRCCCode></u:X_SendIRCC></s:Body></s:Envelope>";
-
-// <?xml version="1.0"?><s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"><s:Body><u:X_SendIRCC xmlns:u="urn:schemas-sony-com:service:IRCC:1"><IRCCCode>AAAAAwAAHFoAAAAZAw==</IRCCCode></u:X_SendIRCC></s:Body></s:Envelope>
-
-
-
-   if(curl) 
-   {
-      curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-      list = curl_slist_append(list, "soapaction: \"urn:schemas-sony-com:service:IRCC:1#X_SendIRCC\"");
-      list = curl_slist_append(list, "content-type: text/xml; charset=utf-8");
-      list = curl_slist_append(list, "Connection: close");
-      list = curl_slist_append(list, "Content-Length: 291");
-      curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
-      curl_easy_setopt(curl, CURLOPT_USERAGENT, "FHX Manager/0.1 (Raspberry Pi 3b+)");
-      curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
-      curl_easy_setopt(curl, CURLOPT_HEADER, 0);
-      curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "gzip");
-      curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post.c_str());
-      
-      res = curl_easy_perform(curl);
-      if(res != CURLE_OK)
-         fprintf(stderr, "curl_easy_perform() failed: %s\n",
-         curl_easy_strerror(res));
-
-      /* always cleanup */ 
-      curl_easy_cleanup(curl);
-      curl_slist_free_all(list);
-   }
+   httpRequest(registerUrl(),
+               { "X-CERS-DEVICE_ID: FHX_Manager:" + ownMacAddress,
+                 "Authorization: Basic " + authStr,
+                 "X-CERS-DEVICE_INFO: Raspbian/FHX_Manager/BiorummetRPi" },
+               NULL,
+               infoTimeoutMs);
 }
 
 void Ircc::sendCode(irccCode_t code)
 {
-   cout << "Send IRCC" << endl;
+   if ((code < 0) || (code >= irccLastIrccCode) || ((size_t)code >= m_irccCmnds.size()))
+   {
+      cout << "IRCC: invalid code " << (int)code << endl;
+      return;
+   }
 
-   CURL *curl;
-   CURLcode res;
-   struct curl_slist *list = NULL;
+   cout << "Send IRCC " << (int)code << endl;
 
-   curl = curl_easy_init();
-
-   // Gather header strings.
-   string url = "192.168.0.161:50001/upnp/control/IRCC";
+   string url = "http://" + bdIpAddress + ":50001/upnp/control/IRCC";
    string post = "<?xml version=\"1.0\"?><s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><s:Body><u:X_SendIRCC xmlns:u=\"urn:schemas-sony-com:service:IRCC:1\"><IRCCCode>" + m_irccCmnds[(int)code] + "</IRCCCode></u:X_SendIRCC></s:Body></s:Envelope>";
 
-   if(curl) 
-   {
-      curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-      list = curl_slist_append(list, "soapaction: \"urn:schemas-sony-com:service:IRCC:1#X_SendIRCC\"");
-      list = curl_slist_append(list, "content-type: text/xml; charset=utf-8");
-      list = curl_slist_append(list, "Connection: close");
-      list = curl_slist_append(list, "Content-Length: 291");
-      curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
-      curl_easy_setopt(curl, CURLOPT_USERAGENT, "FHX Manager/0.1 (Raspberry Pi 3b+)");
-      curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
-      curl_easy_setopt(curl, CURLOPT_HEADER, 0);
-      curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "gzip");
-      curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post.c_str());
-      
-      res = curl_easy_perform(curl);
-      if(res != CURLE_OK)
-         fprintf(stderr, "curl_easy_perform() failed: %s\n",
-         curl_easy_strerror(res));
-
-      /* always cleanup */ 
-      curl_easy_cleanup(curl);
-      curl_slist_free_all(list);
-   }
-}
-
-void Ircc::sendPlay(void)
-// AAAAAwAAHFoAAAAaAw
-{
-   cout << "Send Play IRCC" << endl;
-
-   CURL *curl;
-   CURLcode res;
-   struct curl_slist *list = NULL;
-
-   curl = curl_easy_init();
-
-   // Gather header strings.
-   
-   string url = "192.168.0.161:50001/upnp/control/IRCC";
-   string post = "<?xml version=\"1.0\"?><s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\"><s:Body><u:X_SendIRCC xmlns:u=\"urn:schemas-sony-com:service:IRCC:1\"><IRCCCode>AAAAAwAAHFoAAAAaAw==</IRCCCode></u:X_SendIRCC></s:Body></s:Envelope>";
-
-// <?xml version="1.0"?><s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"><s:Body><u:X_SendIRCC xmlns:u="urn:schemas-sony-com:service:IRCC:1"><IRCCCode>AAAAAwAAHFoAAAAaAw==</IRCCCode></u:X_SendIRCC></s:Body></s:Envelope>
-
-
-
-   if(curl) 
-   {
-      curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-      list = curl_slist_append(list, "soapaction: \"urn:schemas-sony-com:service:IRCC:1#X_SendIRCC\"");
-      list = curl_slist_append(list, "content-type: text/xml; charset=utf-8");
-      list = curl_slist_append(list, "Connection: close");
-      list = curl_slist_append(list, "Content-Length: 291");
-      curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
-      curl_easy_setopt(curl, CURLOPT_USERAGENT, "FHX Manager/0.1 (Raspberry Pi 3b+)");
-      curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
-      curl_easy_setopt(curl, CURLOPT_HEADER, 0);
-      curl_easy_setopt(curl, CURLOPT_ACCEPT_ENCODING, "gzip");
-      curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post.c_str());
-      
-      res = curl_easy_perform(curl);
-      if(res != CURLE_OK)
-         fprintf(stderr, "curl_easy_perform() failed: %s\n",
-         curl_easy_strerror(res));
-
-      /* always cleanup */ 
-      curl_easy_cleanup(curl);
-      curl_slist_free_all(list);
-   }
+   httpRequest(url,
+               { "SOAPACTION: \"urn:schemas-sony-com:service:IRCC:1#X_SendIRCC\"",
+                 "Content-Type: text/xml; charset=utf-8",
+                 "X-CERS-DEVICE_ID: FHX_Manager:" + ownMacAddress },
+               &post,
+               irccTimeoutMs);
 }
 
 void Ircc::wakeOnLan(void)
 {
-   int sock;
-   int optval = 1;
    unsigned char macAddr[6];
 
-   string macAddress = "14:3f:a6:08:86:7b";
-
-   for (int i = 0; i < 5; i++)
+   if (sscanf(bdMacAddress.c_str(), "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx",
+              &macAddr[0], &macAddr[1], &macAddr[2],
+              &macAddr[3], &macAddr[4], &macAddr[5]) != 6)
    {
-      int l = macAddress.find_first_of(':');
-      string adrByte = macAddress.substr(0, l);
-      macAddr[i] = (unsigned char) strtol(adrByte.c_str(), NULL, 16);
-      macAddress = macAddress.substr(l+1);
-      cout << "MAC byte (decimal): " << (int)macAddr[i] << endl;
-   }
-   macAddr[5] = (unsigned char) strtol(macAddress.c_str(), NULL, 16);
-   cout << "MAC byte (decimal): " << (int)macAddr[5] << endl;
-
-   if(( sock = socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP )) < 0 )
-   {
-      cout << "Cannot open socket!" << endl;
+      cout << "WoL: invalid MAC address " << bdMacAddress << endl;
       return;
    }
-   
-   if( setsockopt( sock, SOL_SOCKET, SO_BROADCAST, (char *) &optval, sizeof( optval )) < 0 )
-   {
-      cout << "Cannot set socket options!" << endl;
-      return;
-   }
-   
-   struct sockaddr_in addr;
+
+   // Magic packet: 6 x 0xFF followed by the MAC address 16 times
    unsigned char packet[17*6];
-   int i, j;
-
-   addr.sin_family = AF_INET;
-   addr.sin_port   = htons(9);
-   if( inet_aton( "255.255.255.255", &addr.sin_addr ) == 0 )
+   memset(packet, 0xFF, 6);
+   for (int i = 1; i <= 16; i++)
    {
-      cout << "Invalid remote ip address given!" << endl;
+      memcpy(&packet[i * 6], macAddr, 6);
+   }
+
+   int sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+   if (sock < 0)
+   {
+      cout << "WoL: cannot open socket: " << strerror(errno) << endl;
       return;
    }
 
-   for( i = 0; i < 6; i++ )
+   int optval = 1;
+   if (setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (char *) &optval, sizeof(optval)) < 0)
    {
-      packet[i] = 0xFF;
+      cout << "WoL: cannot set socket options: " << strerror(errno) << endl;
+      close(sock);
+      return;
    }
 
-   for( i = 1; i <= 16; i++ )
+   // Send both to the limited broadcast and the subnet broadcast (some
+   // routers/WiFi setups do not forward 255.255.255.255), on ports 9 and 7.
+   const char* targets[] = { "255.255.255.255", "192.168.0.255" };
+   const int ports[] = { 9, 7 };
+   bool sent = false;
+
+   for (const char* target : targets)
    {
-      for( j = 0; j < 6; j++ )
+      for (int port : ports)
       {
-         packet[i * 6 + j] = macAddr[j];
+         struct sockaddr_in addr;
+         memset(&addr, 0, sizeof(addr));
+         addr.sin_family = AF_INET;
+         addr.sin_port = htons(port);
+         inet_aton(target, &addr.sin_addr);
+
+         if (sendto(sock, packet, sizeof(packet), 0, (struct sockaddr *) &addr, sizeof(addr)) < 0)
+         {
+            cout << "WoL: cannot send to " << target << ":" << port << ": " << strerror(errno) << endl;
+         }
+         else
+         {
+            sent = true;
+         }
       }
    }
-   
-   for (int i = 0 ; i < 17; i++)
+
+   close(sock);
+
+   if (sent)
    {
-      for (int j = 0; j < 6; j++)
-      {
-         cout << hex << setw(2) << setfill('0') << int(packet[i * 6 + j]) << " ";
-      }
-      cout << endl;
-   }
-   
-   if( sendto( sock, packet, sizeof( packet ), 0, (struct sockaddr *) &addr, sizeof( addr )) < 0 )
-   {
-      cout << "Cannot send data!" << endl;
-      return;
+      cout << "WoL: magic packet sent to " << bdMacAddress << endl;
    }
 }
 
@@ -473,5 +350,4 @@ void Ircc::test(void)
 
    cout << "Finished" << endl;
 }
-
 

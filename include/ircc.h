@@ -2,6 +2,7 @@
 #define IRCC_H
 
 #include <vector>
+#include <string>
 
 //  <command name="Confirm" type="ircc" value="AAAAAwAAHFoAAAA9Aw==" />
 //  <command name="Up" type="ircc" value="AAAAAwAAHFoAAAA5Aw==" />
@@ -111,8 +112,10 @@ private:
    void getDmr(void);
    void registerNoAuth(void);
    void registerAuth(std::string authStr);
-   void sendPause(void);
-   void sendPlay(void);
+   bool httpRequest(const std::string& url,
+                    const std::vector<std::string>& headers,
+                    const std::string* postBody,
+                    long timeoutMs);
    
    
 public:   
