@@ -3,15 +3,15 @@ Raspberry Pi application with web-based interface for controlling the FHX home t
 
 ### This is the process for installing this app on a fresh Raspberry PI OS SD card:
 
-###1. Write a new SD card using Raspberry Pi Imager. User name (pi) and hostname (fhxmanager). Enabled ssh but not Rapsberi Pi Connect.
+### 1. Write a new SD card using Raspberry Pi Imager. User name (pi) and hostname (fhxmanager). Enabled ssh but not Rapsberi Pi Connect.
  
-###3. Window Power Shell: Change ip-address)
+### 3. Window Power Shell: Change ip-address)
 
-####Run this to get the host name:
+#### Run this to get the host name:
 
 nmcli con show
 
-####Gives:
+#### Gives:
 
 pi@fhxmanager:~ $ nmcli con show
 
@@ -38,37 +38,37 @@ sudo nmcli con up "netplan-wlan0-hoffman_in_the_air"
 
 sudo reboot
 
-####Now the host name for the old pi must be removed from c:\\users\mail\.ssh\known_hosts, This is done in windows with:
+#### Now the host name for the old pi must be removed from c:\\users\mail\.ssh\known_hosts, This is done in windows with:
 
 ssh-keygen -R 192.168.0.202
 
 Now pi can be accessed from windows using: ssh pi@192.168.0.202
 
-###3. Start vnc on pi:
+### 3. Start vnc on pi:
 
 sudo raspi-config nonint do_vnc 0
 
-###4. Start spi
+### 4. Start spi
 
 sudo raspi-config nonint do_spi 0
 
 sudo reboot
 
-###5. Instal web-server and php
+### 5. Instal web-server and php
 
 sudo apt update
 
 sudo apt install apache2 php libapache2-mod-php
 
-###6. Install build tools on pi
+### 6. Install build tools on pi
 
 sudo apt install build-essential cmake git
 
 Some extensions for code navigation and intellisence needs to be installed on the pi, it is done from VS Code.
 
-###7. Make sure git ssh-keys are working
+### 7. Make sure git ssh-keys are working
 
-###8. Clon fhx-manager
+### 8. Clon fhx-manager
 
 mkdir -p ~/fhx_manager
 
@@ -76,7 +76,7 @@ cd fhx_manager
 
 git clone git@github.com:stfrha/fhx_manager.git
 
-###9. Fetch  64 bit version of WiringPi (i.e. not my fork):
+### 9. Fetch  64 bit version of WiringPi (i.e. not my fork):
 
 cd ~   [goto /home/pi/]
 
@@ -90,17 +90,17 @@ mv debian-template/wiringpi_*.deb .
 
 sudo apt install ./wiringpi_*.deb
 
-###10. Get pugixml
+### 10. Get pugixml
 
 git clone git@github.com:stfrha/pugixml.git
 
-###11. Instal some linux-libs:
+### 11. Instal some linux-libs:
 
 sudo apt install lirc liblirc-dev
 
 sudo apt install libcurl4-openssl-dev
 
-###12. Build
+### 12. Build
 
 rm -rf build                        [Clean]
 
@@ -108,7 +108,7 @@ cmake -S . -B build                 [One time tool set-up]
 
 cmake --build build -j4             [Build]
 
-###13. Create a directory for socket_config.txt: 
+### 13. Create a directory for socket_config.txt: 
 
 sudo mkdir -p /var/lib/fhx_manager
 
@@ -165,17 +165,17 @@ chmod +x /home/fredrik/fhx_manager/start_fhx.sh
 sudo rebooot
 
 
-To stop the app, the start-up script need to be stopped at the same time:
+#### To stop the app, the start-up script need to be stopped at the same time:
 
 pkill -f start_fhx.sh; pkill fhx_manager
 
 
-Restart with:
+#### Restart with:
 
 setsid ~/fhx_manager/fhx_manager/start_fhx.sh &
 
 
-Check log:
+#### Check log:
 
 tail -f ~/fhx_manager/fhx_manager/fhx.log
 
