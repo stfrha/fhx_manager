@@ -805,7 +805,7 @@ string Controller::generateStatusMessage(int precision)
 
 
 // Theatre Start: turn on system, half lights (kids movie scene), play the
-// crowd movie (first three minutes) and four random commercials, turn off
+// crowd movie (last three minutes) and four random commercials, turn off
 // the lights and change source to Chromecast.
 void* Controller::theatreStartThread(void* cntrlPointer)
 {
@@ -826,8 +826,15 @@ void* Controller::theatreStartThread(void* cntrlPointer)
       sleep(40);
    }
 
-   playVideo("/home/pi/fhx_manager/video/crowd.mp4", 3 * 60);
-   playRandomCommercials(4);
+   // Everything is played as one VLC playlist so the fullscreen window
+   // stays open and the desktop is not shown between the videos.
+   string crowd = "/home/pi/fhx_manager/video/crowd.mp4";
+   int crowdStart = (int)getVideoDuration(crowd) - 3 * 60;
+   vector<string> items;
+   items.push_back("\"" + crowd + "\" :start-time=" + to_string(crowdStart > 0 ? crowdStart : 0));
+   vector<string> commercials = randomCommercialItems(4);
+   items.insert(items.end(), commercials.begin(), commercials.end());
+   playPlaylist(items);
 
    cntrl->executeCommand(CommandStruct(t_commands::lightAllOff, ""));
    cntrl->executeCommand(CommandStruct(t_commands::sourceCc, ""));
@@ -838,18 +845,22 @@ void* Controller::theatreStartThread(void* cntrlPointer)
    return NULL;
 }
 
-// Plays a video fullscreen and returns when it has finished, or after
-// maxSeconds if that is larger than 0.
+// Plays a video fullscreen and returns when it has finished. Playback
+// starts at startSeconds and plays at most maxSeconds (if larger than 0).
 // omxplayer is not available on 64-bit Raspberry Pi OS, VLC is used instead.
-void Controller::playVideo(const string& file, int maxSeconds)
+void Controller::playVideo(const string& file, int maxSeconds, int startSeconds)
 {
    cout << "Playing video: " << file << endl;
-   string stopTime = "";
+   string times = "";
+   if (startSeconds > 0)
+   {
+      times += "--start-time=" + to_string(startSeconds) + " ";
+   }
    if (maxSeconds > 0)
    {
-      stopTime = "--stop-time=" + to_string(maxSeconds) + " ";
+      times += "--stop-time=" + to_string(startSeconds + maxSeconds) + " ";
    }
-   string cmd = "cvlc --fullscreen --play-and-exit --no-video-title-show --quiet " + stopTime + "\"" + file + "\" > /dev/null 2>&1";
+   string cmd = "cvlc --fullscreen --play-and-exit --no-video-title-show --quiet " + times + "\"" + file + "\" > /dev/null 2>&1";
    int result = system(cmd.c_str());
    if (result != 0)
    {
@@ -857,8 +868,47 @@ void Controller::playVideo(const string& file, int maxSeconds)
    }
 }
 
-// Plays count randomly chosen commercials, with a black screen in between
-void Controller::playRandomCommercials(int count)
+// Plays a list of playlist items in one fullscreen VLC window and returns
+// when all have finished. Each item is a quoted file name, optionally
+// followed by VLC item options, e.g. "\"file.mp4\" :start-time=10".
+void Controller::playPlaylist(const vector<string>& items)
+{
+   string cmd = "cvlc --fullscreen --play-and-exit --no-video-title-show --quiet";
+   for (const string& item : items)
+   {
+      cout << "Playlist item: " << item << endl;
+      cmd += " " + item;
+   }
+   cmd += " > /dev/null 2>&1";
+   int result = system(cmd.c_str());
+   if (result != 0)
+   {
+      cout << "Video player returned " << result << " for playlist" << endl;
+   }
+}
+
+// Returns the length of a video in seconds, 0 if it can not be read
+double Controller::getVideoDuration(const string& file)
+{
+   string cmd = "ffprobe -v error -show_entries format=duration -of csv=p=0 \"" + file + "\"";
+   double duration = 0.0;
+   FILE* pipe = popen(cmd.c_str(), "r");
+   if (pipe)
+   {
+      char buf[64];
+      if (fgets(buf, sizeof(buf), pipe))
+      {
+         duration = atof(buf);
+      }
+      pclose(pipe);
+   }
+   cout << "Video duration: " << duration << " s for " << file << endl;
+   return duration;
+}
+
+// Returns playlist items for count randomly chosen commercials, each
+// followed by a black screen
+vector<string> Controller::randomCommercialItems(int count)
 {
    vector<string> files;
    string path = "/home/pi/fhx_manager/video/commercials";
@@ -872,11 +922,19 @@ void Controller::playRandomCommercials(int count)
    mt19937 gen(rd());
    shuffle(files.begin(), files.end(), gen);
 
+   vector<string> items;
    for (int i = 0; i < min(count, (int)files.size()); i++)
    {
-      playVideo(files[i]);
-      playVideo("/home/pi/fhx_manager/video/black_screen.mp4");
+      items.push_back("\"" + files[i] + "\"");
+      items.push_back("\"/home/pi/fhx_manager/video/black_screen.mp4\"");
    }
+   return items;
+}
+
+// Plays count randomly chosen commercials, with a black screen in between
+void Controller::playRandomCommercials(int count)
+{
+   playPlaylist(randomCommercialItems(count));
 }
 
 void Controller::setBlackScreen(void)
