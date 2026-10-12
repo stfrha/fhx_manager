@@ -210,17 +210,15 @@ Test with:
 
 ./build/dali_debug
 
-### 20. Black desktop
+### 20. Black desktop during theatre videos
 
-When the Raspberry Pi source is shown on the receiver, only black should be visible between and around the videos. Set a black background without desktop icons, and let the panel auto-hide (it slides in when the mouse is moved to the top edge, e.g. over VNC):
+Nothing to set up. While Theatre Start or the Theatre Show plays videos on the receiver, fhx_manager calls desktop_mode.sh to make the desktop black (no wallpaper, icons, panel or notifications), and restores the normal desktop afterwards. The normal desktop is also restored when fhx_manager starts, in case a sequence was interrupted.
 
-mkdir -p ~/.config/pcmanfm/default ~/.config/wf-panel-pi
+To switch manually (e.g. if the desktop stays black):
 
-printf '[*]\nwallpaper_mode=color\ndesktop_bg=#000000000000\ndesktop_shadow=#000000000000\nshow_documents=0\nshow_trash=0\nshow_mounts=0\n' > ~/.config/pcmanfm/default/desktop-items-0.conf
+~/fhx_manager/fhx_manager/desktop_mode.sh normal
 
-printf '[panel]\nautohide=true\nautohide_duration=500\n' > ~/.config/wf-panel-pi/wf-panel-pi.ini
-
-pkill -x pcmanfm; pkill -x wf-panel-pi      [both restart automatically with the new settings]
+~/fhx_manager/fhx_manager/desktop_mode.sh black
 
 ### 21. Create autostart of fhx_manager (has to be done after desktop-boot since videos are shown from the desktop)
 

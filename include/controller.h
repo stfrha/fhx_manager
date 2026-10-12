@@ -75,6 +75,7 @@ public:
    void initializeController(void);
 
    void setBlackScreen(void);
+   static void setDesktopBlack(bool black);
    static void playVideo(const std::string& file, int maxSeconds = 0, int startSeconds = 0);
    static void playPlaylist(const std::vector<std::string>& items);
    static std::vector<std::string> randomCommercialItems(int count);

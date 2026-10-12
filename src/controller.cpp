@@ -82,6 +82,9 @@ void Controller::initializeController(void)
    }
    
    m_script.initializeScript(this);
+
+   // Restore the desktop in case the app stopped during a theatre sequence
+   setDesktopBlack(false);
    
    if (!m_benq.initializeBenq())
    {
@@ -816,6 +819,7 @@ void* Controller::theatreStartThread(void* cntrlPointer)
    bool systemWasOn = cntrl->m_yamahaOn && cntrl->m_benqOn;
 
    cntrl->executeCommand(CommandStruct(t_commands::lightKidsMovie, ""));
+   setDesktopBlack(true);
    cntrl->setBlackScreen();
    cntrl->executeCommand(CommandStruct(t_commands::sourceRpi, ""));
 
@@ -838,11 +842,25 @@ void* Controller::theatreStartThread(void* cntrlPointer)
 
    cntrl->executeCommand(CommandStruct(t_commands::lightAllOff, ""));
    cntrl->executeCommand(CommandStruct(t_commands::sourceCc, ""));
+   setDesktopBlack(false);
 
    cout << "Theatre Start sequence finished" << endl;
    cntrl->m_theatreStartRunning = false;
 
    return NULL;
+}
+
+// Makes the desktop black (no wallpaper, icons or panel) while the theatre
+// videos are shown on the receiver, or restores the normal desktop.
+void Controller::setDesktopBlack(bool black)
+{
+   cout << "Desktop " << (black ? "black" : "normal") << endl;
+   string cmd = string("/home/pi/fhx_manager/fhx_manager/desktop_mode.sh ") + (black ? "black" : "normal") + " > /dev/null 2>&1";
+   int result = system(cmd.c_str());
+   if (result != 0)
+   {
+      cout << "desktop_mode.sh returned " << result << endl;
+   }
 }
 
 // Plays a video fullscreen and returns when it has finished. Playback

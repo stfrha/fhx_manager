@@ -282,6 +282,7 @@ void* Script::theatreThread(void* cntrlPointer)
                cout << "Theatre thread timed out, set light to all on, start blue-ray cuing, start RPI source. Start playing crowd movie." << endl;
                cntrl->executeCommand(CommandStruct(t_commands::playScript, theatreFileName));
                cntrl->executeCommand(CommandStruct(t_commands::lightAllOn, ""));
+               Controller::setDesktopBlack(true);
                cntrl->setBlackScreen();
                cntrl->executeCommand(CommandStruct(t_commands::sourceRpi, ""));
                Controller::playVideo("/home/pi/fhx_manager/video/crowd.mp4");
@@ -294,6 +295,7 @@ void* Script::theatreThread(void* cntrlPointer)
 
                cntrl->executeCommand(CommandStruct(t_commands::lightMovie, ""));
                cntrl->executeCommand(CommandStruct(t_commands::sourceBr, ""));
+               Controller::setDesktopBlack(false);
             }
          }
 
