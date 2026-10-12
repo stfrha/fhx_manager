@@ -210,7 +210,19 @@ Test with:
 
 ./build/dali_debug
 
-### 20. Create autostart of fhx_manager (has to be done after desktop-boot since videos are shown from the desktop)
+### 20. Black desktop
+
+When the Raspberry Pi source is shown on the receiver, only black should be visible between and around the videos. Set a black background without desktop icons, and let the panel auto-hide (it slides in when the mouse is moved to the top edge, e.g. over VNC):
+
+mkdir -p ~/.config/pcmanfm/default ~/.config/wf-panel-pi
+
+printf '[*]\nwallpaper_mode=color\ndesktop_bg=#000000000000\ndesktop_shadow=#000000000000\nshow_documents=0\nshow_trash=0\nshow_mounts=0\n' > ~/.config/pcmanfm/default/desktop-items-0.conf
+
+printf '[panel]\nautohide=true\nautohide_duration=500\n' > ~/.config/wf-panel-pi/wf-panel-pi.ini
+
+pkill -x pcmanfm; pkill -x wf-panel-pi      [both restart automatically with the new settings]
+
+### 21. Create autostart of fhx_manager (has to be done after desktop-boot since videos are shown from the desktop)
 
 sudo raspi-config
 
